@@ -11,7 +11,7 @@ export const IUser = {
     allowNull: false
   },
   password: {
-    type: DataTypes.STRING(256),
+    type: DataTypes.STRING(128),
     allowNull: false
   },
   email: {

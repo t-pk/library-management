@@ -14,10 +14,11 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { sequelize } from './databases';
+import { UserSchema, sequelize } from './databases';
+import { encryptPassword } from '../renderer/utils/authenticate';
 
 sequelize.authenticate();
-sequelize.sync({ force: true });
+sequelize.sync({ force: false });
 
 class AppUpdater {
   constructor() {
@@ -29,10 +30,23 @@ class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
-ipcMain.on('ipc-example', async (event, arg) => {
+ipcMain.on('ipc-database', async (event, arg) => {
   //const result = await testQuery(sequelize);
+  console.log("arg", arg.key);
+  let result;
+  switch (arg.key) {
+    case 'user-login':
+      const data = arg.data;
+      const password = encryptPassword(data.password);
+    console.log("password", password, data.username);
+      result = await UserSchema.findOne({ where: { username: data.username, password }, raw: true });
+      break;
 
-  event.reply('ipc-example', 1);
+    default:
+      break
+  }
+  console.log("result", result);
+  event.reply('ipc-database', {data:result});
 });
 
 if (process.env.NODE_ENV === 'production') {

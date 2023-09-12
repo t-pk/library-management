@@ -1,14 +1,16 @@
 import { Form, Input, Button, message } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate, Redirect } from 'react-router-dom';
+import { internalCall } from 'renderer/actions';
 import icon from '../../assets/icon.jpeg';
 import './ui.css';
 
 const MESSAGE_LOGIN_FAIL =
   'username or password is incorrect. Please try again !';
 
+
 const LoginPage = () => {
- const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const sleep = (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -29,21 +31,29 @@ const LoginPage = () => {
 
   const onFinish = async (user) => {
     setLoading(true);
-    await sleep(500);
 
-    const isTrue = authentication.userLogin(user);
-    console.log('iss', isTrue);
-    if (!isTrue) return onFinishFailed();
+    internalCall({ key: 'user-login', data: user });
+    window.electron.ipcRenderer.on('ipc-database', async (arg) => {
+      if (arg && arg.data) {
+        setLoading(false);
+        await sleep(1200);
+        localStorage.setItem('TOKEN_KEY', arg.data);
+        navigate('/');
+      }
+    });
+    //     const isTrue = authentication.userLogin(user);
+    //     console.log('iss', isTrue);
+    //     if (!isTrue) return onFinishFailed();
 
-    setLoading(false);
-    // message.success('Welcome! ;))))');
- //   await sleep(1200);
+    //     setLoading(false);
+    //     // message.success('Welcome! ;))))');
+    //  //   await sleep(1200);
 
-    // return  <Redirect to="/" />
-    // history('/', { replace: true });
-    navigate('/');
-    // window.location.reload();
-    //  return true;
+    //     // return  <Redirect to="/" />
+    //     // history('/', { replace: true });
+    //     navigate('/');
+    //     // window.location.reload();
+    //     //  return true;
   };
 
   return (
