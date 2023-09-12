@@ -10,14 +10,20 @@
  */
 import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
-import sqlite from 'sqlite3';
+// import sqlite from 'sqlite3';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import {Sequelize} from 'sequelize';
+import pg from 'pg';
 
-const sqlite3 = sqlite.verbose();
-export const db = new sqlite3.Database('mydb.db');
+const sequelize = new Sequelize('postgres://postgres:123456@localhost:5433/library', {
+  dialectModule: pg
+});
+sequelize.authenticate();
+// const sqlite3 = sqlite.verbose();
+// export const db = new sqlite3.Database('mydb.db');
 
 class AppUpdater {
   constructor() {
@@ -49,10 +55,11 @@ let mainWindow: BrowserWindow | null = null;
 ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   console.log(msgTemplate(arg));
-  db.get('SELECT rowid AS id, info FROM lorem', (_err, row: any) => {
-    console.log(`${row.id}: ${row.info}`);
-    event.reply('ipc-example', `${row.id}: ${row.info}`);
-  });
+  const result = await sequelize.query('select * from user');
+  // db.get('SELECT rowid AS id, info FROM lorem', (_err, row: any) => {
+  //   console.log(`${row.id}: ${row.info}`);
+    event.reply('ipc-example', JSON.stringify(result));
+  // });
 });
 
 if (process.env.NODE_ENV === 'production') {

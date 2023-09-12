@@ -1,8 +1,17 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import icon from '../../assets/icon.svg';
 import './App.css';
+import { useState } from 'react';
 
 function Hello() {
+  const [count, setCount] = useState('');
+// calling IPC exposed from preload script
+window.electron.ipcRenderer.on('ipc-example', (arg) => {
+  // eslint-disable-next-line no-console
+  console.log(arg);
+  setCount(arg as string);
+});
+
   return (
     <div>
       <div className="Hello">
@@ -10,6 +19,7 @@ function Hello() {
       </div>
       <h1>electron-react-boilerplate</h1>
       <div className="Hello">
+        {count}
         <a
           href="https://electron-react-boilerplate.js.org/"
           target="_blank"
