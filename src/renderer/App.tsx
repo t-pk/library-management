@@ -1,60 +1,114 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
-import './App.css';
-import { useState } from 'react';
+import { Button, Spin } from 'antd';
+import React, { Suspense } from 'react';
+import {
+  MemoryRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+} from 'react-router-dom';
+const Page1 = React.lazy(() => import('./page1')); // Lazy-loaded
+const Page2 = React.lazy(() => import('./page2')); // Lazy-loaded
+const Page3 = React.lazy(() => import('./page3')); // Lazy-loaded
 
-function Hello() {
-  const [count, setCount] = useState('');
-// calling IPC exposed from preload script
-window.electron.ipcRenderer.on('ipc-example', (arg) => {
-  // eslint-disable-next-line no-console
-  console.log(arg);
-  setCount(arg as string);
-});
+const LoginPage = React.lazy(() => import('./pages/login'));
+const HomePage = React.lazy(() => import('./pages/home'));
+const AccountPage = React.lazy(() => import('./pages/account'));
+const NotFoundPage = React.lazy(() => import('./pages/not-found'));
+import './App.less';
+
+import authentication from './utils/authentication';
+authentication.init();
+
+export const Rec = () => {
+  const nav = useNavigate();
+
+  const button1 = (page: string) => () => {
+    nav(page);
+  };
 
   return (
     <div>
-      <div className="Hello">
-        <img width="200" alt="icon" src={icon} />
-      </div>
-      <h1>electron-react-boilerplate</h1>
-      <div className="Hello">
-        {count}
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="folded hands">
-              🙏
-            </span>
-            Donate
-          </button>
-        </a>
-      </div>
+      <Button onClick={button1('/page2')}>page 2</Button>
+      <Button onClick={button1('/page3')}>page 3</Button>
+      <Button onClick={button1('/')}>page 1</Button>
+      <Button onClick={button1('/login')}>Login</Button>
     </div>
   );
-}
+};
 
-export default function App() {
+const App = () => {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Hello />} />
-      </Routes>
+      <Suspense
+        fallback={
+          <Spin>
+            <div className="is-spining-full" />
+          </Spin>
+        }
+      >
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Suspense
+                fallback={
+                  <Spin>
+                    <div className="is-spining-full" />
+                  </Spin>
+                }
+              >
+                <HomePage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/account"
+            element={
+              <Suspense
+                fallback={
+                  <Spin>
+                    <div className="is-spining-full" />
+                  </Spin>
+                }
+              >
+                <AccountPage />{' '}
+              </Suspense>
+            }
+          />
+          <Route
+            path="/404"
+            element={
+              <Suspense
+                fallback={
+                  <Spin>
+                    <div className="is-spining-full" />
+                  </Spin>
+                }
+              >
+                <NotFoundPage />{' '}
+              </Suspense>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <Suspense
+                fallback={
+                  <Spin>
+                    <div className="is-spining-full" />
+                  </Spin>
+                }
+              >
+                <LoginPage />
+              </Suspense>
+            }
+          />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </Suspense>
     </Router>
   );
-}
+};
+
+export default App;
