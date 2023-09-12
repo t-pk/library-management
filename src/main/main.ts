@@ -10,20 +10,19 @@
  */
 import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
-// import sqlite from 'sqlite3';
+import { Sequelize } from 'sequelize';
+import pg from 'pg';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import {Sequelize} from 'sequelize';
-import pg from 'pg';
 
-const sequelize = new Sequelize('postgres://postgres:123456@localhost:5433/library', {
+import { testQuery } from './databases';
+
+export const sequelize = new Sequelize('postgres://postgres:123456@localhost:5433/library', {
   dialectModule: pg
 });
 sequelize.authenticate();
-// const sqlite3 = sqlite.verbose();
-// export const db = new sqlite3.Database('mydb.db');
 
 class AppUpdater {
   constructor() {
@@ -33,32 +32,13 @@ class AppUpdater {
   }
 }
 
-// db.serialize(() => {
-//   db.run('CREATE TABLE lorem (info TEXT)');
-
-//   const stmt = db.prepare('INSERT INTO lorem VALUES (?)');
-//   for (let i = 0; i < 10; i += 1) {
-//     stmt.run(`Ipsum ${i}`);
-//   }
-//   stmt.finalize();
-
-//   db.each('SELECT rowid AS id, info FROM lorem', (_err, row: any) => {
-//     console.log(`${row.id}: ${row.info}`);
-//   });
-// });
-
-// db.close();
-
-
 let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  const result = await sequelize.query('select * from user');
-  // db.get('SELECT rowid AS id, info FROM lorem', (_err, row: any) => {
-  //   console.log(`${row.id}: ${row.info}`);
-    event.reply('ipc-example', JSON.stringify(result));
+  console.log(event, arg);
+  const result = await testQuery(sequelize);
+  event.reply('ipc-example', JSON.stringify(result));
   // });
 });
 

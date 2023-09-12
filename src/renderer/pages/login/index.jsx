@@ -2,9 +2,7 @@ import { Form, Input, Button, message } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate, Redirect } from 'react-router-dom';
 import icon from '../../assets/icon.jpeg';
-import authentication from '../../utils/authentication';
-// import history from '../../utils/history';
-import './ui.less';
+import './ui.css';
 
 const MESSAGE_LOGIN_FAIL =
   'username or password is incorrect. Please try again !';

@@ -7,6 +7,7 @@ import {
   Navigate,
   useNavigate,
 } from 'react-router-dom';
+import { ConfigProvider } from 'antd';
 const Page1 = React.lazy(() => import('./page1')); // Lazy-loaded
 const Page2 = React.lazy(() => import('./page2')); // Lazy-loaded
 const Page3 = React.lazy(() => import('./page3')); // Lazy-loaded
@@ -15,10 +16,6 @@ const LoginPage = React.lazy(() => import('./pages/login'));
 const HomePage = React.lazy(() => import('./pages/home'));
 const AccountPage = React.lazy(() => import('./pages/account'));
 const NotFoundPage = React.lazy(() => import('./pages/not-found'));
-import './App.less';
-
-import authentication from './utils/authentication';
-authentication.init();
 
 export const Rec = () => {
   const nav = useNavigate();
@@ -39,6 +36,8 @@ export const Rec = () => {
 
 const App = () => {
   return (
+    <ConfigProvider theme={{ token: { colorPrimary: '#00b96b' } }}>
+
     <Router>
       <Suspense
         fallback={
@@ -108,6 +107,7 @@ const App = () => {
         </Routes>
       </Suspense>
     </Router>
+    </ConfigProvider>
   );
 };
 
