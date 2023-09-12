@@ -10,18 +10,14 @@
  */
 import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
-import { Sequelize } from 'sequelize';
-import pg from 'pg';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { testQuery } from './databases';
+import { sequelize } from './databases';
 
-export const sequelize = new Sequelize('postgres://postgres:123456@localhost:5433/library', {
-  dialectModule: pg
-});
 sequelize.authenticate();
+sequelize.sync({ force: true });
 
 class AppUpdater {
   constructor() {
@@ -34,9 +30,9 @@ class AppUpdater {
 let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on('ipc-example', async (event, arg) => {
-  console.log(event, arg);
-  const result = await testQuery(sequelize);
-  event.reply('ipc-example', JSON.stringify(result));
+  //const result = await testQuery(sequelize);
+
+  event.reply('ipc-example', 1);
 });
 
 if (process.env.NODE_ENV === 'production') {
