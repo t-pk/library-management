@@ -16,7 +16,6 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-
 import { testQuery } from './databases';
 
 export const sequelize = new Sequelize('postgres://postgres:123456@localhost:5433/library', {
@@ -35,11 +34,9 @@ class AppUpdater {
 let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   console.log(event, arg);
   const result = await testQuery(sequelize);
   event.reply('ipc-example', JSON.stringify(result));
-  // });
 });
 
 if (process.env.NODE_ENV === 'production') {
