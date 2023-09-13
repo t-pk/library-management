@@ -22,17 +22,17 @@ const attributeCommon = {
 }
 
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const BorrowSchema = sequelize.define('borrows', IBorrow, { ...attributeCommon, paranoid: false, updatedAt: false });
+export const BorrowSchema = sequelize.define('borrows', IBorrow, { ...attributeCommon, updatedAt: false });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const BorrowDetailSchema = sequelize.define('borrow-details', IBorrowDetail, { ...attributeCommon, paranoid: false, updatedAt: false });
+export const BorrowDetailSchema = sequelize.define('borrow-details', IBorrowDetail, { ...attributeCommon, updatedAt: false });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const DocumentSchema = sequelize.define('documents', IDocument, attributeCommon);
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const ReaderSchema = sequelize.define('readers', IReader, attributeCommon);
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const ReturnSchema = sequelize.define('returns', IReturn, { ...attributeCommon, paranoid: false, updatedAt: false });
+export const ReturnSchema = sequelize.define('returns', IReturn, { ...attributeCommon, updatedAt: false });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const ReturnDetailSchema = sequelize.define('return-details', IReturnDetail, { ...attributeCommon, paranoid: false, updatedAt: false });
+export const ReturnDetailSchema = sequelize.define('return-details', IReturnDetail, { ...attributeCommon, updatedAt: false });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const UserSchema = sequelize.define('users', IUser, attributeCommon);
 

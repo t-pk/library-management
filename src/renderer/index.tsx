@@ -7,9 +7,10 @@ root.render(
   <App />
 );
 
-// calling IPC exposed from preload script
-window.electron.ipcRenderer.once('ipc-database', (arg) => {
-  // eslint-disable-next-line no-console
-  console.log(arg);
-});
+// // calling IPC exposed from preload script
+// window.electron.ipcRenderer.once('ipc-database', (arg) => {
+//   // eslint-disable-next-line no-console
+//   console.log(arg);
+// });
+
 window.electron.ipcRenderer.sendMessage('ipc-database', ['ping']);

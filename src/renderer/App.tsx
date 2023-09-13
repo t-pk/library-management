@@ -36,7 +36,11 @@ export const Rec = () => {
 
 const App = () => {
   return (
-    <ConfigProvider theme={{ token: { colorPrimary: '#00b96b' } }}>
+    <ConfigProvider theme={{ components: {
+      Layout: {
+        headerBg: '#8524ad'
+      },
+    }, token: { colorPrimary: '#8524ad' } }}>
 
     <Router>
       <Suspense
