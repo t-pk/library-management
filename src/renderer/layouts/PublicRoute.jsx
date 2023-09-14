@@ -1,24 +1,18 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Redirect, Navigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const PublicRoute = ({ element: Component, layout: Layout, ...rest }) => {
-  return (
-    <Route
-      {...rest}
-      element={
-        <Layout>
-          <Component />
-        </Layout>
-      }
-    />
-  );
-};
+const PublicRoute = ({
+  element: Component,
+}) =>
+  <Component />
 
-PublicRoute.propTypes = {
-  element: PropTypes.elementType.isRequired,
-  layout: PropTypes.elementType.isRequired,
-};
+// PrivateRoute.propTypes = {
+//   element: PropTypes.elementType.isRequired,
+//   layout: PropTypes.elementType.isRequired,
+//   exact: PropTypes.bool.isRequired,
+//   path: PropTypes.string.isRequired,
+// };
 
 export default PublicRoute;

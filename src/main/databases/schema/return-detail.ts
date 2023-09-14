@@ -24,7 +24,7 @@ export const IReturnDetail = {
     defaultValue: Sequelize.fn('now')
   },
   createdBy: {
-    type: DataTypes.INTEGER({ length: 2 }),
+    type: DataTypes.SMALLINT,
     allowNull: false
   },
 };

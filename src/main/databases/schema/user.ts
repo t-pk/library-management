@@ -2,7 +2,7 @@ import { DataTypes, Sequelize } from 'sequelize';
 
 export const IUser = {
   id: {
-    type: DataTypes.SMALLINT({ length: 2 }),
+    type: DataTypes.SMALLINT,
     primaryKey: true,
     autoIncrement: true
   },
@@ -36,7 +36,7 @@ export const IUser = {
     defaultValue: Sequelize.fn('now')
   },
   createdBy: {
-    type: DataTypes.INTEGER({ length: 2 }),
+    type: DataTypes.SMALLINT,
     allowNull: false
   },
   updatedAt: {
@@ -44,7 +44,7 @@ export const IUser = {
     defaultValue: Sequelize.fn('now')
   },
   updatedBy: {
-    type: DataTypes.INTEGER({ length: 2 }),
+    type: DataTypes.SMALLINT,
     allowNull: true
   },
 };

@@ -36,7 +36,7 @@ export const IReader = {
     defaultValue: Sequelize.fn('now')
   },
   createdBy: {
-    type: DataTypes.INTEGER({ length: 2 }),
+    type: DataTypes.SMALLINT,
     allowNull: false
   },
   updatedAt: {
@@ -44,7 +44,7 @@ export const IReader = {
     defaultValue: Sequelize.fn('now')
   },
   updatedBy: {
-    type: DataTypes.INTEGER({ length: 2 }),
+    type: DataTypes.SMALLINT,
     allowNull: true
   },
 };

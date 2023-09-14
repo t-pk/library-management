@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Layout, Modal } from 'antd';
 import ProgressBar from '../progress';
-import './header.less';
 
 const { Header } = Layout;
 

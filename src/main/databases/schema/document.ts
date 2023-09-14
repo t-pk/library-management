@@ -32,7 +32,7 @@ export const IDocument = {
     defaultValue: false
   },
   quantity: {
-    type: DataTypes.SMALLINT({ length: 4 }),
+    type: DataTypes.SMALLINT,
     allowNull: false
   },
   createdAt: {
@@ -40,7 +40,7 @@ export const IDocument = {
     defaultValue: Sequelize.fn('now')
   },
   createdBy: {
-    type: DataTypes.INTEGER({ length: 2 }),
+    type: DataTypes.SMALLINT,
     allowNull: false
   },
   updatedAt: {
@@ -48,7 +48,7 @@ export const IDocument = {
     defaultValue: Sequelize.fn('now')
   },
   updatedBy: {
-    type: DataTypes.INTEGER({ length: 2 }),
+    type: DataTypes.SMALLINT,
     allowNull: true
   },
 };
