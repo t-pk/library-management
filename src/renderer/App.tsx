@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import routes from './routers';
+const color = '#1b5cbd';
 
 export const Rec = () => {
   const nav = useNavigate();
@@ -48,9 +49,9 @@ const App = () => {
     <ConfigProvider theme={{
       components: {
         Layout: {
-          headerBg: '#8524ad'
+          headerBg: color
         },
-      }, token: { colorPrimary: '#8524ad' }
+      }, token: { colorPrimary: color }
     }}>
 
       <Router>

@@ -2,12 +2,12 @@
 .my-animation {
   /* Define your animation properties here */
   animation-name: fadeIn;
-  animation-duration: 0.5s;
+  animation-duration: 0.2s;
 }
 
 @keyframes fadeIn {
   from {
-    opacity: 0;
+    opacity: 0.8;
   }
   to {
     opacity: 1;

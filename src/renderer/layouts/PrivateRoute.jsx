@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Layout, Menu, theme } from 'antd';
+import { Button, Layout, Menu, Spin, theme } from 'antd';
 import {
   AppstoreOutlined,
   MailOutlined,
@@ -13,27 +13,16 @@ const PrivateRoute = ({
   element: Component,
 }) => {
   const [animate, setAnimate] = useState('/');
+  const [spinning, setSpinning] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
-    // This code will run whenever the route changes (location changes)
-    console.log('Location has changed:', location.pathname);
-  setAnimate(location.pathname);
-    // You can perform other actions here based on the location change
+    setAnimate(location.pathname);
+    setSpinning(true);
+    setTimeout(() => {
+      setSpinning(false)
+    }, 50);
   }, [location]);
-
-  // useEffect(() => {
-
-  
-  //   // Delay the application of the animation class after a short delay (e.g., 100ms)
-  //   const animationTimeout = setTimeout(() => {
-  //     setAnimate(location);
-  //   }, 1000);
-
-  //   // Cleanup the timeout to avoid memory leaks
-  //   return () => clearTimeout(animationTimeout);
-  // }, [animate]);
-
 
   const {
     token: { colorBgContainer },
@@ -62,7 +51,7 @@ const PrivateRoute = ({
   ];
 
   return localStorage.getItem('TOKEN_KEY') ? (
-    <Layout className={`${animate ==location.pathname ? 'my-animation' : ''}`}   {...console.log(location.pathname, animate)}>
+    <Layout   >
       <Header
         style={{
           display: 'flex',
@@ -101,16 +90,18 @@ const PrivateRoute = ({
             padding: '0 24px 24px',
           }}
         >
-          <Content
-            style={{
-              padding: 24,
-              margin: 0,
-              minHeight: 280,
-              background: colorBgContainer,
-            }}
-          >
-            <Component />
-          </Content>
+          <Spin spinning={spinning} wrapperClassName={`${animate == location.pathname ? 'my-animation' : ''}`}>
+            <Content
+              style={{
+                padding: 24,
+                margin: 0,
+                minHeight: 280,
+                background: colorBgContainer,
+              }}
+            >
+              <Component />
+            </Content>
+          </Spin>
         </Layout>
       </Layout>
     </Layout>

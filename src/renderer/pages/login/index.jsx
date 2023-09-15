@@ -41,19 +41,6 @@ const LoginPage = () => {
         navigate('/');
       }
     });
-    //     const isTrue = authentication.userLogin(user);
-    //     console.log('iss', isTrue);
-    //     if (!isTrue) return onFinishFailed();
-
-    //     setLoading(false);
-    //     // message.success('Welcome! ;))))');
-    //  //   await sleep(1200);
-
-    //     // return  <Redirect to="/" />
-    //     // history('/', { replace: true });
-    //     navigate('/');
-    //     // window.location.reload();
-    //     //  return true;
   };
 
   return (
