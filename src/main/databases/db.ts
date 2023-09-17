@@ -10,7 +10,12 @@ import { IReturnDetail } from './schema/return-detail';
 
 export const sequelize = new Sequelize('postgres://postgres:123456@localhost:5433/library', {
   dialectModule: pg,
-  logging: true
+  logging: true,
+  pool: {
+    max: 5,
+    min: 0,
+    idle: 10000
+  }
 });
 
 const attributeCommon = {

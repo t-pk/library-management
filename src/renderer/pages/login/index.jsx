@@ -33,7 +33,7 @@ const LoginPage = () => {
     setLoading(true);
 
     internalCall({ key: 'user-login', data: user });
-    window.electron.ipcRenderer.on('ipc-database', async (arg) => {
+    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
       if (arg && arg.data) {
         setLoading(false);
         await sleep(1200);

@@ -9,7 +9,7 @@ import {
 } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import routes from './routers';
-const color = '#1b5cbd';
+const color = '#174e94';
 
 export const Rec = () => {
   const nav = useNavigate();
@@ -51,7 +51,10 @@ const App = () => {
         Layout: {
           headerBg: color
         },
-      }, token: { colorPrimary: color }
+        Button: {
+          colorPrimary: color,
+        },
+      }, token: { }
     }}>
 
       <Router>

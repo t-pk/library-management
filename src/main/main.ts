@@ -16,6 +16,7 @@ import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { UserSchema, sequelize } from './databases';
 import { encryptPassword } from '../renderer/utils/authenticate';
+import { getDocuments } from './databases/logic/document';
 
 sequelize.authenticate();
 sequelize.sync({ force: false });
@@ -32,18 +33,19 @@ let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on('ipc-database', async (event, arg) => {
   let result;
+  const data = arg.data;
   switch (arg.key) {
     case 'user-login':
-      const data = arg.data;
       const password = encryptPassword(data.password);
       result = await UserSchema.findOne({ where: { username: data.username, password }, raw: true, attributes: ['id', 'username', 'position'] });
       break;
-
+    case 'document-search':
+      result = await getDocuments(data);
     default:
       break
   }
 
-  event.reply('ipc-database', {data:result});
+  event.reply('ipc-database', { data: result });
 });
 
 if (process.env.NODE_ENV === 'production') {
