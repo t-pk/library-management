@@ -87,7 +87,7 @@ const PrivateRoute = ({
         </Sider>
         <Layout
           style={{
-            padding: '0 24px 24px',
+            padding: '0px 24px 0px 24px',
           }}
         >
           <Spin spinning={spinning} wrapperClassName={`${animate == location.pathname ? 'my-animation' : ''}`}>

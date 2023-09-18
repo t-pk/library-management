@@ -1,51 +1,11 @@
-import React, { useState, useCallback } from 'react';
-import { SettingOutlined, DownOutlined, CaretDownOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Cascader, Input, Select, Space, Row, Dropdown, Checkbox, Table, Form } from 'antd';
-import debounce from 'lodash.debounce';
-import { internalCall } from '../../actions/index';
-const { Option } = Select;
+import React from 'react';
+import { SearchOutlined } from '@ant-design/icons';
+import { Button, Input, Table, Form } from 'antd';
 import './ui.scss';
 
 const style = { minWidth: '28%', marginRight: '10px' };
 
-const FCSearch = ({
-  columns, fetchKey, initData
-}) => {
-  const [inputState, setinputState] = useState(initData);
-  const [documents, setDocuments] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const handleDebounceFn = reState => {
-    console.log("resta", reState, fetchKey);
-    internalCall({ key: fetchKey, data: reState });
-    console.log("window.electron.ipcRenderer.once", window.electron.ipcRenderer.once);
-    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
-      setLoading(false);
-      if (arg && arg.data) {
-        console.log(arg.data);
-        setDocuments(arg.data);
-      }
-    });
-  }
-  const debounceFc = useCallback(debounce(handleDebounceFn, 300), []);
-
-  const onChange = (e) => {
-    setLoading(true);
-    const reState = { ...inputState, [e.target.id]: e.target.value };
-    setinputState(reState);
-    debounceFc(reState);
-  };
-
-  const onClick = () => {
-    setLoading(true);
-    debounceFc(inputState);
-  }
-
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-    },
-  };
+const SearchFC = ({ columns, onClick, onChange, inputState, documents, loading, rowSelection, validates }) => {
 
   const camelize = (str) => {
     return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word) {
@@ -53,20 +13,17 @@ const FCSearch = ({
     }).replace(/\s+/g, '');
   }
 
-  /**
-   * 
-   * @param {*} schema  {key: values}
-   */
   const ExportComponent = () => {
-    return Object.keys(inputState).map((item) =>
+    console.log("12321");
+    return Object.keys(validates).map((item) =>
       <Form.Item style={style} key={item} >
         <Input
           placeholder={camelize(item)}
-          value={inputState.id}
+          value={inputState[item]}
           style={style}
           id={item}
           onChange={onChange}
-          // maxLength={initData[item].max}
+          maxLength={validates[item].max}
         />
       </Form.Item>
     )
@@ -75,7 +32,7 @@ const FCSearch = ({
   return (
     <>
       <Form style={{ display: 'flex' }}>
-        <ExportComponent/>
+        <ExportComponent />
         <Form.Item style={style}>
           <Button onClick={onClick} type='primary' icon={<SearchOutlined />}>Search</Button>
         </Form.Item>
@@ -92,4 +49,4 @@ const FCSearch = ({
     </>
   )
 };
-export default FCSearch;
+export default SearchFC;
