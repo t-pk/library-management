@@ -47,7 +47,23 @@ const PrivateRoute = ({
         getItem('Tìm Kiếm', '/reader/search'),
         getItem('Thêm Độc Giả', '/reader/create'),
         getItem('Yêu Cầu Độc Giả', '/reader/request'),
-      ])
+      ]),
+    getItem('Phiếu', '/note', <AppstoreOutlined />,
+    [
+      getItem('Phiếu mượn', '/note/search'),
+      getItem('Phiếu trả', '/note/create'),
+      getItem('Phiếu phạt', '/note/request'),
+    ]),
+    getItem('Tác Giả', '/author', <AppstoreOutlined />,
+    [
+      getItem('Tìm Kiếm', '/author/search'),
+      getItem('Thêm Tác Giả', '/author/create'),
+    ]),
+    getItem('Nhà Xuất Bản', '/publisher', <AppstoreOutlined />,
+    [
+      getItem('Tìm Kiếm', '/publisher/search'),
+      getItem('Thêm Nhà Xuất Bản', '/publisher/create'),
+    ]),
   ];
 
   return localStorage.getItem('TOKEN_KEY') ? (

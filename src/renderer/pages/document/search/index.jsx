@@ -24,7 +24,7 @@ const columns = [
 
 const style = { minWidth: '28%', marginRight: '10px' };
 
-const DocumentSearchPage1 = () => {
+const DocumentSearchPage = () => {
   const [inputState, setinputState] = useState({
     name: '',
     id: '',
@@ -110,4 +110,4 @@ const DocumentSearchPage1 = () => {
     </>
   )
 };
-export default DocumentSearchPage1;
+export default DocumentSearchPage;
