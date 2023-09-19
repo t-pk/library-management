@@ -11,22 +11,6 @@ import { ConfigProvider } from 'antd';
 import routes from './routers';
 const color = '#174e94';
 
-export const Rec = () => {
-  const nav = useNavigate();
-
-  const button1 = (page: string) => () => {
-    nav(page);
-  };
-
-  return (
-    <div>
-      <Button onClick={button1('/page2')}>page 2</Button>
-      <Button onClick={button1('/readers')}>page 3</Button>
-      <Button onClick={button1('/')}>page 1</Button>
-      <Button onClick={button1('/login')}>Login</Button>
-    </div>
-  );
-};
 const App = () => {
   const adminRoutes = routes.map((route) =>
     <Route
@@ -40,7 +24,6 @@ const App = () => {
           }
         >
           <route.layout element={route.main} />
-          <Rec />
         </Suspense>
       }
     />
@@ -54,7 +37,15 @@ const App = () => {
         Button: {
           colorPrimary: color,
         },
-      }, token: { }
+        Input: {
+          hoverBorderColor: '#cdc2c2',
+          activeBorderColor: '#cdc2c2',
+          activeShadow: '#cdc2c2'
+        }
+      }, token: {
+        fontFamily: '"Open Sans", sans-serif',
+        fontSize: 14
+      },
     }}>
 
       <Router>

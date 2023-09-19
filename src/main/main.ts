@@ -17,9 +17,16 @@ import { resolveHtmlPath } from './util';
 import { UserSchema, sequelize } from './databases';
 import { encryptPassword } from '../renderer/utils/authenticate';
 import { getDocuments } from './databases/logic/document';
+import { createAuthor, getAuthors } from './databases/logic/author';
+import { createPublisher, getPublishers } from './databases/logic/publisher';
 
 sequelize.authenticate();
-sequelize.sync({ force: false });
+sequelize.sync({ force: false }).then((res) => {
+  sequelize.query(`INSERT INTO public.users
+(id, username, "password", email, phone_number, status, "position", created_at, created_by, updated_at, updated_by)
+VALUES(6, 'admin', 'c9e9c18a2d3cc1af154d08be8b13929cc6f6d84afdb477524c52c8f0ae8597e92421426efdde90820655e2191034d0d6a13201eb50d35a72e471861e55926609', 'lawndjkw@gmail.com', '12312124', false, '123', '2023-09-14 02:03:15.850', 6, '2023-09-14 02:03:15.850', 6);
+`);
+});
 
 class AppUpdater {
   constructor() {
@@ -32,20 +39,49 @@ class AppUpdater {
 let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on('ipc-database', async (event, arg) => {
-  let result;
-  const data = arg.data;
-  switch (arg.key) {
-    case 'user-login':
-      const password = encryptPassword(data.password);
-      result = await UserSchema.findOne({ where: { username: data.username, password }, raw: true, attributes: ['id', 'username', 'position'] });
-      break;
-    case 'document-search':
-      result = await getDocuments(data);
-    default:
-      break
-  }
+  try {
+    let result;
+    const data = arg.data;
+    await getUserId();
+    if (arg.key.includes('create') || arg.key.includes('update')) {
 
-  event.reply('ipc-database', { data: result });
+      const userId = await getUserId();
+
+      if (arg.key.includes('create')) {
+        data.createdBy = userId;
+      }
+      data.updatedBy = userId;
+    }
+    console.log(arg);
+    switch (arg.key) {
+      case 'user-login':
+        const password = encryptPassword(data.password);
+        result = await UserSchema.findOne({ where: { username: data.username, password }, raw: true, attributes: ['id', 'username', 'position'] });
+       // break;
+      case 'document-search':
+        result = await getDocuments(data);
+        break;
+      case 'author-create':
+        result = await createAuthor(data);
+        break;
+      case 'author-search':
+        result = await getAuthors(data);
+        break;
+      case 'publisher-create':
+        result = await createPublisher(data);
+        break;
+      case 'publisher-search':
+        result = await getPublishers(data);
+        break;
+      default:
+        break
+    }
+
+    event.reply('ipc-database', { data: result });
+  } catch (error) {
+    console.log((error as any).errors[0].message);
+    event.reply('ipc-database', { error: (error as any).errors[0].message });
+  }
 });
 
 if (process.env.NODE_ENV === 'production') {
@@ -88,8 +124,9 @@ const createWindow = async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1024,
+    width: 1366,
     height: 728,
+    minWidth: 1366,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: app.isPackaged
@@ -129,6 +166,14 @@ const createWindow = async () => {
   new AppUpdater();
 };
 
+
+export const getUserId = () => {
+  return (mainWindow as BrowserWindow).webContents
+    .executeJavaScript('localStorage.getItem("TOKEN_KEY");', true)
+    .then(result => {
+      return JSON.parse(result || `{}`).id || 0;
+    });
+}
 /**
  * Add event listeners...
  */

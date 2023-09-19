@@ -1,39 +1,24 @@
 import { DataTypes, Sequelize } from 'sequelize';
 
-export const IDocument = {
+export const IPublisher = {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.SMALLINT,
     primaryKey: true,
     autoIncrement: true
   },
   name: {
-    type: DataTypes.STRING(256),
-    allowNull: false
-  },
-  type: {
-    type: DataTypes.STRING(32),
-    allowNull: false
-  },
-  publisherId: {
-    type: DataTypes.SMALLINT,
-    allowNull: false
-  },
-  authorId: {
-    type: DataTypes.SMALLINT,
-    allowNull: false
-  },
-  publishTime: {
-    type: DataTypes.DATEONLY,
-    allowNull: true
+    type: DataTypes.STRING(64),
+    allowNull: false,
+    unique: true
   },
   status: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false
   },
-  quantity: {
-    type: DataTypes.SMALLINT,
-    allowNull: false
+  description: {
+    type: DataTypes.STRING(512),
+    allowNull: true,
   },
   createdAt: {
     type: DataTypes.DATE,

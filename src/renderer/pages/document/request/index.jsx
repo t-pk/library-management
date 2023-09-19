@@ -43,8 +43,8 @@ const DocumentRequestPage = () => {
         <Button style={{ minWidth: '50%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}> Submit </Button>
       </Form.Item>
 
-      <Form.Item name="quatity" label="Số Lượng" style={reStyle} rules={[{ required: true, message: 'Please input your quantity!', },]}>
-        <Input style={{ width: '100%', }} />
+      <Form.Item name="quatity" label="Số Lượng" style={reStyle} rules={[{ required: true, message: 'Please input your quantity!' }, { type: 'number', min: 999, message: 'min >= 1'}]}>
+        <InputNumber min={1} style={{ width: '100%', }} />
       </Form.Item>
 
     </Form>

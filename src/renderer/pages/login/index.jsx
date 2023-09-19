@@ -37,7 +37,7 @@ const LoginPage = () => {
       if (arg && arg.data) {
         setLoading(false);
         await sleep(1200);
-        localStorage.setItem('TOKEN_KEY', arg.data);
+        localStorage.setItem('TOKEN_KEY', JSON.stringify(arg.data));
         navigate('/');
       }
     });

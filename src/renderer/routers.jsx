@@ -10,6 +10,12 @@ const DocumentRequestPage = React.lazy(() => import('./pages/document/request'))
 const ReaderSeachPage = React.lazy(() => import('./pages/reader/search'));
 const ReaderCreatePage = React.lazy(() => import('./pages/reader/create'));
 const ReaderRequestPage = React.lazy(() => import('./pages/reader/request'));
+
+const AuthorSeachPage = React.lazy(() => import('./pages/author/search'));
+const AuthorCreatePage = React.lazy(() => import('./pages/author/create'));
+const PublisherSeachPage = React.lazy(() => import('./pages/publisher/search'));
+const PublisherCreatePage = React.lazy(() => import('./pages/publisher/create'));
+
 const NotFoundPage = React.lazy(() => import('./pages/not-found'));
 
 const routes = [
@@ -62,13 +68,35 @@ const routes = [
     main: ReaderRequestPage,
     isPrivate: true,
   },
-  // {
-  //   path: '/reader',
-  //   exact: true,
-  //   layout: PrivateRoute,
-  //   main: AccountPage,
-  //   isPrivate: true,
-  // },
+
+  {
+    path: '/author/search',
+    exact: true,
+    layout: PrivateRoute,
+    main: AuthorSeachPage,
+    isPrivate: true,
+  },
+  {
+    path: '/author/create',
+    exact: true,
+    layout: PrivateRoute,
+    main: AuthorCreatePage,
+    isPrivate: true,
+  },
+  {
+    path: '/publisher/search',
+    exact: true,
+    layout: PrivateRoute,
+    main: PublisherSeachPage,
+    isPrivate: true,
+  },
+  {
+    path: '/publisher/create',
+    exact: true,
+    layout: PrivateRoute,
+    main: PublisherCreatePage,
+    isPrivate: true,
+  },
   {
     path: '/login',
     exact: true,

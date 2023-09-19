@@ -111,7 +111,7 @@ const PrivateRoute = ({
               style={{
                 padding: 24,
                 margin: 0,
-                minHeight: 280,
+                minHeight: 365,
                 background: colorBgContainer,
               }}
             >
