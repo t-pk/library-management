@@ -32,6 +32,7 @@ const App = () => {
     <ConfigProvider theme={{
       components: {
         Layout: {
+          colorFillContentHover: '#cdc2c2',
           headerBg: color
         },
         Button: {
@@ -41,7 +42,12 @@ const App = () => {
           hoverBorderColor: '#cdc2c2',
           activeBorderColor: '#cdc2c2',
           activeShadow: '#cdc2c2'
-        }
+        },
+        InputNumber: {
+          hoverBorderColor: '#cdc2c2',
+          activeBorderColor: '#cdc2c2',
+          activeShadow: '#cdc2c2'
+        },
       }, token: {
         fontFamily: '"Open Sans", sans-serif',
         fontSize: 14

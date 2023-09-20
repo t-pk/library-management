@@ -10,8 +10,8 @@ export const IDocument = {
     type: DataTypes.STRING(256),
     allowNull: false
   },
-  type: {
-    type: DataTypes.STRING(32),
+  documentTypeId: {
+    type: DataTypes.SMALLINT,
     allowNull: false
   },
   publisherId: {
@@ -22,14 +22,19 @@ export const IDocument = {
     type: DataTypes.SMALLINT,
     allowNull: false
   },
-  publishTime: {
-    type: DataTypes.DATEONLY,
+  publishYear: {
+    type: DataTypes.INTEGER,
     allowNull: true
+  },
+  special: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
   },
   status: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
-    defaultValue: false
+    defaultValue: true
   },
   quantity: {
     type: DataTypes.SMALLINT,

@@ -1,30 +1,62 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { SettingOutlined, DownOutlined, CaretDownOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Cascader, Input, Select, Space, Row, Dropdown, Checkbox, Table, Form } from 'antd';
+import { AutoComplete, Button, Cascader, Input, Select, Space, Row, Dropdown, Checkbox, Table, Form, Tag, InputNumber, Radio } from 'antd';
 import debounce from 'lodash.debounce';
 import { internalCall } from '../../../../renderer/actions';
 const { Option } = Select;
 import './ui.scss';
 
+const formItemLayout = { labelCol: { xs: { span: 30 }, sm: { span: 30 } }, wrapperCol: { xs: { span: 40 }, sm: { span: 23 } } };
+// const tailFormItemLayout = { wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } }, };
+const reStyle = { minWidth: "32%" };
+
+
 const columns = [
   {
-    title: 'Code',
-    dataIndex: 'code',
-    render: (text) => <a>{text}</a>,
+    title: 'Id',
+    dataIndex: 'id',
+    width: '5%',
+    align: 'center',
   },
   {
-    title: 'Name',
+    title: 'Tên Tài Liệu',
     dataIndex: 'name',
+    width: '25%'
   },
   {
-    title: 'Type',
-    dataIndex: 'type',
+    title: 'Thể Loại',
+    align: 'center',
+    dataIndex: 'document-type.name',
+  },
+  {
+    title: 'Nhà Xuất Bản',
+    dataIndex: 'publisher.name',
+  },
+  {
+    title: 'Năm Xuất Bản',
+    align: 'center',
+    dataIndex: 'publishYear',
+  },
+  {
+    title: 'Tác Giả',
+    dataIndex: 'author.name',
+  },
+  {
+    title: 'Tài Liệu Đặc Biệt',
+    dataIndex: 'special',
+    align: 'center',
+    render: (text, record) => <Tag color={text ? 'green' : 'orange'}>{text ? 'Yes' : 'No'}</Tag>,
   },
 ];
 
-const style = { minWidth: '28%', marginRight: '10px' };
+const specials = [
+  { label: 'Yes', value: true },
+  { label: 'No', value: false },
+  { label: 'Skip', value: null },
+];
 
 const DocumentSearchPage = () => {
+  const [form] = Form.useForm();
   const [inputState, setinputState] = useState({
     name: '',
     id: '',
@@ -32,6 +64,9 @@ const DocumentSearchPage = () => {
   });
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [publishers, setPublishers] = useState([]);
+  const [authors, setAuthors] = useState([]);
+  const [documentTypes, setDocumentTypes] = useState([]);
 
   const handleDebounceFn = reState => {
     internalCall({ key: 'document-search', data: reState });
@@ -43,11 +78,53 @@ const DocumentSearchPage = () => {
       }
     });
   }
-  const debounceFc = useCallback(debounce(handleDebounceFn, 300), []);
+  const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
+
+  useEffect(() => { getInitData(), debounceFc(inputState) }, []);
+
+  const getInitData = () => {
+
+    internalCall({ key: 'publisher-search', data: {} });
+    internalCall({ key: 'author-search', data: {} });
+    internalCall({ key: 'documentType-search', data: {} });
+
+    const getData = async (arg) => {
+      if (arg && arg.data) {
+        if (arg.key === 'publisher-search')
+          setPublishers(arg.data.map((item) => ({ id: item.id, value: item.name })));
+        if (arg.key === 'author-search')
+          setAuthors(arg.data.map((item) => ({ id: item.id, value: item.name })));
+        if (arg.key === 'documentType-search')
+          setDocumentTypes(arg.data.map((item) => ({ id: item.id, value: item.name })));
+      }
+    };
+    window.electron.ipcRenderer.on('ipc-database', getData);
+  }
+
 
   const onChange = (e) => {
     setLoading(true);
-    const reState = { ...inputState, [e.target.id]: e.target.value };
+    let reState = {};
+    console.log(e);
+    if (e.target.id === 'documentTypes') {
+      const ids = documentTypes.filter((documentType) => e.target.value.includes(documentType.value)).map((documentType) => documentType.id);
+      reState = { ...inputState, [e.target.id]: ids };
+    }
+    else if (e.target.id === 'publishers') {
+      const ids = publishers.filter((publisher) => e.target.value.includes(publisher.value)).map((publisher) => publisher.id);
+      reState = { ...inputState, [e.target.id]: ids };
+    }
+    else if (e.target.id === 'authors') {
+      const ids = authors.filter((author) => e.target.value.includes(author.value)).map((author) => author.id);
+      reState = { ...inputState, [e.target.id]: ids };
+    }
+    else if (e.target.name === 'special') {
+      reState = { ...inputState, [e.target.name]: e.target.value };
+    }
+    else {
+      reState = { ...inputState, [e.target.id]: e.target.value };
+    }
+
     setinputState(reState);
     debounceFc(reState);
   };
@@ -65,36 +142,68 @@ const DocumentSearchPage = () => {
 
   return (
     <>
-      <Form style={{ display: 'flex' }} layout='vertical'>
-        <Form.Item style={style} label="Mã Tài Liệu" >
+      <Form  {...formItemLayout} form={form} layout="vertical" name="dynamic_rule" style={{ display: 'flex', flexWrap: 'wrap' }} scrollToFirstError initialValues={{ special: undefined }}>
+        <Form.Item style={reStyle} label="Mã Tài Liệu" >
           <Input
             placeholder=""
             value={inputState.id}
-            style={style}
             id="id"
             onChange={onChange}
             maxLength={8}
           />
         </Form.Item>
-        <Form.Item style={style} label="Tên Tài Liệu">
+        <Form.Item style={reStyle} label="Tên Tài Liệu">
           <Input
             placeholder=""
             value={inputState.name}
-            style={style}
             id="name"
             onChange={onChange}
           />
         </Form.Item>
-        <Form.Item style={style} label="Loại Tài Liệu">
-          <Input
-            placeholder=""
-            value={inputState.type}
-            style={style}
-            id="type"
-            onChange={onChange}
+
+        <Form.Item name="documentTypes" label="Loại Tài Liệu" style={reStyle} >
+          <Select
+            mode="tags"
+            style={{ width: '100%' }}
+            onChange={(value) => onChange({ target: { id: 'documentTypes', value } })}
+            tokenSeparators={[',']}
+            options={documentTypes}
           />
         </Form.Item>
-        <Form.Item style={style} label=" ">
+
+        <Form.Item name="publishers" label="Nhà Xuất Bản" style={reStyle} >
+          <Select
+            mode="tags"
+            style={{ width: '100%' }}
+            onChange={(value) => onChange({ target: { id: 'publishers', value } })}
+            tokenSeparators={[',']}
+            options={publishers}
+          />
+        </Form.Item>
+
+        <Form.Item name="authors" label="Tên Tác Giả" style={reStyle} >
+          <Select
+            mode="tags"
+            style={{ width: '100%' }}
+            onChange={(value) => onChange({ target: { id: 'authors', value } })}
+            tokenSeparators={[',']}
+            options={authors}
+          />
+        </Form.Item>
+
+        <Form.Item name="special" label={"Tài Liệu Đặc Biệt"} style={{ ...reStyle }}>
+          <Radio.Group name='special' onChange={onChange}>
+            <Radio.Button value={true}>Yes</Radio.Button>
+            <Radio.Button value={false}>No</Radio.Button>
+            <Radio.Button value={undefined}>Skip</Radio.Button>
+          </Radio.Group>
+        </Form.Item>
+
+        <Form.Item name="publishYear" label="Năm Xuất Bản" style={reStyle}>
+          <InputNumber id={"publishYear"} onChange={(value) => onChange({ target: { id: 'publishYear', value } })} min={1} style={{ width: '100%' }} />
+        </Form.Item>
+
+        <Form.Item style={reStyle} label=" ">
           <Button onClick={onClick} type='primary' icon={<SearchOutlined />}>Search</Button>
         </Form.Item>
       </Form>
@@ -106,6 +215,8 @@ const DocumentSearchPage = () => {
         columns={columns}
         dataSource={documents}
         loading={loading}
+        rowKey={'id'}
+        tableLayout={'fixed'}
       />
     </>
   )

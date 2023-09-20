@@ -1,0 +1,32 @@
+/* .ant-select-selector {
+  border-color: #cdc2c2 !important;
+  box-shadow: none;
+} */
+
+/* Hover state styles */
+.ant-select-selector:hover {
+  border-color: #cdc2c2 !important;
+  box-shadow: none;
+}
+
+/* Active state styles */
+.ant-select-selector:active {
+  border-color: #cdc2c2 !important;
+  box-shadow: none;
+}
+
+/* Focus state styles */
+.ant-select-selector:focus {
+  border-color: #cdc2c2 !important;
+  box-shadow: none;
+}
+
+.ant-select-focused:where(.css-dev-only-do-not-override-14wr7n2).ant-select:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer) .ant-select-selector {
+  box-shadow: none;
+  border-color: #cdc2c2 !important;
+}
+
+
+.ant-select-selection-search-input {
+  font-size: 14px;
+}

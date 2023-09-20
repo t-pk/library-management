@@ -13,7 +13,7 @@ export const getPublishers = async (request: any) => {
     query.id = request.id;
   }
   if (request.name) {
-    query.name = {[Op.substring]: request.name};
+    query.name = { [Op.iLike]: '%' + request.name + '%' };
   }
   return PublisherSchema.findAll({ where: query, raw: true , order:[["id", "DESC"]]});
 }

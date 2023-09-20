@@ -16,9 +16,10 @@ import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { UserSchema, sequelize } from './databases';
 import { encryptPassword } from '../renderer/utils/authenticate';
-import { getDocuments } from './databases/logic/document';
+import { createDocument, getDocuments } from './databases/logic/document';
 import { createAuthor, getAuthors } from './databases/logic/author';
 import { createPublisher, getPublishers } from './databases/logic/publisher';
+import { getDocumentTypes } from './databases/logic/document-type';
 
 sequelize.authenticate();
 sequelize.sync({ force: false }).then((res) => {
@@ -57,10 +58,13 @@ ipcMain.on('ipc-database', async (event, arg) => {
       case 'user-login':
         const password = encryptPassword(data.password);
         result = await UserSchema.findOne({ where: { username: data.username, password }, raw: true, attributes: ['id', 'username', 'position'] });
-       // break;
+        break;
       case 'document-search':
         result = await getDocuments(data);
         break;
+        case 'document-create':
+          result = await createDocument(data);
+          break;
       case 'author-create':
         result = await createAuthor(data);
         break;
@@ -73,11 +77,14 @@ ipcMain.on('ipc-database', async (event, arg) => {
       case 'publisher-search':
         result = await getPublishers(data);
         break;
+      case 'documentType-search':
+        result = await getDocumentTypes(data);
+        break;
       default:
         break
     }
 
-    event.reply('ipc-database', { data: result });
+    event.reply('ipc-database', { key: arg.key, data: result });
   } catch (error) {
     console.log((error as any).errors[0].message);
     event.reply('ipc-database', { error: (error as any).errors[0].message });
@@ -125,7 +132,7 @@ const createWindow = async () => {
   mainWindow = new BrowserWindow({
     show: false,
     width: 1366,
-    height: 728,
+    minHeight: 865,
     minWidth: 1366,
     icon: getAssetPath('icon.png'),
     webPreferences: {
