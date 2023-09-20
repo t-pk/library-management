@@ -78,7 +78,6 @@ const DocumentCreatePage = () => {
       publishYear: values.publishYear,
       special: values.special
     }
-    console.log(values);
     internalCall({ key: 'document-create', data });
 
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {

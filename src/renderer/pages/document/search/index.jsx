@@ -73,7 +73,6 @@ const DocumentSearchPage = () => {
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {
       setLoading(false);
       if (arg && arg.data) {
-        console.log(arg.data);
         setDocuments(arg.data);
       }
     });
@@ -91,11 +90,11 @@ const DocumentSearchPage = () => {
     const getData = async (arg) => {
       if (arg && arg.data) {
         if (arg.key === 'publisher-search')
-          setPublishers(arg.data.map((item) => ({ id: item.id, value: item.name })));
+          setPublishers(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}`  })));
         if (arg.key === 'author-search')
-          setAuthors(arg.data.map((item) => ({ id: item.id, value: item.name })));
+          setAuthors(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
         if (arg.key === 'documentType-search')
-          setDocumentTypes(arg.data.map((item) => ({ id: item.id, value: item.name })));
+          setDocumentTypes(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}`  })));
       }
     };
     window.electron.ipcRenderer.on('ipc-database', getData);
@@ -105,7 +104,6 @@ const DocumentSearchPage = () => {
   const onChange = (e) => {
     setLoading(true);
     let reState = {};
-    console.log(e);
     if (e.target.id === 'documentTypes') {
       const ids = documentTypes.filter((documentType) => e.target.value.includes(documentType.value)).map((documentType) => documentType.id);
       reState = { ...inputState, [e.target.id]: ids };
@@ -136,7 +134,6 @@ const DocumentSearchPage = () => {
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
     },
   };
 

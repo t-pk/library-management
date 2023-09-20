@@ -10,6 +10,7 @@ import { IReturnDetail } from './schema/return-detail';
 import { IAuthor } from './schema/author';
 import { IPublisher } from './schema/publisher';
 import { IDocumentType } from './schema/document-type';
+import { IReaderType } from './schema/reader-type';
 
 export const sequelize = new Sequelize.Sequelize('postgres://postgres:123456@localhost:5433/library', {
   dialectModule: pg,
@@ -45,6 +46,8 @@ export const AuthorSchema = sequelize.define('authors', IAuthor, attributeCommon
 export const PublisherSchema = sequelize.define('publishers', IPublisher, attributeCommon);
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const DocumentTypeSchema = sequelize.define('document-types', IDocumentType, attributeCommon);
+/** @type import("sequelize").ModelStatic<import("sequelize").Model> */
+export const ReaderTypeSchema = sequelize.define('reader-types', IReaderType, attributeCommon);
 
 BorrowSchema.belongsTo(DocumentSchema, { foreignKey: { allowNull: false, name: 'documentId' } });
 BorrowSchema.belongsTo(ReaderSchema, { foreignKey: { allowNull: false, name: 'readerId' } });
@@ -61,6 +64,7 @@ DocumentSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'cre
 DocumentSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' } });
 
 ReaderSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
+ReaderSchema.belongsTo(ReaderTypeSchema, { foreignKey: { allowNull: false, name: 'readerTypeId' } });
 ReaderSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' } });
 
 ReturnSchema.belongsTo(ReaderSchema, { foreignKey: { allowNull: false, name: 'returnner' } });

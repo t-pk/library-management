@@ -10,6 +10,10 @@ export const IReader = {
     type: DataTypes.STRING(128),
     allowNull: false
   },
+  readerTypeId: {
+    type: DataTypes.SMALLINT,
+    allowNull: false
+  },
   phoneNumber: {
     type: DataTypes.STRING(16),
     allowNull: true
@@ -19,6 +23,10 @@ export const IReader = {
     allowNull: true
   },
   studentId: {
+    type: DataTypes.STRING(16),
+    allowNull: true
+  },
+  civilServantId: {
     type: DataTypes.STRING(16),
     allowNull: true
   },

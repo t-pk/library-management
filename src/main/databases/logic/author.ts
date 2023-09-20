@@ -15,5 +15,5 @@ export const getAuthors = async (request: any) => {
   if (request.name) {
     query.name = { [Op.iLike]: '%' + request.name + '%' };
   }
-  return AuthorSchema.findAll({ where: query, raw: true , order:[["id", "DESC"]]});
+  return AuthorSchema.findAll({ where: query, raw: true , order:[["id", "ASC"]]});
 }

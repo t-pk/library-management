@@ -24,7 +24,6 @@ const tailFormItemLayout = { wrapperCol: { xs: { span: 40, offset: 0 }, sm: { sp
 const DocumentRequestPage = () => {
   const [form] = Form.useForm();
   const onFinish = (values) => {
-    console.log('Received values of form: ', values);
   };
 
   return (

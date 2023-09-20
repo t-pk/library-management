@@ -7,7 +7,7 @@ export const getDocumentTypes = async (request: any) => {
     if (request.name) query.name = request.name;
     if (request.id) query.id = request.id;
 
-    return await DocumentTypeSchema.findAll({ where: query, raw: true });    
+    return await DocumentTypeSchema.findAll({ where: query, raw: true, order:[["id", "ASC"]] });    
   } catch (error) {
     console.log("getDocumentTypes", error);
   }

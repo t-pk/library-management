@@ -1,5 +1,5 @@
 import { PublisherSchema, unitOfWork } from "../db";
-import {Op} from "sequelize";
+import { Op } from "sequelize";
 
 export const createPublisher = async (request: any) => {
   return unitOfWork((transaction: any) => {
@@ -15,5 +15,5 @@ export const getPublishers = async (request: any) => {
   if (request.name) {
     query.name = { [Op.iLike]: '%' + request.name + '%' };
   }
-  return PublisherSchema.findAll({ where: query, raw: true , order:[["id", "DESC"]]});
+  return PublisherSchema.findAll({ where: query, raw: true, order: [["id", "ASC"]] });
 }

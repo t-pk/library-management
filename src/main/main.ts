@@ -83,10 +83,9 @@ ipcMain.on('ipc-database', async (event, arg) => {
       default:
         break
     }
-
     event.reply('ipc-database', { key: arg.key, data: result });
   } catch (error) {
-    console.log((error as any).errors[0].message);
+
     event.reply('ipc-database', { error: (error as any).errors[0].message });
   }
 });
