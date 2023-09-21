@@ -34,3 +34,8 @@
 .ant-select-selection-overflow{
   width: 100px;
 }
+
+:where(.css-dev-only-do-not-override-14wr7n2).ant-radio-button-wrapper-disabled.ant-radio-button-wrapper-checked{
+  background-color: #2972cf99;
+  color: #fff
+}

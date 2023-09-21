@@ -27,7 +27,7 @@ export const getDocuments = async (request: any) => {
       query.authorId = { [Op.in]: request.authors }
     }
 
-    return await DocumentSchema.findAll({ where: query, include: [AuthorSchema, PublisherSchema, DocumentTypeSchema], raw: true });
+    return await DocumentSchema.findAll({ where: query, include: [AuthorSchema, PublisherSchema, DocumentTypeSchema], raw: true, limit:50 });
   } catch (error) {
     console.log("getDocuments", error);
   }

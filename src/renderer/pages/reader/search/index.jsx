@@ -207,7 +207,7 @@ const ReaderSearchPage = () => {
         loading={loading}
         rowKey={'id'}
         tableLayout={'fixed'}
-        scroll={{ x: 1500, y: 300 }}
+        scroll={{ x: 1500}}
       />
     </>
   )

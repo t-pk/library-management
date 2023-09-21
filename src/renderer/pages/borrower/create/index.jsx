@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Button,
   Form,
   Input,
   message,
   Select,
-  Radio
+  Radio,
+  AutoComplete
 } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { internalCall, delay } from '../../../actions';
 import { queryStringToObject } from '../../../utils/index';
+import debounce from 'lodash.debounce';
 
 const reStyle = { minWidth: "32%" };
 
@@ -55,7 +57,7 @@ const BorrowerCreatePage = () => {
         if (arg.key === 'readerType-search')
           setReaderTypes(arg.data.map((item) => ({ value: item.id, label: item.name })));
         if (arg.key === 'document-search')
-          setDocuments(arg.data.map((item) => ({ value: String(item.id), label: item.name })));
+          setDocuments(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
       }
     };
     window.electron.ipcRenderer.on('ipc-database', getData);
@@ -102,6 +104,21 @@ const BorrowerCreatePage = () => {
     internalCall({ key: 'reader-create', data: { name: value } });
   }
 
+  const debounceDocument = async (value) => {
+    internalCall({ key: 'document-search', data: { name: value } });
+
+    window.electron.ipcRenderer.once('ipc-database', (arg) => {
+      setDocuments(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
+      console.log(documents);
+    });
+  }
+  
+  const debounceFc = useCallback(debounce(debounceDocument, 400), []);
+
+  const findDocuments = (value) => {
+    debounceFc(value);
+  }
+
   return (
     <> {contextHolder}
       <Form {...formItemLayout} form={form} layout="vertical" name="dynamic_rule" onFinish={onFinish} initialValues={{ quantity: 1, special: false, readerTypeId: 1 }}
@@ -136,13 +153,22 @@ const BorrowerCreatePage = () => {
           <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" disabled={true} />
         </Form.Item>
 
-        <Form.Item name="documentIds" label="Tài Liệu Cần Mượn" style={reStyle} rules={[{ required: true, message: 'Please input select document!' }]}>
+        <Form.Item name="documentIds" label="Tài Liệu Cần Mượn" style={reStyle}
+          rules={[{
+            validator: async (_, values = []) => {
+              const doc = values.every((id) => documents.map((document) => document.value).includes(id));
+              if (!doc || !values.length) return Promise.reject(new Error('Please select item on List!'));
+            }
+          }]} >
           <Select
-            mode="tags"
-            style={{ width: '100%' }}
-            onChange={(value) => onChange({ target: { id: 'documentTypes', value } })}
-            tokenSeparators={[',']}
+            mode='multiple'
             options={documents}
+            onSearch={findDocuments}
+            placeholder=""
+            className='custom-autocomplete'
+            filterOption={(inputValue, option) =>
+              option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+            }
           />
         </Form.Item>
 
