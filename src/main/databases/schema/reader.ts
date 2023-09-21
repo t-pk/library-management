@@ -37,7 +37,7 @@ export const IReader = {
   status: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
-    defaultValue: false
+    defaultValue: true
   },
   createdAt: {
     type: DataTypes.DATE,

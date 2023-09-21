@@ -14,5 +14,13 @@ export const IDocumentType = {
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false
-  }
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    defaultValue: Sequelize.fn('now')
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    defaultValue: Sequelize.fn('now')
+  },
 };

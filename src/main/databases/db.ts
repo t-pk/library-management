@@ -29,15 +29,15 @@ const attributeCommon = {
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const BorrowSchema = sequelize.define('borrows', IBorrow, { ...attributeCommon, updatedAt: false });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const BorrowDetailSchema = sequelize.define('borrow-details', IBorrowDetail, { ...attributeCommon, updatedAt: false });
+export const BorrowDetailSchema = sequelize.define('borrow_details', IBorrowDetail, { ...attributeCommon, updatedAt: false });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const DocumentSchema = sequelize.define('documents', IDocument, attributeCommon);
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const ReaderSchema = sequelize.define('readers', IReader, attributeCommon);
+export const ReaderSchema = sequelize.define('readers', IReader, {...attributeCommon, tableName: 'reader'});
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const ReturnSchema = sequelize.define('returns', IReturn, { ...attributeCommon, updatedAt: false });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const ReturnDetailSchema = sequelize.define('return-details', IReturnDetail, { ...attributeCommon, updatedAt: false });
+export const ReturnDetailSchema = sequelize.define('return_details', IReturnDetail, { ...attributeCommon, updatedAt: false });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const UserSchema = sequelize.define('users', IUser, attributeCommon);
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
@@ -45,9 +45,9 @@ export const AuthorSchema = sequelize.define('authors', IAuthor, attributeCommon
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const PublisherSchema = sequelize.define('publishers', IPublisher, attributeCommon);
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const DocumentTypeSchema = sequelize.define('document-types', IDocumentType, attributeCommon);
+export const DocumentTypeSchema = sequelize.define('document_types', IDocumentType, attributeCommon);
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const ReaderTypeSchema = sequelize.define('reader-types', IReaderType, attributeCommon);
+export const ReaderTypeSchema = sequelize.define('readerType', IReaderType, {...attributeCommon, tableName: 'reader_types'});
 
 BorrowSchema.belongsTo(DocumentSchema, { foreignKey: { allowNull: false, name: 'documentId' } });
 BorrowSchema.belongsTo(ReaderSchema, { foreignKey: { allowNull: false, name: 'readerId' } });
@@ -65,6 +65,7 @@ DocumentSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'upd
 
 ReaderSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
 ReaderSchema.belongsTo(ReaderTypeSchema, { foreignKey: { allowNull: false, name: 'readerTypeId' } });
+ReaderTypeSchema.hasOne(ReaderSchema);
 ReaderSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' } });
 
 ReturnSchema.belongsTo(ReaderSchema, { foreignKey: { allowNull: false, name: 'returnner' } });

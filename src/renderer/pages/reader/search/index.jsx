@@ -1,40 +1,63 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { SettingOutlined, DownOutlined, CaretDownOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Cascader, Input, Select, Space, Row, Dropdown, Checkbox, Table, Form } from 'antd';
+import { AutoComplete, Button, Cascader, Input, Select, Space, Row, Dropdown, Checkbox, Table, Form, Tag, InputNumber, Radio } from 'antd';
 import debounce from 'lodash.debounce';
 import { internalCall } from '../../../../renderer/actions';
 const { Option } = Select;
 import './ui.scss';
 
+const formItemLayout = { labelCol: { xs: { span: 30 }, sm: { span: 30 } }, wrapperCol: { xs: { span: 40 }, sm: { span: 23 } } };
+const reStyle = { minWidth: "32%" };
+
 const columns = [
   {
-    title: 'Code',
-    dataIndex: 'code',
-    render: (text) => <a>{text}</a>,
+    title: 'Id',
+    dataIndex: 'id',
+    width: '5%',
+    align: 'center',
   },
   {
-    title: 'Name',
-    dataIndex: 'name',
+    title: 'Tên Độc giả',
+    dataIndex: 'fullName',
+    width: '20%'
   },
   {
-    title: 'Type',
-    dataIndex: 'type',
+    title: 'Loại Độc Giả',
+    dataIndex: ['readerType', 'name'],
+    render: (text, record) => <Tag color={text === 'Sinh Viên' ? 'green' : 'orange'}>{text}</Tag>,
+  },
+  {
+    title: 'Mã Sinh Viên',
+    dataIndex: 'studentId',
+  },
+  {
+    title: 'Mã Cán Bộ - Nhân Viên',
+    dataIndex: 'civilServantId',
+  },
+  {
+    title: 'Mã Căn Cước Công Dân',
+    dataIndex: 'citizenIdentify',
+  },
+  {
+    title: 'Số Điện Thoại',
+    dataIndex: 'phoneNumber',
+  },
+  {
+    title: 'Địa Chỉ Email',
+    dataIndex: 'email',
   },
 ];
 
-const style = { minWidth: '28%', marginRight: '10px' };
-
 const ReaderSearchPage = () => {
-  const [inputState, setinputState] = useState({
-    name: '',
-    id: '',
-    type: ''
-  });
+  const [form] = Form.useForm();
+  const [inputState, setinputState] = useState({ name: '', id: '', type: '' });
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [readerTypes, setReaderTypes] = useState([]);
+  const readerTypeId = Form.useWatch('readerTypeId', form);
 
   const handleDebounceFn = reState => {
-    internalCall({ key: 'document-search', data: reState });
+    internalCall({ key: 'reader-search', data: reState });
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {
       setLoading(false);
       if (arg && arg.data) {
@@ -43,11 +66,50 @@ const ReaderSearchPage = () => {
       }
     });
   }
-  const debounceFc = useCallback(debounce(handleDebounceFn, 300), []);
+  const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
+
+  useEffect(() => {
+    debounceFc(inputState);
+    getInitData();
+    if (readerTypeId === 1) {
+      form.setFieldsValue({ civilServantId: undefined });
+    }
+    if (readerTypeId === 2) {
+      form.setFieldsValue({ studentId: undefined });
+    }
+    if (readerTypeId === undefined) {
+      form.setFieldsValue({ studentId: undefined });
+      form.setFieldsValue({ civilServantId: undefined });
+    };
+
+  }, [readerTypeId]);
+
+  const getInitData = () => {
+
+    internalCall({ key: 'readerType-search', data: {} });
+
+    const getData = async (arg) => {
+      if (arg && arg.data) {
+        const resReaders = arg.data.map((item) => ({ value: item.id, label: item.name }));
+        resReaders.push({ id: undefined, label: 'Skip' });
+        setReaderTypes(resReaders);
+      }
+    };
+    window.electron.ipcRenderer.once('ipc-database', getData);
+  }
+
 
   const onChange = (e) => {
     setLoading(true);
-    const reState = { ...inputState, [e.target.id]: e.target.value };
+    let reState = {};
+    if (e.target.name === 'readerTypeId') {
+      reState = { ...inputState, [e.target.name]: e.target.value };
+    }
+    else {
+      reState = { ...inputState, [e.target.id]: e.target.value };
+    }
+
+    console.log(reState);
     setinputState(reState);
     debounceFc(reState);
   };
@@ -59,42 +121,46 @@ const ReaderSearchPage = () => {
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
     },
   };
 
   return (
     <>
-      <Form style={{ display: 'flex' }} layout='vertical'>
-        <Form.Item style={style} label="Mã Tài Liệu" >
-          <Input
-            placeholder=""
-            value={inputState.id}
-            style={style}
-            id="id"
-            onChange={onChange}
-            maxLength={8}
-          />
+      <Form  {...formItemLayout} form={form} layout="vertical" name="dynamic_rule" style={{ display: 'flex', flexWrap: 'wrap' }} scrollToFirstError initialValues={{ readerTypeId: undefined }}>
+
+        <Form.Item label="Mã Độc Giả" style={reStyle}>
+          <Input id="id" onChange={onChange} />
         </Form.Item>
-        <Form.Item style={style} label="Tên Tài Liệu">
-          <Input
-            placeholder=""
-            value={inputState.name}
-            style={style}
-            id="name"
-            onChange={onChange}
-          />
+
+        <Form.Item label="Tên Độc Giả" style={reStyle}  >
+          <Input id="fullName" onChange={onChange} />
         </Form.Item>
-        <Form.Item style={style} label="Loại Tài Liệu">
-          <Input
-            placeholder=""
-            value={inputState.type}
-            style={style}
-            id="type"
-            onChange={onChange}
-          />
+
+        <Form.Item label="Mã Căn Cước Công Dân" style={reStyle} >
+          <Input id="citizenIdentify" onChange={onChange} />
         </Form.Item>
-        <Form.Item style={style} label=" ">
+
+        <Form.Item name="studentId" label="Mã Số Sinh Viên" style={reStyle} >
+          <Input disabled={readerTypeId && readerTypeId !== 1} id="studentId" onChange={onChange} />
+        </Form.Item>
+
+        <Form.Item name="civilServantId" label="Mã Số Cán Bộ - Nhân Viên" style={reStyle} >
+          <Input disabled={readerTypeId && readerTypeId !== 2} id="civilServantId" onChange={onChange} />
+        </Form.Item>
+
+        <Form.Item label="Số Điện Thoại" style={reStyle} >
+          <Input id="phoneNumber" onChange={onChange} />
+        </Form.Item>
+
+        <Form.Item label="Địa Chỉ Email" style={reStyle}>
+          <Input id="email" onChange={onChange} />
+        </Form.Item>
+
+        <Form.Item name="readerTypeId" label="Loại Độc Giả" style={reStyle}>
+          <Radio.Group name="readerTypeId" onChange={onChange} options={readerTypes} optionType="button" buttonStyle="solid" />
+        </Form.Item>
+
+        <Form.Item style={reStyle} label=" ">
           <Button onClick={onClick} type='primary' icon={<SearchOutlined />}>Search</Button>
         </Form.Item>
       </Form>
@@ -106,6 +172,8 @@ const ReaderSearchPage = () => {
         columns={columns}
         dataSource={documents}
         loading={loading}
+        rowKey={'id'}
+        tableLayout={'fixed'}
       />
     </>
   )

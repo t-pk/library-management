@@ -49,12 +49,6 @@ const columns = [
   },
 ];
 
-const specials = [
-  { label: 'Yes', value: true },
-  { label: 'No', value: false },
-  { label: 'Skip', value: null },
-];
-
 const DocumentSearchPage = () => {
   const [form] = Form.useForm();
   const [inputState, setinputState] = useState({
@@ -188,8 +182,8 @@ const DocumentSearchPage = () => {
           />
         </Form.Item>
 
-        <Form.Item name="special" label={"Tài Liệu Đặc Biệt"} style={{ ...reStyle }}>
-          <Radio.Group name='special' onChange={onChange}>
+        <Form.Item name="special" label={"Tài Liệu Đặc Biệt"} style={{ ...reStyle }} >
+          <Radio.Group name='special' onChange={onChange} buttonStyle="solid">
             <Radio.Button value={true}>Yes</Radio.Button>
             <Radio.Button value={false}>No</Radio.Button>
             <Radio.Button value={undefined}>Skip</Radio.Button>

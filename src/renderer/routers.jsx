@@ -9,8 +9,6 @@ const DocumentCreatePage = React.lazy(() => import('./pages/document/create'));
 const DocumentRequestPage = React.lazy(() => import('./pages/document/request'));
 const ReaderSeachPage = React.lazy(() => import('./pages/reader/search'));
 const ReaderCreatePage = React.lazy(() => import('./pages/reader/create'));
-const ReaderRequestPage = React.lazy(() => import('./pages/reader/request'));
-
 const AuthorSeachPage = React.lazy(() => import('./pages/author/search'));
 const AuthorCreatePage = React.lazy(() => import('./pages/author/create'));
 const PublisherSeachPage = React.lazy(() => import('./pages/publisher/search'));
@@ -61,14 +59,6 @@ const routes = [
     main: ReaderCreatePage,
     isPrivate: true,
   },
-  {
-    path: '/reader/request',
-    exact: true,
-    layout: PrivateRoute,
-    main: ReaderRequestPage,
-    isPrivate: true,
-  },
-
   {
     path: '/author/search',
     exact: true,

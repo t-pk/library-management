@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Sequelize } from 'sequelize';
 
 export const IReaderType = {
   id: {
@@ -14,5 +14,13 @@ export const IReaderType = {
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false
-  }
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    defaultValue: Sequelize.fn('now')
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    defaultValue: Sequelize.fn('now')
+  },
 };

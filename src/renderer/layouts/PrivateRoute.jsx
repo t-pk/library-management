@@ -39,31 +39,34 @@ const PrivateRoute = ({
   const items = [
     getItem('Tài Liệu', '/', <MailOutlined />, [
       getItem('Tìm Kiếm', '/document/search'),
-      getItem('Thêm Tài Liệu Mới', '/document/create'),
+      getItem('Thêm Mới', '/document/create'),
       getItem('Yêu Cầu Tài Liệu', '/document/request'),
     ]),
     getItem('Độc Giả', '/reader', <AppstoreOutlined />,
       [
         getItem('Tìm Kiếm', '/reader/search'),
-        getItem('Thêm Độc Giả', '/reader/create'),
-        getItem('Yêu Cầu Độc Giả', '/reader/request'),
+        getItem('Thêm Mới', '/reader/create'),
       ]),
     getItem('Phiếu', '/note', <AppstoreOutlined />,
-    [
-      getItem('Phiếu mượn', '/note/search'),
-      getItem('Phiếu trả', '/note/create'),
-      getItem('Phiếu phạt', '/note/request'),
-    ]),
+      [
+        getItem('Phiếu mượn', '/note/borrow', <AppstoreOutlined />,
+          [
+            getItem('Tạo Mới', '/note/borrow/create'),
+            getItem('Tìm Kiếm', '/note/borrow/search')
+          ]),
+        getItem('Phiếu trả', '/note/create'),
+        getItem('Phiếu phạt', '/note/request'),
+      ]),
     getItem('Tác Giả', '/author', <AppstoreOutlined />,
-    [
-      getItem('Tìm Kiếm', '/author/search'),
-      getItem('Thêm Tác Giả', '/author/create'),
-    ]),
+      [
+        getItem('Tìm Kiếm', '/author/search'),
+        getItem('Thêm Mới', '/author/create'),
+      ]),
     getItem('Nhà Xuất Bản', '/publisher', <AppstoreOutlined />,
-    [
-      getItem('Tìm Kiếm', '/publisher/search'),
-      getItem('Thêm Nhà Xuất Bản', '/publisher/create'),
-    ]),
+      [
+        getItem('Tìm Kiếm', '/publisher/search'),
+        getItem('Thêm Mới', '/publisher/create'),
+      ]),
   ];
 
   return localStorage.getItem('TOKEN_KEY') ? (
@@ -86,7 +89,8 @@ const PrivateRoute = ({
         }}
       >
         <Sider
-          width={200}
+          breakpoint='xs'
+          // width={200}
           style={{
             background: colorBgContainer,
           }}
