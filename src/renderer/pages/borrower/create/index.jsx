@@ -128,10 +128,6 @@ const BorrowerCreatePage = () => {
           <Input disabled={true} />
         </Form.Item>
 
-        <Form.Item label={" "} {...tailFormItemLayout} style={{ ...reStyle }}>
-          <Button loading={loading} style={{ minWidth: '96%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}> Submit </Button>
-        </Form.Item>
-
         <Form.Item name="citizenIdentify" label="Căn Cước Công Dân" style={reStyle} rules={[{ required: true, message: 'Please input citizen identify!' }, { type: 'string', min: 9, max: 15, message: ' 9 <= citizen identify <= 15' }]}>
           <Input disabled={true} />
         </Form.Item>
@@ -140,7 +136,7 @@ const BorrowerCreatePage = () => {
           <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" disabled={true} />
         </Form.Item>
 
-        <Form.Item name="documentIds" label="Tài Liệu Cần Mượn" style={reStyle} >
+        <Form.Item name="documentIds" label="Tài Liệu Cần Mượn" style={reStyle} rules={[{ required: true, message: 'Please input select document!' }]}>
           <Select
             mode="tags"
             style={{ width: '100%' }}
@@ -149,6 +145,11 @@ const BorrowerCreatePage = () => {
             options={documents}
           />
         </Form.Item>
+
+        <Form.Item label={" "} {...tailFormItemLayout} style={{ ...reStyle }}>
+          <Button loading={loading} style={{ minWidth: '96%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}> Submit </Button>
+        </Form.Item>
+
       </Form>
     </>
   );
