@@ -13,11 +13,22 @@ const PrivateRoute = ({
   element: Component,
 }) => {
   const [animate, setAnimate] = useState('/');
+  const [openKeys, setOpenKeys] = useState(['/']);
   const [spinning, setSpinning] = useState(false);
   const location = useLocation();
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     setAnimate(location.pathname);
+    const keyPath = '/' + location.pathname.split('/')[1];
+    const keyAdmin = openKeys.find((key) => key === keyPath);
+    console.log({keyAdmin});
+    if (!keyAdmin) {
+      const keys = openKeys.map((key)=> key).concat(keyPath);
+      setOpenKeys(keys);
+    }
+    console.log(openKeys);
     setSpinning(true);
     setTimeout(() => {
       setSpinning(false)
@@ -27,7 +38,7 @@ const PrivateRoute = ({
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-  const navigate = useNavigate();
+
   function getItem(label, key, icon, children) {
     return {
       key,
@@ -49,10 +60,10 @@ const PrivateRoute = ({
       ]),
     getItem('Phiếu', '/note', <AppstoreOutlined />,
       [
-        getItem('Phiếu mượn', '/note/borrow', <AppstoreOutlined />,
+        getItem('Phiếu mượn', '/note/borrower', <AppstoreOutlined />,
           [
-            getItem('Tạo Mới', '/note/borrow/create'),
-            getItem('Tìm Kiếm', '/note/borrow/search')
+            getItem('Tìm Kiếm', '/note/borrower/search'),
+            getItem('Thêm Mới', '/note/borrower/create')
           ]),
         getItem('Phiếu trả', '/note/create'),
         getItem('Phiếu phạt', '/note/request'),
@@ -68,6 +79,10 @@ const PrivateRoute = ({
         getItem('Thêm Mới', '/publisher/create'),
       ]),
   ];
+
+  const onOpenChange = (e) => {
+    setOpenKeys(e);
+  }
 
   return localStorage.getItem('TOKEN_KEY') ? (
     <Layout   >
@@ -100,6 +115,9 @@ const PrivateRoute = ({
             defaultSelectedKeys={['/document/search']}
             defaultOpenKeys={['/']}
             items={items}
+            openKeys={openKeys}
+            selectedKeys={animate}
+            onOpenChange={onOpenChange}
             onClick={({ key }) => {
               navigate(key)
             }}

@@ -4,27 +4,37 @@ import {
   Form,
   Input,
   message,
+  Select,
   Radio
 } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
+import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { internalCall, delay } from '../../../actions';
+import { queryStringToObject } from '../../../utils/index';
 
 const reStyle = { minWidth: "32%" };
 
 const formItemLayout = { labelCol: { xs: { span: 30 }, sm: { span: 30 } }, wrapperCol: { xs: { span: 40 }, sm: { span: 23 } } };
 const tailFormItemLayout = { wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } }, };
 
-const ReaderCreatePage = () => {
+const BorrowerCreatePage = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
+  const [readers, setReaders] = useState([]);
+  const [documents, setDocuments] = useState([]);
 
   const [messageApi, contextHolder] = message.useMessage();
   const readerTypeId = Form.useWatch('readerTypeId', form);
-
+  const location = useLocation();
   const key = 'updatable';
 
   useEffect(() => {
+    let readerInfo = queryStringToObject(location.search);
+    readerInfo.readerTypeId = +readerInfo.readerTypeId;
+    form.setFieldsValue(readerInfo);
+    console.log("readerInfo", readerInfo);
+
     getInitData();
     if (readerTypeId === 1) {
       form.setFieldsValue({ civilServantId: undefined });
@@ -32,18 +42,23 @@ const ReaderCreatePage = () => {
     if (readerTypeId === 2) {
       form.setFieldsValue({ studentId: undefined });
     }
-  }, [readerTypeId]);
+  }, [readerTypeId, location]);
 
   const getInitData = () => {
 
     internalCall({ key: 'readerType-search', data: {} });
+    internalCall({ key: 'document-search', data: {} });
+
 
     const getData = async (arg) => {
       if (arg && arg.data) {
-        setReaderTypes(arg.data.map((item) => ({ value: item.id, label: item.name })));
+        if (arg.key === 'readerType-search')
+          setReaderTypes(arg.data.map((item) => ({ value: item.id, label: item.name })));
+        if (arg.key === 'document-search')
+          setDocuments(arg.data.map((item) => ({ value: String(item.id), label: item.name })));
       }
     };
-    window.electron.ipcRenderer.once('ipc-database', getData);
+    window.electron.ipcRenderer.on('ipc-database', getData);
   }
 
   const showMessage = (type, content) => {
@@ -57,13 +72,17 @@ const ReaderCreatePage = () => {
     });
   };
 
+  const onChange = (e) => {
+    console.log(e);
+  }
+
   const onFinish = async (values) => {
     console.log(values);
     setLoading(true);
     showMessage('loading', 'loading...')
     const data = { ...values };
 
-    internalCall({ key: 'reader-create', data });
+    internalCall({ key: 'borrower-create', data });
 
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {
       if (arg.data) {
@@ -79,50 +98,60 @@ const ReaderCreatePage = () => {
     });
   };
 
+  const getReaders = async (value) => {
+    internalCall({ key: 'reader-create', data: { name: value } });
+  }
+
   return (
     <> {contextHolder}
       <Form {...formItemLayout} form={form} layout="vertical" name="dynamic_rule" onFinish={onFinish} initialValues={{ quantity: 1, special: false, readerTypeId: 1 }}
         style={{ display: 'flex', flexWrap: 'wrap' }}
         scrollToFirstError>
 
-        <Form.Item name="id" label="Mã Độc Giả" style={reStyle}>
+        <Form.Item name="id" label="Mã Phiếu Mượn" style={reStyle}>
+          <Input disabled={true} />
+        </Form.Item>
+
+        <Form.Item name="readerId" label="Mã Độc Giả" style={reStyle} >
           <Input disabled={true} />
         </Form.Item>
 
         <Form.Item name="fullName" label="Tên Độc Giả" style={reStyle} rules={[{ required: true, message: 'Please input name', }]} >
-          <Input />
-        </Form.Item>
-
-        <Form.Item name="readerTypeId" label="Loại Độc Giả" style={reStyle} rules={[{ required: true, message: 'Please input civil servant!' }]}>
-          <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" />
+          <Input disabled={true} />
         </Form.Item>
 
         <Form.Item name="studentId" label="Mã Sinh Viên" style={reStyle} rules={[{ required: readerTypeId === 1, message: 'Please input student id!' }, { type: 'string', min: 5, max: 12, message: ' 5 <= student id <= 12' }]}>
-          <Input disabled={readerTypeId !== 1} />
+          <Input disabled={true} />
         </Form.Item>
 
         <Form.Item name="civilServantId" label="Mã Cán Bộ - Nhân Viên" style={reStyle} rules={[{ required: readerTypeId !== 1, message: 'Please input civil servant!' }, { type: 'string', min: 5, max: 12, message: ' 5 <= civil servant <= 12' }]}>
-          <Input disabled={readerTypeId === 1} />
-        </Form.Item>
-
-        <Form.Item name="citizenIdentify" label="Căn Cước Công Dân" style={reStyle} rules={[{ required: true, message: 'Please input citizen identify!' }, { type: 'string', min: 9, max: 15, message: ' 9 <= citizen identify <= 15' }]}>
-          <Input />
-        </Form.Item>
-
-        <Form.Item name="phoneNumber" label="Số Điện Thoại" style={reStyle} rules={[{ required: true, message: 'Please input phone number!' }, { type: 'string', min: 10, max: 12, message: '10 <= phone number <= 12' }]}>
-          <Input />
-        </Form.Item>
-
-        <Form.Item name="email" label="Địa Chỉ Email" style={reStyle}>
-          <Input />
+          <Input disabled={true} />
         </Form.Item>
 
         <Form.Item label={" "} {...tailFormItemLayout} style={{ ...reStyle }}>
           <Button loading={loading} style={{ minWidth: '96%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}> Submit </Button>
+        </Form.Item>
+
+        <Form.Item name="citizenIdentify" label="Căn Cước Công Dân" style={reStyle} rules={[{ required: true, message: 'Please input citizen identify!' }, { type: 'string', min: 9, max: 15, message: ' 9 <= citizen identify <= 15' }]}>
+          <Input disabled={true} />
+        </Form.Item>
+
+        <Form.Item name="readerTypeId" label="Loại Độc Giả" style={reStyle}>
+          <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" disabled={true} />
+        </Form.Item>
+
+        <Form.Item name="documentIds" label="Tài Liệu Cần Mượn" style={reStyle} >
+          <Select
+            mode="tags"
+            style={{ width: '100%' }}
+            onChange={(value) => onChange({ target: { id: 'documentTypes', value } })}
+            tokenSeparators={[',']}
+            options={documents}
+          />
         </Form.Item>
       </Form>
     </>
   );
 };
 
-export default ReaderCreatePage;
+export default BorrowerCreatePage;

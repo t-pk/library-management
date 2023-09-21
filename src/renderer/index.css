@@ -30,3 +30,7 @@
 .ant-select-selection-search-input {
   font-size: 14px;
 }
+
+.ant-select-selection-overflow{
+  width: 100px;
+}

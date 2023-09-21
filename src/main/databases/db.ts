@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
 import pg from 'pg';
-import { IBorrowDetail } from './schema/borrow-detail';
-import { IBorrow } from './schema/borrow';
+import { IBorrowerDetail } from './schema/borrower-detail';
+import { IBorrower } from './schema/borrower';
 import { IDocument } from './schema/document';
 import { IReader } from './schema/reader';
 import { IReturn } from './schema/return';
@@ -27,9 +27,9 @@ const attributeCommon = {
 }
 
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const BorrowSchema = sequelize.define('borrows', IBorrow, { ...attributeCommon, updatedAt: false });
+export const BorrowerSchema = sequelize.define('borrowers', IBorrower, { ...attributeCommon, updatedAt: false });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const BorrowDetailSchema = sequelize.define('borrow_details', IBorrowDetail, { ...attributeCommon, updatedAt: false });
+export const BorrowerDetailSchema = sequelize.define('borrower_details', IBorrowerDetail, { ...attributeCommon, updatedAt: false });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const DocumentSchema = sequelize.define('documents', IDocument, attributeCommon);
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
@@ -49,13 +49,13 @@ export const DocumentTypeSchema = sequelize.define('document_types', IDocumentTy
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const ReaderTypeSchema = sequelize.define('readerType', IReaderType, {...attributeCommon, tableName: 'reader_types'});
 
-BorrowSchema.belongsTo(DocumentSchema, { foreignKey: { allowNull: false, name: 'documentId' } });
-BorrowSchema.belongsTo(ReaderSchema, { foreignKey: { allowNull: false, name: 'readerId' } });
-BorrowSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
+// BorrowerSchema.belongsTo(DocumentSchema, { foreignKey: { allowNull: false, name: 'documentId' } });
+BorrowerSchema.belongsTo(ReaderSchema, { foreignKey: { allowNull: false, name: 'readerId' } });
+BorrowerSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
 
-BorrowDetailSchema.belongsTo(BorrowSchema, { foreignKey: { allowNull: false, name: 'borrowId' } });
-BorrowDetailSchema.belongsTo(DocumentSchema, { foreignKey: { allowNull: false, name: 'documentId' } });
-BorrowDetailSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
+BorrowerDetailSchema.belongsTo(BorrowerSchema, { foreignKey: { allowNull: false, name: 'borrowerId' } });
+BorrowerDetailSchema.belongsTo(DocumentSchema, { foreignKey: { allowNull: false, name: 'documentId' } });
+BorrowerDetailSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
 
 DocumentSchema.belongsTo(AuthorSchema, { foreignKey: { allowNull: false, name: 'authorId' } });
 DocumentSchema.belongsTo(PublisherSchema, { foreignKey: { allowNull: false, name: 'publisherId' } });
@@ -72,7 +72,7 @@ ReturnSchema.belongsTo(ReaderSchema, { foreignKey: { allowNull: false, name: 're
 ReturnSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
 
 ReturnDetailSchema.belongsTo(ReturnSchema, { foreignKey: { allowNull: false, name: 'returnId' } });
-ReturnDetailSchema.belongsTo(BorrowDetailSchema, { foreignKey: { allowNull: false, name: 'brrowDetailId' } });
+ReturnDetailSchema.belongsTo(BorrowerDetailSchema, { foreignKey: { allowNull: false, name: 'brrowDetailId' } });
 ReturnDetailSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
 
 UserSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });

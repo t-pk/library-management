@@ -22,6 +22,7 @@ import { createPublisher, getPublishers } from './databases/logic/publisher';
 import { getDocumentTypes } from './databases/logic/document-type';
 import { getReaderTypes } from './databases/logic/reader-type';
 import { createReader, getReaders } from './databases/logic/reader';
+import { createBorrower } from './databases/logic/borrower';
 
 sequelize.authenticate();
 sequelize.sync({ force: false }).then((res) => {
@@ -29,7 +30,7 @@ sequelize.sync({ force: false }).then((res) => {
 (id, username, "password", email, phone_number, status, "position", created_at, created_by, updated_at, updated_by)
 VALUES(6, 'admin', 'c9e9c18a2d3cc1af154d08be8b13929cc6f6d84afdb477524c52c8f0ae8597e92421426efdde90820655e2191034d0d6a13201eb50d35a72e471861e55926609', 'lawndjkw@gmail.com', '12312124', false, '123', '2023-09-14 02:03:15.850', 6, '2023-09-14 02:03:15.850', 6);
 `);
-sequelize.query(`INSERT INTO reader_types ("id","name", status, created_at, updated_at) VALUES(1,'Sinh Viên', true, '2023-09-21 00:13:56.237', '2023-09-21 00:13:56.237');
+  sequelize.query(`INSERT INTO reader_types ("id","name", status, created_at, updated_at) VALUES(1,'Sinh Viên', true, '2023-09-21 00:13:56.237', '2023-09-21 00:13:56.237');
 INSERT INTO reader_types (2,"name", status, created_at, updated_at) VALUES('Cán Bộ - Nhân Viên', true, '2023-09-21 00:14:14.005', '2023-09-21 00:14:14.005');`);
 
 });
@@ -93,6 +94,9 @@ ipcMain.on('ipc-database', async (event, arg) => {
         break;
       case 'reader-search':
         result = await getReaders(data);
+        break;
+      case 'borrower-create':
+        result = await createBorrower(data);
         break;
       default:
         break

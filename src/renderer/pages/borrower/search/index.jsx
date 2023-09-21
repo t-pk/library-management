@@ -3,89 +3,58 @@ import { SettingOutlined, DownOutlined, CaretDownOutlined, SearchOutlined } from
 import { AutoComplete, Button, Cascader, Input, Select, Space, Row, Dropdown, Checkbox, Table, Form, Tag, InputNumber, Radio } from 'antd';
 import debounce from 'lodash.debounce';
 import { internalCall } from '../../../../renderer/actions';
-import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { objectToQueryString } from '../../../utils/index';
-
 const { Option } = Select;
 import './ui.scss';
 
 const formItemLayout = { labelCol: { xs: { span: 30 }, sm: { span: 30 } }, wrapperCol: { xs: { span: 40 }, sm: { span: 23 } } };
 const reStyle = { minWidth: "32%" };
 
+const columns = [
+  {
+    title: 'Id',
+    dataIndex: 'id',
+    width: '5%',
+    align: 'center',
+  },
+  {
+    title: 'Tên Độc giả',
+    dataIndex: 'fullName',
+    width: '20%'
+  },
+  {
+    title: 'Loại Độc Giả',
+    dataIndex: ['readerType', 'name'],
+    render: (text, record) => <Tag color={text === 'Sinh Viên' ? 'green' : 'orange'}>{text}</Tag>,
+  },
+  {
+    title: 'Mã Sinh Viên',
+    dataIndex: 'studentId',
+  },
+  {
+    title: 'Mã Cán Bộ - Nhân Viên',
+    dataIndex: 'civilServantId',
+  },
+  {
+    title: 'Căn Cước Công Dân',
+    dataIndex: 'citizenIdentify',
+  },
+  {
+    title: 'Số Điện Thoại',
+    dataIndex: 'phoneNumber',
+  },
+  {
+    title: 'Địa Chỉ Email',
+    dataIndex: 'email',
+  },
+];
 
-const ReaderSearchPage = () => {
+const BorrowerSearchPage = () => {
   const [form] = Form.useForm();
   const [inputState, setinputState] = useState({ name: '', id: '', type: '' });
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
   const readerTypeId = Form.useWatch('readerTypeId', form);
-  const navigate = useNavigate();
-
-
-  const clickUrl = (record) => () => {
-    console.log("record", record);
-    const data = { readerId: record.id, citizenIdentify: record.citizenIdentify, fullName: record.fullName, readerTypeId: record.readerTypeId, studentId: record.studentId, civilServantId: record.civilServantId || '' };
-    const queryString = objectToQueryString(data);
-    return navigate(`/note/borrower/create?${queryString}`);
-  }
-
-  const columns = [
-    {
-      title: 'Id',
-      dataIndex: 'id',
-      align: 'center',
-    },
-    {
-      title: 'Tên Độc giả',
-      dataIndex: 'fullName',
-    },
-    {
-      title: 'Loại Độc Giả',
-      dataIndex: ['readerType', 'name'],
-      render: (text, record) => <Tag color={text === 'Sinh Viên' ? 'green' : 'orange'}>{text}</Tag>,
-    },
-    {
-      title: 'Mã Sinh Viên',
-      dataIndex: 'studentId',
-    },
-    {
-      title: 'Mã Cán Bộ - Nhân Viên',
-      dataIndex: 'civilServantId',
-    },
-    {
-      title: 'Căn Cước Công Dân',
-      dataIndex: 'citizenIdentify',
-    },
-    {
-      title: 'Số Điện Thoại',
-      dataIndex: 'phoneNumber',
-    },
-    {
-      title: 'Địa Chỉ Email',
-      dataIndex: 'email',
-    },
-    {
-      title: 'Action',
-      key: 'operation',
-      fixed: 'right',
-      width: 150,
-      render: (_, record) => (
-        <Space size="middle">
-          <Dropdown menu={{
-            items: [{
-              label: <a onClick={clickUrl(record)}>Tạo Phiếu Mượn</a>,
-              key: '0',
-            }]
-          }}>
-            <a>
-              More Action <DownOutlined />
-            </a>
-          </Dropdown>
-        </Space>
-      ),
-    },
-  ];
 
   const handleDebounceFn = reState => {
     internalCall({ key: 'reader-search', data: reState });
@@ -129,6 +98,7 @@ const ReaderSearchPage = () => {
     window.electron.ipcRenderer.once('ipc-database', getData);
   }
 
+
   const onChange = (e) => {
     setLoading(true);
     let reState = {};
@@ -139,6 +109,7 @@ const ReaderSearchPage = () => {
       reState = { ...inputState, [e.target.id]: e.target.value };
     }
 
+    console.log(reState);
     setinputState(reState);
     debounceFc(reState);
   };
@@ -155,11 +126,7 @@ const ReaderSearchPage = () => {
 
   return (
     <>
-      <Form  {...formItemLayout} form={form}
-        layout="vertical" name="dynamic_rule"
-        style={{ display: 'flex', flexWrap: 'wrap' }}
-        scrollToFirstError
-        initialValues={{ readerTypeId: undefined }}>
+      <Form  {...formItemLayout} form={form} layout="vertical" name="dynamic_rule" style={{ display: 'flex', flexWrap: 'wrap' }} scrollToFirstError initialValues={{ readerTypeId: undefined }}>
 
         <Form.Item label="Mã Độc Giả" style={reStyle}>
           <Input id="id" onChange={onChange} />
@@ -207,10 +174,8 @@ const ReaderSearchPage = () => {
         loading={loading}
         rowKey={'id'}
         tableLayout={'fixed'}
-        scroll={{ x: 1500, y: 300 }}
       />
     </>
   )
 };
-
-export default ReaderSearchPage;
+export default BorrowerSearchPage;

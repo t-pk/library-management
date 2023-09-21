@@ -152,6 +152,15 @@ const DocumentSearchPage = () => {
           />
         </Form.Item>
 
+        <Form.Item name="special" label={"Tài Liệu Đặc Biệt"} style={{ ...reStyle }} >
+          <Radio.Group name='special' onChange={onChange} buttonStyle="solid">
+            <Radio.Button value={true}>Yes</Radio.Button>
+            <Radio.Button value={false}>No</Radio.Button>
+            <Radio.Button value={undefined}>Skip</Radio.Button>
+          </Radio.Group>
+        </Form.Item>
+
+
         <Form.Item name="documentTypes" label="Loại Tài Liệu" style={reStyle} >
           <Select
             mode="tags"
@@ -180,14 +189,6 @@ const DocumentSearchPage = () => {
             tokenSeparators={[',']}
             options={authors}
           />
-        </Form.Item>
-
-        <Form.Item name="special" label={"Tài Liệu Đặc Biệt"} style={{ ...reStyle }} >
-          <Radio.Group name='special' onChange={onChange} buttonStyle="solid">
-            <Radio.Button value={true}>Yes</Radio.Button>
-            <Radio.Button value={false}>No</Radio.Button>
-            <Radio.Button value={undefined}>Skip</Radio.Button>
-          </Radio.Group>
         </Form.Item>
 
         <Form.Item name="publishYear" label="Năm Xuất Bản" style={reStyle}>
