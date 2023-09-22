@@ -83,7 +83,8 @@ const BorrowerCreatePage = () => {
     setLoading(true);
     showMessage('loading', 'loading...')
     const data = { ...values };
-
+    const documentIds = values.documentIds.map((document) => +document.split('-')[0].trim());
+    data.documentIds = documentIds;
     internalCall({ key: 'borrower-create', data });
 
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {

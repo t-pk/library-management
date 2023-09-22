@@ -3,109 +3,65 @@ import { SettingOutlined, DownOutlined, CaretDownOutlined, SearchOutlined } from
 import { AutoComplete, Button, Cascader, Input, Select, Space, Row, Dropdown, Checkbox, Table, Form, Tag, InputNumber, Radio } from 'antd';
 import debounce from 'lodash.debounce';
 import { internalCall } from '../../../../renderer/actions';
-import { formatDMY_HMS } from '../../../utils/index';
 const { Option } = Select;
-
 import './ui.scss';
 
 const formItemLayout = { labelCol: { xs: { span: 30 }, sm: { span: 30 } }, wrapperCol: { xs: { span: 40 }, sm: { span: 23 } } };
 const reStyle = { minWidth: "32%" };
 
+const columns = [
+  {
+    title: 'Id',
+    dataIndex: 'borrowerId',
+    width: '5%',
+    align: 'center',
+    render: (_, record) =>  _,
+    onCell: (borrower) => ({
+      rowSpan: borrower.id
+    }),
+  },
+  // {
+  //   title: 'Tên Độc Giả',
+  //   dataIndex: ['borrower','reader', 'fullName'],
+  //  // render: (text, record) => <Tag color={text === 'Sinh Viên' ? 'green' : 'orange'}>{text}</Tag>,
+  // },
+  // {
+  //   title: 'Mã Phiếu Mượn',
+  //   dataIndex: ['document', 'name'],
+  // },
+  // {
+  //   title: 'Mã Sinh Viên',
+  //   dataIndex: 'borrowerDetails',
+  //   render: (scores) => (
+  //     <ul>
+  //       {scores.map((score, index) => (
+  //         <li key={score.borrowerId}>
+  //           {score.borrowerId}: {score.document.name}
+  //         </li>
+  //       ))}
+  //     </ul>
+  //   ),
+  // },
+  // {
+  //   title: 'Mã Cán Bộ - Nhân Viên',
+  //   dataIndex: 'civilServantId',
+  // },
+  // {
+  //   title: 'Ngày Mượn',
+  //   dataIndex: 'createdAt',
+  // },
+];
 
-const BorrowerSearchPage = () => {
+const BorrowerSearchPage1 = () => {
   const [form] = Form.useForm();
   const [inputState, setinputState] = useState({ name: '', id: '', type: '' });
   const [borrowers, setBorrowers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
   const readerTypeId = Form.useWatch('readerTypeId', form);
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const pageSize = 10; // Number of items per page
 
-  const handleDebounceFn = reState => { }
+  const handleDebounceFn = reState => {}
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
-
-  const columns = [
-    {
-      title: 'Mã Phiếu Mượn',
-      dataIndex: 'borrowerId',
-      align: 'center',
-      render: (_, record) => { return record.borrowerId },
-      onCell: (borrower, index) => {
-        const reIndex = currentPage >= 2 ? (currentPage * pageSize - pageSize) + index : index;
-        let boolean = false;
-        if (reIndex === 0) {
-          boolean = true;
-        }
-        else {
-          boolean = (borrower.countBorrowerId - borrower.rest) !== (borrowers[reIndex - 1].countBorrowerId - borrowers[reIndex - 1].rest);
-          let count = 0;
-          if (reIndex % 10 === 0) {
-            for (let i = 0; i < reIndex; i++) {
-              count += borrowers[i].countBorrowerId;
-            }
-          }
-        };
-        return {
-          rowSpan: boolean ? (borrower.countBorrowerId - borrower.rest) : 0
-        }
-      }
-    },
-    {
-      title: 'Tên Độc Giả',
-      dataIndex: ['borrower', 'reader', 'fullName'],
-      render: (fullName) => fullName,
-      onCell: (borrower, index) => {
-        const reIndex = currentPage >= 2 ? (currentPage * pageSize - pageSize) + index : index;
-        let boolean = false;
-        if (reIndex === 0) {
-          boolean = true;
-        }
-        else {
-          boolean = (borrower.countBorrowerId - borrower.rest) !== (borrowers[reIndex - 1].countBorrowerId - borrowers[reIndex - 1].rest);
-          let count = 0;
-          if (reIndex % 10 === 0) {
-            for (let i = 0; i < reIndex; i++) {
-              count += borrowers[i].countBorrowerId;
-            }
-          }
-        };
-        return {
-          rowSpan: boolean ? (borrower.countBorrowerId - borrower.rest) : 0
-        }
-      }
-    },
-    {
-      title: 'Tên Tai Lieu',
-      dataIndex: ['document', 'name'],
-    },
-    {
-      title: 'Ngày Mượn',
-      dataIndex: 'createdAt',
-      render: (dateTime) => {
-        return formatDMY_HMS(dateTime)
-      },
-      onCell: (borrower, index) => {
-        const reIndex = currentPage >= 2 ? (currentPage * pageSize - pageSize) + index : index;
-        let boolean = false;
-        if (reIndex === 0) {
-          boolean = true;
-        }
-        else {
-          boolean = (borrower.countBorrowerId - borrower.rest) !== (borrowers[reIndex - 1].countBorrowerId - borrowers[reIndex - 1].rest);
-          let count = 0;
-          if (reIndex % 10 === 0) {
-            for (let i = 0; i < reIndex; i++) {
-              count += borrowers[i].countBorrowerId;
-            }
-          }
-        };
-        return {
-          rowSpan: boolean ? (borrower.countBorrowerId - borrower.rest) : 0
-        }
-      }
-    },
-  ];
 
   useEffect(() => {
     debounceFc(inputState);
@@ -136,7 +92,8 @@ const BorrowerSearchPage = () => {
           setReaderTypes(resReaders);
         }
 
-        if (arg.key === 'borrower-search') {
+        if (arg.key === 'borrower-search'){
+          console.log(arg);
           setBorrowers(arg.data);
         }
       }
@@ -155,6 +112,7 @@ const BorrowerSearchPage = () => {
       reState = { ...inputState, [e.target.id]: e.target.value };
     }
 
+    console.log(reState);
     setinputState(reState);
     debounceFc(reState);
   };
@@ -179,6 +137,7 @@ const BorrowerSearchPage = () => {
 
     window.electron.ipcRenderer.once('ipc-database', (arg) => {
       setBorrowers(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
+      console.log(borrowers);
     });
   }
 
@@ -187,10 +146,6 @@ const BorrowerSearchPage = () => {
   const findborrowers = (value) => {
     documentFc(value);
   }
-
-  const handlePageChange = (page, pageSize) => {
-    setCurrentPage(page);
-  };
 
   return (
     <>
@@ -246,15 +201,8 @@ const BorrowerSearchPage = () => {
         loading={loading}
         rowKey={'id'}
         tableLayout={'fixed'}
-        size='small'
-        pagination={{
-          current: currentPage,
-          pageSize: pageSize,
-          total: borrowers.length,
-          onChange: handlePageChange,
-        }}
       />
     </>
   )
 };
-export default BorrowerSearchPage;
+export default BorrowerSearchPage1;

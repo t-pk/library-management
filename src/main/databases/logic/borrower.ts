@@ -1,5 +1,5 @@
 import { Op } from "sequelize";
-import { AuthorSchema, DocumentSchema, PublisherSchema, unitOfWork, DocumentTypeSchema, BorrowerSchema, BorrowerDetailSchema } from "../db";
+import { DocumentSchema, unitOfWork, BorrowerSchema, BorrowerDetailSchema, ReaderSchema, sequelize } from "../db";
 
 export const getBorrowers = async (request: any) => {
   try {
@@ -27,7 +27,64 @@ export const getBorrowers = async (request: any) => {
       query.authorId = { [Op.in]: request.authors }
     }
 
-    return await DocumentSchema.findAll({ where: query, include: [AuthorSchema, PublisherSchema, DocumentTypeSchema], raw: true });
+    const borrowers = await BorrowerDetailSchema.findAll({
+      where: query, include: [{
+        model: DocumentSchema
+      },
+      {
+        model: BorrowerSchema,
+        include: [{
+          model: ReaderSchema
+        }]
+      }],
+    });
+    let borrowersJSON = borrowers.map(borrower => borrower.toJSON());
+    const borrowerIds = await BorrowerDetailSchema.findAll({
+      where: query, attributes: [
+        'borrowerId',
+        [sequelize.fn('COUNT', sequelize.col('borrower_id')), 'countBorrowerId'],
+      ],
+      group: ['borrower_id'],
+      raw: true
+    });
+
+    const borrowerObj: { [key in string]: number } = borrowerIds.reduce((obj, item: any) => ({ ...obj, [item.borrowerId]: +item.countBorrowerId }), {});
+
+    let resultObj: any = {};
+
+    const caculate = () => {
+
+      const limit = 10;
+      let count = 0;
+      let mark = 0;
+
+      for (const [key, value] of Object.entries(borrowerObj)) {
+        count += value;
+        if (Math.floor(count / limit) > mark) {
+          let start = mark * limit;
+          const end = count;
+
+          let jump = Math.floor(count / limit) - mark;
+
+          if (jump <= 0) continue;
+
+          else {
+            while (jump > 0) {
+              ++mark;
+              while ((start + limit) < end) {
+                resultObj[start + limit] = (mark * limit) - (count - value);
+                start++;
+              }
+              jump--;
+            }
+          }
+        }
+      }
+    }
+    caculate();
+    borrowersJSON = borrowersJSON.map((borrower, index) => ({ ...borrower, countBorrowerId: borrowerObj[borrower.borrowerId], rest: resultObj[index] || 0 }));
+
+    return borrowersJSON;
   } catch (error) {
     console.log("getDocuments", error);
   }
@@ -41,7 +98,7 @@ export const createBorrower = async (request: any) => {
     };
 
     const borrowerRes = await BorrowerSchema.create(borrower, { transaction, raw: true, returning: true });
-    console.log(borrowerRes.dataValues.id);
+
     const borrowerDetail = request.documentIds.map((documentId: any) => ({
       borrowerId: borrowerRes.dataValues.id,
       documentId: +documentId, quantity: 1,

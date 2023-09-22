@@ -27,9 +27,9 @@ const attributeCommon = {
 }
 
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const BorrowerSchema = sequelize.define('borrowers', IBorrower, { ...attributeCommon, updatedAt: false });
+export const BorrowerSchema = sequelize.define('borrowers', IBorrower, { ...attributeCommon, updatedAt: false, tableName: 'borrowers' });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const BorrowerDetailSchema = sequelize.define('borrower_details', IBorrowerDetail, { ...attributeCommon, updatedAt: false });
+export const BorrowerDetailSchema = sequelize.define('borrowerDetails', IBorrowerDetail, { ...attributeCommon, updatedAt: false, tableName: 'borrower_details' });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const DocumentSchema = sequelize.define('documents', IDocument, attributeCommon);
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
@@ -56,6 +56,11 @@ BorrowerSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'cre
 BorrowerDetailSchema.belongsTo(BorrowerSchema, { foreignKey: { allowNull: false, name: 'borrowerId' } });
 BorrowerDetailSchema.belongsTo(DocumentSchema, { foreignKey: { allowNull: false, name: 'documentId' } });
 BorrowerDetailSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
+
+BorrowerSchema.hasMany(BorrowerDetailSchema,  { as: {
+  singular: 'borrowerDetail', // Singular form of the alias
+  plural: 'borrowerDetails',  // Plural form of the alias
+}, foreignKey:  { allowNull: false, name: 'borrowerId' } })
 
 DocumentSchema.belongsTo(AuthorSchema, { foreignKey: { allowNull: false, name: 'authorId' } });
 DocumentSchema.belongsTo(PublisherSchema, { foreignKey: { allowNull: false, name: 'publisherId' } });
