@@ -12,7 +12,7 @@ import './css.css';
 const PrivateRoute = ({
   element: Component,
 }) => {
-  const [animate, setAnimate] = useState('/');
+  const [animate, setAnimate] = useState('/document/search');
   const [openKeys, setOpenKeys] = useState(['/']);
   const [spinning, setSpinning] = useState(false);
   const location = useLocation();
@@ -20,12 +20,13 @@ const PrivateRoute = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    setAnimate(location.pathname);
+    setAnimate(location.pathname === '/' ? '/document/search': location.pathname);
+    console.log("location.pathname", location.pathname);
     const keyPath = '/' + location.pathname.split('/')[1];
     const keyAdmin = openKeys.find((key) => key === keyPath);
-    console.log({keyAdmin});
+    console.log({ keyAdmin });
     if (!keyAdmin) {
-      const keys = openKeys.map((key)=> key).concat(keyPath);
+      const keys = openKeys.map((key) => key).concat(keyPath);
       setOpenKeys(keys);
     }
     console.log(openKeys);
@@ -58,16 +59,14 @@ const PrivateRoute = ({
         getItem('Tìm Kiếm', '/reader/search'),
         getItem('Thêm Mới', '/reader/create'),
       ]),
-    getItem('Phiếu', '/note', <AppstoreOutlined />,
+
+    getItem('Phiếu mượn', '/borrower', <AppstoreOutlined />,
       [
-        getItem('Phiếu mượn', '/note/borrower', <AppstoreOutlined />,
-          [
-            getItem('Tìm Kiếm', '/note/borrower/search'),
-            getItem('Thêm Mới', '/note/borrower/create')
-          ]),
-        getItem('Phiếu trả', '/note/create'),
-        getItem('Phiếu phạt', '/note/request'),
+        getItem('Tìm Kiếm', '/borrower/search'),
+        getItem('Thêm Mới', '/borrower/create')
       ]),
+    getItem('Phiếu trả', 'returns/create'),
+    getItem('Phiếu phạt', 'phat/request'),
     getItem('Tác Giả', '/author', <AppstoreOutlined />,
       [
         getItem('Tìm Kiếm', '/author/search'),
@@ -112,8 +111,8 @@ const PrivateRoute = ({
         >
           <Menu
             mode="inline"
-            defaultSelectedKeys={['/document/search']}
-            defaultOpenKeys={['/']}
+            defaultSelectedKeys={animate}
+            defaultOpenKeys={openKeys}
             items={items}
             openKeys={openKeys}
             selectedKeys={animate}

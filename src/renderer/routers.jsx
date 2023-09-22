@@ -91,14 +91,14 @@ const routes = [
     isPrivate: true,
   },
   {
-    path: '/note/borrower/search',
+    path: '/borrower/search',
     exact: true,
     layout: PrivateRoute,
     main: BorrowerSeachPage,
     isPrivate: true,
   },
   {
-    path: '/note/borrower/create',
+    path: '/borrower/create',
     layout: PrivateRoute,
     main: BorrowerCreatePage,
     isPrivate: true,

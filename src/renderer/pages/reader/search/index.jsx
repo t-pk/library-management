@@ -25,9 +25,13 @@ const ReaderSearchPage = () => {
 
   const clickUrl = (record) => () => {
     console.log("record", record);
-    const data = { readerId: record.id, citizenIdentify: record.citizenIdentify, fullName: record.fullName, readerTypeId: record.readerTypeId, studentId: record.studentId, civilServantId: record.civilServantId || '' };
+    const data = {
+      readerId: record.id, citizenIdentify: record.citizenIdentify,
+      fullName: record.fullName, readerTypeId: record.readerTypeId,
+      studentId: record.studentId, civilServantId: record.civilServantId || ''
+    };
     const queryString = objectToQueryString(data);
-    return navigate(`/note/borrower/create?${queryString}`);
+    return navigate(`/borrower/create?${queryString}`);
   }
 
   const columns = [
@@ -207,7 +211,7 @@ const ReaderSearchPage = () => {
         loading={loading}
         rowKey={'id'}
         tableLayout={'fixed'}
-        scroll={{ x: 1500}}
+        scroll={{ x: 1500 }}
       />
     </>
   )

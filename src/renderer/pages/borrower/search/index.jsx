@@ -56,16 +56,7 @@ const BorrowerSearchPage = () => {
   const [readerTypes, setReaderTypes] = useState([]);
   const readerTypeId = Form.useWatch('readerTypeId', form);
 
-  const handleDebounceFn = reState => {
-    internalCall({ key: 'reader-search', data: reState });
-    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
-      setLoading(false);
-      if (arg && arg.data) {
-        console.log(arg.data);
-        setDocuments(arg.data);
-      }
-    });
-  }
+  const handleDebounceFn = reState => {}
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
 
   useEffect(() => {
@@ -87,15 +78,21 @@ const BorrowerSearchPage = () => {
   const getInitData = () => {
 
     internalCall({ key: 'readerType-search', data: {} });
+    internalCall({ key: 'document-search', data: {} });
 
     const getData = async (arg) => {
       if (arg && arg.data) {
-        const resReaders = arg.data.map((item) => ({ value: item.id, label: item.name }));
-        resReaders.push({ id: undefined, label: 'Skip' });
-        setReaderTypes(resReaders);
+        if (arg.key === 'readerType-search') {
+          const resReaders = arg.data.map((item) => ({ value: item.id, label: item.name }));
+          resReaders.push({ id: undefined, label: 'Skip' });
+          setReaderTypes(resReaders);
+        }
+
+        if (arg.key === 'document-search') 
+          setDocuments(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
       }
     };
-    window.electron.ipcRenderer.once('ipc-database', getData);
+    window.electron.ipcRenderer.on('ipc-database', getData);
   }
 
 
@@ -124,20 +121,52 @@ const BorrowerSearchPage = () => {
     },
   };
 
+  const debounceDocument = async (value) => {
+    const [id, name] = value.split('-');
+    let data = {};
+    if (id && !isNaN(id)) data.id = id.trim();
+    if (name) data.name = name.trim();
+
+    internalCall({ key: 'document-search', data });
+
+    window.electron.ipcRenderer.once('ipc-database', (arg) => {
+      setDocuments(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
+      console.log(documents);
+    });
+  }
+
+  const documentFc = useCallback(debounce(debounceDocument, 400), []);
+
+  const findDocuments = (value) => {
+    documentFc(value);
+  }
+
   return (
     <>
       <Form  {...formItemLayout} form={form} layout="vertical" name="dynamic_rule" style={{ display: 'flex', flexWrap: 'wrap' }} scrollToFirstError initialValues={{ readerTypeId: undefined }}>
+        <Form.Item label="Mã Phiếu Mượn" style={reStyle}>
+          <Input id="id" onChange={onChange} />
+        </Form.Item>
 
         <Form.Item label="Mã Độc Giả" style={reStyle}>
-          <Input id="id" onChange={onChange} />
+          <Input id="readerId" onChange={onChange} />
+        </Form.Item>
+
+        <Form.Item name="documentIds" label="Tài Liệu" style={reStyle}>
+          <Select
+            mode='multiple'
+            options={documents}
+            onSearch={findDocuments}
+            placeholder=""
+            className='custom-autocomplete'
+            filterOption={(inputValue, option) =>
+              option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+            }
+          />
         </Form.Item>
 
         <Form.Item label="Tên Độc Giả" style={reStyle}  >
           <Input id="fullName" onChange={onChange} />
-        </Form.Item>
-
-        <Form.Item label="Căn Cước Công Dân" style={reStyle} >
-          <Input id="citizenIdentify" onChange={onChange} />
         </Form.Item>
 
         <Form.Item name="studentId" label="Mã Sinh Viên" style={reStyle} >
@@ -146,14 +175,6 @@ const BorrowerSearchPage = () => {
 
         <Form.Item name="civilServantId" label="Mã Cán Bộ - Nhân Viên" style={reStyle} >
           <Input disabled={readerTypeId && readerTypeId !== 2} id="civilServantId" onChange={onChange} />
-        </Form.Item>
-
-        <Form.Item label="Số Điện Thoại" style={reStyle} >
-          <Input id="phoneNumber" onChange={onChange} />
-        </Form.Item>
-
-        <Form.Item label="Địa Chỉ Email" style={reStyle}>
-          <Input id="email" onChange={onChange} />
         </Form.Item>
 
         <Form.Item name="readerTypeId" label="Loại Độc Giả" style={reStyle}>
