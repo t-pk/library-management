@@ -5,9 +5,7 @@ export const getBorrowers = async (request: any) => {
   try {
 
     let query: any = {};
-    if (request.name) {
-      query.name = { [Op.iLike]: '%' + request.name + '%' };
-    }
+    if (request.name) query.name = { [Op.iLike]: '%' + request.name + '%' };
 
     if (request.id) query.id = request.id;
 
@@ -17,9 +15,8 @@ export const getBorrowers = async (request: any) => {
 
     if (request.special || request.special === false) query.special = request.special;
 
-    if (request.documentTypes && request.documentTypes.length > 0) {
-      query.documentTypeId = { [Op.in]: request.documentTypes }
-    }
+    if (request.documentTypes && request.documentTypes.length > 0) query.documentTypeId = { [Op.in]: request.documentTypes }
+
     if (request.publishers && request.publishers.length > 0) {
       query.publisherId = { [Op.in]: request.publishers }
     }
@@ -54,11 +51,11 @@ export const getBorrowers = async (request: any) => {
 
     const caculate = () => {
 
-      const limit = 10;
+      const limit = 20;
       let count = 0;
       let mark = 0;
 
-      for (const [key, value] of Object.entries(borrowerObj)) {
+      for (const [_, value] of Object.entries(borrowerObj)) {
         count += value;
         if (Math.floor(count / limit) > mark) {
           let start = mark * limit;

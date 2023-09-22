@@ -39,3 +39,8 @@
   background-color: #2972cf99;
   color: #fff
 }
+
+:where(.css-dev-only-do-not-override-1a6vqd1).ant-menu-dark .ant-menu-item, :where(.css-dev-only-do-not-override-1a6vqd1).ant-menu-dark>.ant-menu .ant-menu-item{
+  border-radius: 0;
+
+}

@@ -20,7 +20,7 @@ const PrivateRoute = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    setAnimate(location.pathname === '/' ? '/document/search': location.pathname);
+    setAnimate(location.pathname === '/' ? '/document/search' : location.pathname);
     console.log("location.pathname", location.pathname);
     const keyPath = '/' + location.pathname.split('/')[1];
     const keyAdmin = openKeys.find((key) => key === keyPath);
@@ -84,62 +84,49 @@ const PrivateRoute = ({
   }
 
   return localStorage.getItem('TOKEN_KEY') ? (
-    <Layout   >
-      <Header
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-        }}
+    <Layout>
+      <Sider
+        breakpoint="lg"
+        collapsedWidth="0"
       >
-
         <div className="demo-logo" >
-          <Button></Button>
+          <Button style={{ width: '200px' }}></Button>
         </div>
-      </Header>
+        <Menu
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={animate}
+          defaultOpenKeys={openKeys}
+          items={items}
+          openKeys={openKeys}
+          selectedKeys={animate}
+          onOpenChange={onOpenChange}
+          onClick={({ key }) => {
+            navigate(key)
+          }}
+        />
+      </Sider>
 
-      <Layout
-        style={{
-          padding: '0 24px 24px',
-        }}
-      >
-        <Sider
-          breakpoint='xs'
-          // width={200}
+      <Layout>
+        <Header
           style={{
-            background: colorBgContainer,
+            display: 'flex',
+            alignItems: 'center',
           }}
-        >
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={animate}
-            defaultOpenKeys={openKeys}
-            items={items}
-            openKeys={openKeys}
-            selectedKeys={animate}
-            onOpenChange={onOpenChange}
-            onClick={({ key }) => {
-              navigate(key)
+        />
+
+        <Spin spinning={spinning} wrapperClassName={`${animate == location.pathname ? 'my-animation' : ''}`}>
+          <Content
+            style={{
+              padding: 15,
+              margin: 15,
+              minHeight: 365,
+              background: colorBgContainer,
             }}
-          />
-        </Sider>
-        <Layout
-          style={{
-            padding: '0px 24px 0px 24px',
-          }}
-        >
-          <Spin spinning={spinning} wrapperClassName={`${animate == location.pathname ? 'my-animation' : ''}`}>
-            <Content
-              style={{
-                padding: 24,
-                margin: 0,
-                minHeight: 365,
-                background: colorBgContainer,
-              }}
-            >
-              <Component />
-            </Content>
-          </Spin>
-        </Layout>
+          >
+            <Component />
+          </Content>
+        </Spin>
       </Layout>
     </Layout>
   ) : (

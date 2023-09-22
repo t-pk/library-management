@@ -31,9 +31,11 @@ const App = () => {
   return (
     <ConfigProvider theme={{
       components: {
+        Menu: {borderRadius: 0, colorBgBase:'#FFF'},
+        Table:{headerBg: '#c1e1ff', fontWeightStrong: 530},
         Layout: {
           colorFillContentHover: '#cdc2c2',
-          headerBg: color
+          headerBg: '#112c5ef2'
         },
         Button: {
           colorPrimary: color,

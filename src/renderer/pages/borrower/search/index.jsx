@@ -20,60 +20,42 @@ const BorrowerSearchPage = () => {
   const [readerTypes, setReaderTypes] = useState([]);
   const readerTypeId = Form.useWatch('readerTypeId', form);
   const [currentPage, setCurrentPage] = React.useState(1);
-  const pageSize = 10; // Number of items per page
+  const pageSize = 20; // Number of items per page
 
   const handleDebounceFn = reState => { }
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
-
+  const groupByBorrower = (borrower, index) => {
+    const reIndex = currentPage >= 2 ? (currentPage * pageSize - pageSize) + index : index;
+    let boolean = false;
+    if (reIndex === 0) {
+      boolean = true;
+    }
+    else {
+      boolean = (borrower.countBorrowerId - borrower.rest) !== (borrowers[reIndex - 1].countBorrowerId - borrowers[reIndex - 1].rest);
+      let count = 0;
+      if (reIndex % 10 === 0) {
+        for (let i = 0; i < reIndex; i++) {
+          count += borrowers[i].countBorrowerId;
+        }
+      }
+    };
+    return {
+      rowSpan: boolean ? (borrower.countBorrowerId - borrower.rest) : 0
+    }
+  }
   const columns = [
     {
       title: 'Mã Phiếu Mượn',
       dataIndex: 'borrowerId',
       align: 'center',
       render: (_, record) => { return record.borrowerId },
-      onCell: (borrower, index) => {
-        const reIndex = currentPage >= 2 ? (currentPage * pageSize - pageSize) + index : index;
-        let boolean = false;
-        if (reIndex === 0) {
-          boolean = true;
-        }
-        else {
-          boolean = (borrower.countBorrowerId - borrower.rest) !== (borrowers[reIndex - 1].countBorrowerId - borrowers[reIndex - 1].rest);
-          let count = 0;
-          if (reIndex % 10 === 0) {
-            for (let i = 0; i < reIndex; i++) {
-              count += borrowers[i].countBorrowerId;
-            }
-          }
-        };
-        return {
-          rowSpan: boolean ? (borrower.countBorrowerId - borrower.rest) : 0
-        }
-      }
+      onCell: groupByBorrower
     },
     {
       title: 'Tên Độc Giả',
       dataIndex: ['borrower', 'reader', 'fullName'],
       render: (fullName) => fullName,
-      onCell: (borrower, index) => {
-        const reIndex = currentPage >= 2 ? (currentPage * pageSize - pageSize) + index : index;
-        let boolean = false;
-        if (reIndex === 0) {
-          boolean = true;
-        }
-        else {
-          boolean = (borrower.countBorrowerId - borrower.rest) !== (borrowers[reIndex - 1].countBorrowerId - borrowers[reIndex - 1].rest);
-          let count = 0;
-          if (reIndex % 10 === 0) {
-            for (let i = 0; i < reIndex; i++) {
-              count += borrowers[i].countBorrowerId;
-            }
-          }
-        };
-        return {
-          rowSpan: boolean ? (borrower.countBorrowerId - borrower.rest) : 0
-        }
-      }
+      onCell: groupByBorrower
     },
     {
       title: 'Tên Tai Lieu',
@@ -85,25 +67,7 @@ const BorrowerSearchPage = () => {
       render: (dateTime) => {
         return formatDMY_HMS(dateTime)
       },
-      onCell: (borrower, index) => {
-        const reIndex = currentPage >= 2 ? (currentPage * pageSize - pageSize) + index : index;
-        let boolean = false;
-        if (reIndex === 0) {
-          boolean = true;
-        }
-        else {
-          boolean = (borrower.countBorrowerId - borrower.rest) !== (borrowers[reIndex - 1].countBorrowerId - borrowers[reIndex - 1].rest);
-          let count = 0;
-          if (reIndex % 10 === 0) {
-            for (let i = 0; i < reIndex; i++) {
-              count += borrowers[i].countBorrowerId;
-            }
-          }
-        };
-        return {
-          rowSpan: boolean ? (borrower.countBorrowerId - borrower.rest) : 0
-        }
-      }
+      onCell: groupByBorrower
     },
   ];
 
@@ -243,6 +207,7 @@ const BorrowerSearchPage = () => {
         }}
         columns={columns}
         dataSource={borrowers}
+        bordered={true}
         loading={loading}
         rowKey={'id'}
         tableLayout={'fixed'}
@@ -253,6 +218,7 @@ const BorrowerSearchPage = () => {
           total: borrowers.length,
           onChange: handlePageChange,
         }}
+        scroll={{y:450}}
       />
     </>
   )
