@@ -22,8 +22,7 @@ const ReaderSearchPage = () => {
   const readerTypeId = Form.useWatch('readerTypeId', form);
   const navigate = useNavigate();
 
-
-  const clickUrl = (record) => () => {
+  const redirectCreateBorrow = (record) => () => {
     console.log("record", record);
     const data = {
       readerId: record.id, citizenIdentify: record.citizenIdentify,
@@ -78,7 +77,7 @@ const ReaderSearchPage = () => {
         <Space size="middle">
           <Dropdown menu={{
             items: [{
-              label: <a onClick={clickUrl(record)}>Tạo Phiếu Mượn</a>,
+              label: <a onClick={redirectCreateBorrow(record)}>Tạo Phiếu Mượn</a>,
               key: '0',
             }]
           }}>

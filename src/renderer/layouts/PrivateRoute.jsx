@@ -65,7 +65,11 @@ const PrivateRoute = ({
         getItem('Tìm Kiếm', '/borrower/search'),
         getItem('Thêm Mới', '/borrower/create')
       ]),
-    getItem('Phiếu trả', 'returns/create'),
+    getItem('Phiếu Trả', '/returner', <AppstoreOutlined />,
+      [
+        getItem('Tìm Kiếm', '/returner/search'),
+        getItem('Thêm Mới', '/returner/create')
+      ]),
     getItem('Phiếu phạt', 'phat/request'),
     getItem('Tác Giả', '/author', <AppstoreOutlined />,
       [

@@ -1,12 +1,12 @@
 import { DataTypes, Sequelize } from 'sequelize';
 
-export const IReturn = {
+export const IReturner = {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  returner: {
+  borrowerId: {
     type: DataTypes.INTEGER,
     allowNull: false
   },

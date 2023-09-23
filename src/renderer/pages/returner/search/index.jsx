@@ -11,7 +11,7 @@ import './ui.scss';
 const formItemLayout = { labelCol: { xs: { span: 30 }, sm: { span: 30 } }, wrapperCol: { xs: { span: 40 }, sm: { span: 23 } } };
 const reStyle = { minWidth: "32%" };
 
-const BorrowerSearchPage = () => {
+const ReturnerSearchPage = () => {
   const [form] = Form.useForm();
   const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
   const [borrowers, setBorrowers] = useState([]);
@@ -279,4 +279,4 @@ const BorrowerSearchPage = () => {
     </>
   )
 };
-export default BorrowerSearchPage;
+export default ReturnerSearchPage;
