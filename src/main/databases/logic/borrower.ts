@@ -1,51 +1,35 @@
 import { Op } from "sequelize";
+import countBy from "lodash.countby";
 import { DocumentSchema, unitOfWork, BorrowerSchema, BorrowerDetailSchema, ReaderSchema, sequelize } from "../db";
 
 export const getBorrowers = async (request: any) => {
   try {
+    let readerQuery: any = {};
+    let borrowerQuery: any = {};
 
-    let query: any = {};
-    if (request.name) query.name = { [Op.iLike]: '%' + request.name + '%' };
-
-    if (request.id) query.id = request.id;
-
-    if (request.type) query.type = request.type;
-
-    if (request.publishYear) query.publishYear = request.publishYear;
-
-    if (request.special || request.special === false) query.special = request.special;
-
-    if (request.documentTypes && request.documentTypes.length > 0) query.documentTypeId = { [Op.in]: request.documentTypes }
-
-    if (request.publishers && request.publishers.length > 0) {
-      query.publisherId = { [Op.in]: request.publishers }
-    }
-    if (request.authors && request.authors.length > 0) {
-      query.authorId = { [Op.in]: request.authors }
-    }
+    if (request.id) borrowerQuery.id = request.id;
+    if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
+    if (request.studentId) readerQuery.studentId = request.studentId;
+    if (request.civilServantId) readerQuery.civilServantId = request.civilServantId;
+    if (request.readerId) readerQuery.id = request.readerId;
 
     const borrowers = await BorrowerDetailSchema.findAll({
-      where: query, include: [{
+      include: [{
         model: DocumentSchema
       },
       {
         model: BorrowerSchema,
+        where: borrowerQuery,
         include: [{
-          model: ReaderSchema
+          model: ReaderSchema,
+          where: readerQuery
         }]
       }],
+      order: [['borrowerId', 'DESC'], ['id', 'DESC']],
     });
     let borrowersJSON = borrowers.map(borrower => borrower.toJSON());
-    const borrowerIds = await BorrowerDetailSchema.findAll({
-      where: query, attributes: [
-        'borrowerId',
-        [sequelize.fn('COUNT', sequelize.col('borrower_id')), 'countBorrowerId'],
-      ],
-      group: ['borrower_id'],
-      raw: true
-    });
 
-    const borrowerObj: { [key in string]: number } = borrowerIds.reduce((obj, item: any) => ({ ...obj, [item.borrowerId]: +item.countBorrowerId }), {});
+    const borrowerObj: { [key in string]: number } = countBy(borrowers, 'borrowerId');
 
     let resultObj: any = {};
 

@@ -11,23 +11,35 @@ import './ui.scss';
 const formItemLayout = { labelCol: { xs: { span: 30 }, sm: { span: 30 } }, wrapperCol: { xs: { span: 40 }, sm: { span: 23 } } };
 const reStyle = { minWidth: "32%" };
 
-
 const BorrowerSearchPage = () => {
   const [form] = Form.useForm();
-  const [inputState, setinputState] = useState({ name: '', id: '', type: '' });
+  const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
   const [borrowers, setBorrowers] = useState([]);
+  const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
   const readerTypeId = Form.useWatch('readerTypeId', form);
   const [currentPage, setCurrentPage] = React.useState(1);
   const pageSize = 20; // Number of items per page
 
-  const handleDebounceFn = reState => { }
+  const handleDebounceFn = reState => { 
+    internalCall({ key: 'borrower-search', data: reState });
+    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
+      setLoading(false);
+      if (arg && arg.data) {
+        console.log(arg.data);
+        setBorrowers(arg.data);
+      }
+    });
+  }
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
   const groupByBorrower = (borrower, index) => {
     const reIndex = currentPage >= 2 ? (currentPage * pageSize - pageSize) + index : index;
     let boolean = false;
     if (reIndex === 0) {
+      boolean = true;
+    }
+    else if(borrower.borrowerId !== (borrowers[reIndex - 1].borrowerId)) {
       boolean = true;
     }
     else {
@@ -45,21 +57,36 @@ const BorrowerSearchPage = () => {
   }
   const columns = [
     {
-      title: 'Mã Phiếu Mượn',
-      dataIndex: 'borrowerId',
+      title: 'Mã Độc Giả',
+      dataIndex: ['borrower', 'reader', 'id'],
+      render: (id) => id,
       align: 'center',
-      render: (_, record) => { return record.borrowerId },
       onCell: groupByBorrower
     },
     {
       title: 'Tên Độc Giả',
       dataIndex: ['borrower', 'reader', 'fullName'],
       render: (fullName) => fullName,
+      align: 'center',
       onCell: groupByBorrower
     },
     {
-      title: 'Tên Tai Lieu',
+      title: 'Tên Tài Liệu',
       dataIndex: ['document', 'name'],
+    },
+    {
+      title: 'Mã Sinh Viên',
+      dataIndex: ['borrower', 'reader', 'studentId'],
+      render: (studentId) => studentId,
+      align: 'center',
+      onCell: groupByBorrower
+    },
+    {
+      title: 'Mã Nhân Viên - Cán Bộ',
+      dataIndex: ['borrower', 'reader', 'civilServantId'],
+      render: (civilServantId) => civilServantId,
+      align: 'center',
+      onCell: groupByBorrower
     },
     {
       title: 'Ngày Mượn',
@@ -91,6 +118,7 @@ const BorrowerSearchPage = () => {
 
     internalCall({ key: 'readerType-search', data: {} });
     internalCall({ key: 'borrower-search', data: {} });
+    internalCall({ key: 'document-search', data: {} });
 
     const getData = async (arg) => {
       if (arg && arg.data) {
@@ -103,6 +131,9 @@ const BorrowerSearchPage = () => {
         if (arg.key === 'borrower-search') {
           setBorrowers(arg.data);
         }
+        if (arg.key === 'document-search') {
+          setDocuments(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
+        }
       }
     };
     window.electron.ipcRenderer.on('ipc-database', getData);
@@ -112,7 +143,12 @@ const BorrowerSearchPage = () => {
   const onChange = (e) => {
     setLoading(true);
     let reState = {};
-    if (e.target.name === 'readerTypeId') {
+    console.log(e);
+    if(e.target.id === 'documents') {
+      const documentIds = e.target.value.map((item) => item.split('-')[0].trim());
+      reState = { ...inputState, documentIds: documentIds };
+    }
+    else if (e.target.name === 'readerTypeId') {
       reState = { ...inputState, [e.target.name]: e.target.value };
     }
     else {
@@ -134,21 +170,24 @@ const BorrowerSearchPage = () => {
   };
 
   const debounceDocument = async (value) => {
+    console.log("values", value);
     const [id, name] = value.split('-');
     let data = {};
     if (id && !isNaN(id)) data.id = id.trim();
     if (name) data.name = name.trim();
+    if (!name && isNaN(id)) data.name = value.trim();
 
     internalCall({ key: 'document-search', data });
 
     window.electron.ipcRenderer.once('ipc-database', (arg) => {
-      setBorrowers(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
+      console.log("debounceDocument", arg)
+      setDocuments(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
     });
   }
 
   const documentFc = useCallback(debounce(debounceDocument, 400), []);
 
-  const findborrowers = (value) => {
+  const findDocuments = (value) => {
     documentFc(value);
   }
 
@@ -159,21 +198,19 @@ const BorrowerSearchPage = () => {
   return (
     <>
       <Form  {...formItemLayout} form={form} layout="vertical" name="dynamic_rule" style={{ display: 'flex', flexWrap: 'wrap' }} scrollToFirstError initialValues={{ readerTypeId: undefined }}>
-        <Form.Item label="Mã Phiếu Mượn" style={reStyle}>
-          <Input id="id" onChange={onChange} />
-        </Form.Item>
 
         <Form.Item label="Mã Độc Giả" style={reStyle}>
           <Input id="readerId" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item name="documentIds" label="Tài Liệu" style={reStyle}>
+        <Form.Item name="documents" label="Tài Liệu" style={reStyle}>
           <Select
+            onSearch={findDocuments}
             mode='multiple'
-            options={borrowers}
-            onSearch={findborrowers}
+            options={documents}
             placeholder=""
             className='custom-autocomplete'
+            onChange={(value) => onChange({ target: { id: 'documents', value } })}
             filterOption={(inputValue, option) =>
               option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
             }
@@ -218,7 +255,7 @@ const BorrowerSearchPage = () => {
           total: borrowers.length,
           onChange: handlePageChange,
         }}
-        scroll={{y:450}}
+        scroll={{ y: 450 }}
       />
     </>
   )
