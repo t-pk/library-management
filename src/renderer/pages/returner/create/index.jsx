@@ -126,7 +126,7 @@ const ReturnerCreatePage = () => {
         style={{ display: 'flex', flexWrap: 'wrap' }}
         scrollToFirstError>
 
-        <Form.Item name="id" label="Mã Phiếu Mượn" style={reStyle}>
+        <Form.Item name="id" label="Mã Phiếu Trả" style={reStyle}>
           <Input disabled={true} />
         </Form.Item>
 
@@ -154,7 +154,7 @@ const ReturnerCreatePage = () => {
           <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" disabled={true} />
         </Form.Item>
 
-        <Form.Item name="documentIds" label="Tài Liệu Cần Mượn" style={reStyle}
+        <Form.Item name="documentIds" label="Tài Liệu Cần Trả" style={reStyle}
           rules={[{
             validator: async (_, values = []) => {
               const doc = values.every((id) => documents.map((document) => document.value).includes(id));
