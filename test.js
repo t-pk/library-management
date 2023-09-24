@@ -1,4 +1,4 @@
-const borrowerObj = { '1': 5, '2': 3, '3': 8, '4': 13, '5': 40 };
+const borrowerObj = { '1': 5, '2': 3, '3': 8, '4': 13, '5': 13, '6': 13, '7': 3, '8': 4 };
 
 const limit = 10;
 let count = 0;

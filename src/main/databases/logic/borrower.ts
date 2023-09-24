@@ -39,7 +39,7 @@ export const getBorrowers = async (request: any) => {
       let count = 0;
       let mark = 0;
 
-      for (const [_, value] of Object.entries(borrowerObj)) {
+      for (const [_, value] of Object.entries(borrowerObj).reverse()) {
         count += value;
         if (Math.floor(count / limit) > mark) {
           let start = mark * limit;
@@ -64,7 +64,6 @@ export const getBorrowers = async (request: any) => {
     }
     caculate();
     borrowersJSON = borrowersJSON.map((borrower, index) => ({ ...borrower, countBorrowerId: borrowerObj[borrower.borrowerId], rest: resultObj[index] || 0 }));
-
     return borrowersJSON;
   } catch (error) {
     console.log("getDocuments", error);

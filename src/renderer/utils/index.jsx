@@ -2,6 +2,7 @@ export const objectToQueryString = (obj) => {
   const queryParams = new URLSearchParams(obj);
   return queryParams.toString();
 }
+
 export const queryStringToObject = (queryString) => {
   const queryParams = new URLSearchParams(queryString);
 
