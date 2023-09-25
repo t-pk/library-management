@@ -4,7 +4,7 @@ import { AutoComplete, Button, Cascader, Input, Select, Space, Row, Dropdown, Ch
 import debounce from 'lodash.debounce';
 import { internalCall } from '../../../../renderer/actions';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { formatDMY_HMS,formatDMY, objectToQueryString } from '../../../utils/index';
+import { formatDMY_HMS, formatDMY, objectToQueryString } from '../../../utils/index';
 const { Option } = Select;
 
 import './ui.scss';
@@ -12,7 +12,7 @@ import './ui.scss';
 const formItemLayout = { labelCol: { xs: { span: 30 }, sm: { span: 30 } }, wrapperCol: { xs: { span: 40 }, sm: { span: 23 } } };
 const reStyle = { minWidth: "32%" };
 
-const ReturnSearchPage = () => {
+const ReturnSearchPage = (props) => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
@@ -24,15 +24,20 @@ const ReturnSearchPage = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const pageSize = 20; // Number of items per page
 
-  const handleDebounceFn = reState => {
-    internalCall({ key: 'return-search', data: reState });
-    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
+  const handleDebounceFn = (reState) => {
+    props.callDatabase({ key: 'return-search', data: reState });
+    const test = (arg) => {
       setLoading(false);
-      if (arg && arg.data) {
-        console.log(arg.data.length);
-        setReturns(arg.data);
-      }
-    });
+      setReturns(arg.data);
+    }
+    props.listenOnce('return-search', test);
+    // internalCall({ key: 'return-search', data: reState });
+    // window.electron.ipcRenderer.once('ipc-database', async (arg) => {
+    //   setLoading(false);
+    //   if (arg && arg.data) {
+    //     setReturns(arg.data);
+    //   }
+    // });
   }
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
   const groupByReturns = (iReturn, index) => {
@@ -53,7 +58,6 @@ const ReturnSearchPage = () => {
         }
       }
     };
-    console.log(boolean, index, iReturn);
     return {
       rowSpan: boolean ? (iReturn.countReturnId - iReturn.rest) : 0
     }
@@ -62,23 +66,11 @@ const ReturnSearchPage = () => {
   const showDropDrown = (record) => {
     return returns.filter((iReturn) => iReturn.iReturnId === record.iReturnId).some((iReturn) => !iReturn.returnDetail);
   }
-  const createReturns = (record) => () => {
-    const data = {
-      iReturnId: record.iReturnId, readerId: record.iReturn.reader.id,
-      readerName: record.iReturn.reader.fullName,
-      citizenIdentify: record.iReturn.reader.citizenIdentify,
-      civilServantId: record.iReturn.reader.civilServantId,
-      studentId: record.iReturn.reader.studentId,
-      readerTypeId: record.iReturn.reader.readerTypeId,
-    };
-    const queryString = objectToQueryString(data);
-    return navigate(`/return/create?${queryString}`);
-  };
 
   const columns = [
     {
-      title: 'Mã Chi Tiet Tra',
-      dataIndex: 'id',
+      title: 'Mã Phieu Tra',
+      dataIndex: ['return', 'id'],
       render: (id) => id,
       align: 'center',
       onCell: groupByReturns
@@ -195,12 +187,12 @@ const ReturnSearchPage = () => {
           setReaderTypes(resReaders);
         }
 
-        // if (arg.key === 'iReturn-search') {
+        // if (arg.key === 'return-search') {
         //   setReturns(arg.data);
         // }
-        // if (arg.key === 'document-search') {
-        //   setDocuments(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
-        // }
+        if (arg.key === 'document-search') {
+          setDocuments(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
+        }
       }
     };
     window.electron.ipcRenderer.on('ipc-database', getData);
@@ -209,6 +201,7 @@ const ReturnSearchPage = () => {
 
   const onChange = (e) => {
     setLoading(true);
+    setCurrentPage(1);
     let reState = {};
     if (e.target.id === 'documents') {
       const documentIds = e.target.value.map((item) => item.split('-')[0].trim());

@@ -8,7 +8,6 @@ import './ui.css';
 const MESSAGE_LOGIN_FAIL =
   'username or password is incorrect. Please try again !';
 
-
 const LoginPage = () => {
   const navigate = useNavigate();
 
@@ -40,6 +39,14 @@ const LoginPage = () => {
         localStorage.setItem('TOKEN_KEY', JSON.stringify(arg.data));
         navigate('/');
       }
+      setLoading(false);
+      message.error({
+        content: arg.error,
+        className: 'custom-class',
+        style: {
+          textAlign: "right"
+        },
+      });
     });
   };
 

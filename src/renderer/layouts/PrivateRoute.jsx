@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Layout, Menu, Space, Spin, theme } from 'antd';
+import { Button, Layout, Menu, Space, Spin, theme, message } from 'antd';
 import {
   AppstoreOutlined,
   MailOutlined,
 } from '@ant-design/icons';
 
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { internalCall } from '../actions';
 const { Header, Content, Sider } = Layout;
 import './css.css';
 
@@ -16,6 +17,7 @@ const PrivateRoute = ({
   const [openKeys, setOpenKeys] = useState(['/']);
   const [spinning, setSpinning] = useState(false);
   const location = useLocation();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const navigate = useNavigate();
 
@@ -87,52 +89,97 @@ const PrivateRoute = ({
     setOpenKeys(e);
   }
 
+  const showMessage = (type, content) => {
+    console.log("content", content);
+    messageApi.open({
+      key: '1', type: 'success', content: content, duration: 5, className: 'custom-class',
+      // style: {
+      //   textAlign: 'right',
+      //   paddingRight: 20,
+      //   marginTop: '47%',
+      // },
+    });
+  };
+
+  /**
+   * 
+   * @param {*} params {key: string, data: {}}
+   */
+  const callDatabase = (params) => {
+    internalCall(params);
+  }
+
+  const listenOn = async (key, callback) => {
+    window.electron.ipcRenderer.on('ipc-database', async (arg) => {
+      if (arg && arg.key === key)
+       await callback(arg);
+      else {
+        showMessage('error', arg.error);
+      }
+    })
+  }
+
+  const listenOnce = async(key, callback) => {
+    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
+      console.log("window.electron.ipcRenderer", arg);
+      if (arg && arg.key === key)
+        await callback(arg);
+      else {
+        showMessage('error', arg.error);
+      }
+    })
+  }
+
+
   return localStorage.getItem('TOKEN_KEY') ? (
-    <Layout>
-      <Sider
-        breakpoint="lg"
-        collapsedWidth="0"
-      >
-        <div className="logo-icon" >
-          <h4 style={{textAlign: 'center', color:'white'}}>Library Management</h4>
-        </div>
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={animate}
-          defaultOpenKeys={openKeys}
-          items={items}
-          openKeys={openKeys}
-          selectedKeys={animate}
-          onOpenChange={onOpenChange}
-          onClick={({ key }) => {
-            navigate(key)
-          }}
-        />
-      </Sider>
-
+    <>
       <Layout>
-        <Header
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        />
-
-        <Spin spinning={spinning} wrapperClassName={`${animate == location.pathname ? 'my-animation' : ''}`}>
-          <Content
-            style={{
-              padding: 15,
-              margin: 15,
-              minHeight: 365,
-              background: colorBgContainer,
+        <Sider
+          breakpoint="lg"
+          collapsedWidth="0"
+        >
+          <div className="logo-icon" >
+            <h4 style={{ textAlign: 'center', color: 'white' }}>Library Management</h4>
+          </div>
+          <Menu
+            theme="dark"
+            mode="inline"
+            defaultSelectedKeys={animate}
+            defaultOpenKeys={openKeys}
+            items={items}
+            openKeys={openKeys}
+            selectedKeys={animate}
+            onOpenChange={onOpenChange}
+            onClick={({ key }) => {
+              navigate(key)
             }}
-          >
-            <Component />
-          </Content>
-        </Spin>
+          />
+        </Sider>
+
+        <Layout>
+          <Header
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          />
+
+          <Spin spinning={spinning} wrapperClassName={`${animate == location.pathname ? 'my-animation' : ''}`}>
+          {contextHolder}
+            <Content
+              style={{
+                padding: 15,
+                margin: 15,
+                minHeight: 850,
+                background: colorBgContainer,
+              }}
+            >
+              <Component listenOn={listenOn} callDatabase={callDatabase} listenOnce={listenOnce} />
+            </Content>
+          </Spin>
+        </Layout>
       </Layout>
-    </Layout>
+    </>
   ) : (
     <Navigate
       to={'/login'}

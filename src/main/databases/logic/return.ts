@@ -13,7 +13,7 @@ export const createReturn = async (request: any) => {
         borrowerId: request.borrowerId,
         createdBy: 2,
         readerId: request.readerId,
-        description: request.description || 'TAIPHAM'
+        description: request.description || ''
       }, transaction, raw: true, returning: true
     });
     const borrowerDetails = await BorrowerDetailSchema.findAll({ where: { borrowerId: request.borrowerId, documentId: { [Op.in]: request.documentIds } }, raw: true, transaction });
@@ -27,10 +27,10 @@ export const getReturns = async (request: any) => {
   try {
     let readerQuery: IObject = {};
     let returnQuery: IObject = {};
-    let returnDetailQuery: IObject = {}
+    let borrowerDetail: IObject = {}
 
     if (request.documentIds && request.documentIds.length) {
-      returnDetailQuery.documentId = { [Op.in]: request.documentIds };
+      borrowerDetail.documentId = { [Op.in]: request.documentIds };
     }
     if (request.id) returnQuery.id = request.id;
     if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
@@ -38,16 +38,17 @@ export const getReturns = async (request: any) => {
     if (request.readerTypeId) readerQuery.readerTypeId = request.readerTypeId;
     if (request.civilServantId) readerQuery.civilServantId = request.civilServantId;
 
-    if (request.readerId) returnDetailQuery.id = request.readerId;
+    if (request.readerId) readerQuery.id = request.readerId;
 
     const returnDetails = await ReturnDetailSchema.findAll({
-      where: returnDetailQuery,
+      where:{x:1},
       include: [
         {
           model: ReturnSchema, include: [{
             model: ReaderSchema,
-            where: readerQuery
-          }]
+            where: readerQuery,
+          }],
+          required: true
         },
         {
           model: BorrowerDetailSchema,
@@ -55,6 +56,7 @@ export const getReturns = async (request: any) => {
             model: DocumentSchema
           },
           ],
+          where: borrowerDetail
         },
       ],
       order: [['returnId', 'DESC'], ['id', 'DESC']],
@@ -63,7 +65,6 @@ export const getReturns = async (request: any) => {
     let returnJSON = returnDetails.map((iReturn) => iReturn.toJSON());
 
     const returnObj: { [key in string]: number } = countBy(returnDetails, 'returnId');
-    console.log("returnObj", returnObj)
     let resultObj: { [key in string]: number } = {};
 
     const limit = 20;
@@ -93,9 +94,9 @@ export const getReturns = async (request: any) => {
       }
     }
     returnJSON = returnJSON.map((iReturn, index) => ({ ...iReturn, countReturnId: returnObj[iReturn.returnId], rest: resultObj[index] || 0 }));
-    console.log("returnJSON",resultObj, returnJSON.length, JSON.stringify(returnJSON));
+
     return returnJSON;
   } catch (error) {
-    console.log("getDocuments", error);
+    throw error;
   }
 }

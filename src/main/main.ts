@@ -119,8 +119,8 @@ ipcMain.on('ipc-database', async (event, arg) => {
     // console.log(result);
     event.reply('ipc-database', { key: arg.key, data: result });
   } catch (error) {
-    console.log(error);
-    event.reply('ipc-database', { error: (error as any).errors[0].message });
+    console.log("JSON.stringify(error)", error);
+    event.reply('ipc-database', { error: JSON.stringify(error) });
   }
 });
 
@@ -130,7 +130,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const isDebug =
-  process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 if (isDebug) {
   require('electron-debug')();
