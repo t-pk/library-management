@@ -1,6 +1,6 @@
 import { DataTypes, Sequelize } from 'sequelize';
 
-export const IReturner = {
+export const IReturn = {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -9,6 +9,10 @@ export const IReturner = {
   borrowerId: {
     type: DataTypes.INTEGER,
     allowNull: false
+  },
+  description: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
   },
   createdAt: {
     type: DataTypes.DATE,

@@ -11,10 +11,10 @@ import './ui.scss';
 const formItemLayout = { labelCol: { xs: { span: 30 }, sm: { span: 30 } }, wrapperCol: { xs: { span: 40 }, sm: { span: 23 } } };
 const reStyle = { minWidth: "32%" };
 
-const ReturnerSearchPage = () => {
+const ReturnSearchPage = () => {
   const [form] = Form.useForm();
   const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
-  const [borrowers, setBorrowers] = useState([]);
+  const [returns, setReturns] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
@@ -23,36 +23,36 @@ const ReturnerSearchPage = () => {
   const pageSize = 20; // Number of items per page
 
   const handleDebounceFn = reState => {
-    internalCall({ key: 'borrower-search', data: reState });
+    internalCall({ key: 'return-search', data: reState });
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {
       setLoading(false);
       if (arg && arg.data) {
         console.log(arg.data);
-        setBorrowers(arg.data);
+        setReturns(arg.data);
       }
     });
   }
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
-  const groupByBorrower = (borrower, index) => {
+  const groupByReturn = (returnCol, index) => {
     const reIndex = currentPage >= 2 ? (currentPage * pageSize - pageSize) + index : index;
     let boolean = false;
     if (reIndex === 0) {
       boolean = true;
     }
-    else if (borrower.borrowerId !== (borrowers[reIndex - 1].borrowerId)) {
+    else if (returnCol.returnColId !== (returns[reIndex - 1].returnColId)) {
       boolean = true;
     }
     else {
-      boolean = (borrower.countBorrowerId - borrower.rest) !== (borrowers[reIndex - 1].countBorrowerId - borrowers[reIndex - 1].rest);
+      boolean = (returnCol.countreturnColId - returnCol.rest) !== (returns[reIndex - 1].countreturnColId - returns[reIndex - 1].rest);
       let count = 0;
       if (reIndex % 10 === 0) {
         for (let i = 0; i < reIndex; i++) {
-          count += borrowers[i].countBorrowerId;
+          count += returns[i].countreturnColId;
         }
       }
     };
     return {
-      rowSpan: boolean ? (borrower.countBorrowerId - borrower.rest) : 0
+      rowSpan: boolean ? (returnCol.countreturnColId - returnCol.rest) : 0
     }
   }
 
@@ -63,17 +63,17 @@ const ReturnerSearchPage = () => {
   const columns = [
     {
       title: 'Mã Độc Giả',
-      dataIndex: ['borrower', 'reader', 'id'],
+      dataIndex: ['return', 'reader', 'id'],
       render: (id) => id,
       align: 'center',
-      onCell: groupByBorrower
+      onCell: groupByReturn
     },
     {
       title: 'Tên Độc Giả',
-      dataIndex: ['borrower', 'reader', 'fullName'],
+      dataIndex: ['return', 'reader', 'fullName'],
       render: (fullName) => fullName,
       align: 'center',
-      onCell: groupByBorrower
+      onCell: groupByReturn
     },
     {
       title: 'Tên Tài Liệu',
@@ -81,17 +81,17 @@ const ReturnerSearchPage = () => {
     },
     {
       title: 'Mã Sinh Viên',
-      dataIndex: ['borrower', 'reader', 'studentId'],
+      dataIndex: ['return', 'reader', 'studentId'],
       render: (studentId) => studentId,
       align: 'center',
-      onCell: groupByBorrower
+      onCell: groupByReturn
     },
     {
       title: 'Mã Nhân Viên - Cán Bộ',
-      dataIndex: ['borrower', 'reader', 'civilServantId'],
+      dataIndex: ['return', 'reader', 'civilServantId'],
       render: (civilServantId) => civilServantId,
       align: 'center',
-      onCell: groupByBorrower
+      onCell: groupByReturn
     },
     {
       title: 'Ngày Mượn',
@@ -100,7 +100,7 @@ const ReturnerSearchPage = () => {
       render: (dateTime) => {
         return formatDMY_HMS(dateTime)
       },
-      onCell: groupByBorrower
+      onCell: groupByReturn
     },
     {
       title: 'Action',
@@ -108,7 +108,7 @@ const ReturnerSearchPage = () => {
       fixed: 'right',
       align: 'center',
       width: 150,
-      onCell: groupByBorrower,
+      onCell: groupByReturn,
       render: (_, record) => (
         <Space size="middle">
           <Dropdown menu={{
@@ -145,7 +145,7 @@ const ReturnerSearchPage = () => {
   const getInitData = () => {
 
     internalCall({ key: 'readerType-search'});
-    internalCall({ key: 'borrower-search'});
+    internalCall({ key: 'return-search'});
     internalCall({ key: 'document-search'});
 
     const getData = async (arg) => {
@@ -156,8 +156,8 @@ const ReturnerSearchPage = () => {
           setReaderTypes(resReaders);
         }
 
-        if (arg.key === 'borrower-search') {
-          setBorrowers(arg.data);
+        if (arg.key === 'return-search') {
+          setReturns(arg.data);
         }
         if (arg.key === 'document-search') {
           setDocuments(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
@@ -262,7 +262,7 @@ const ReturnerSearchPage = () => {
       </Form>
       <Table
         columns={columns}
-        dataSource={borrowers}
+        dataSource={returns}
         bordered={true}
         loading={loading}
         rowKey={'id'}
@@ -271,7 +271,7 @@ const ReturnerSearchPage = () => {
         pagination={{
           current: currentPage,
           pageSize: pageSize,
-          total: borrowers.length,
+          total: returns.length,
           onChange: handlePageChange,
         }}
         // scroll={{ x: 1400, y: 600 }}
@@ -279,4 +279,4 @@ const ReturnerSearchPage = () => {
     </>
   )
 };
-export default ReturnerSearchPage;
+export default ReturnSearchPage;

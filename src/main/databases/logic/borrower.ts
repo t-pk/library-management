@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import countBy from "lodash.countby";
-import { DocumentSchema, unitOfWork, BorrowerSchema, BorrowerDetailSchema, ReaderSchema, sequelize } from "../db";
+import { DocumentSchema, unitOfWork, BorrowerSchema, BorrowerDetailSchema, ReaderSchema, sequelize, ReturnDetailSchema } from "../db";
 
 interface IObject {
   [key: string]: string | {}
@@ -20,6 +20,9 @@ export const getBorrowers = async (request: any) => {
     const borrowers = await BorrowerDetailSchema.findAll({
       include: [{
         model: DocumentSchema
+      },
+      {
+        model: ReturnDetailSchema
       },
       {
         model: BorrowerSchema,

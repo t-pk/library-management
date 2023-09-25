@@ -16,8 +16,8 @@ const PublisherCreatePage = React.lazy(() => import('./pages/publisher/create'))
 
 const BorrowerSeachPage = React.lazy(() => import('./pages/borrower/search'));
 const BorrowerCreatePage = React.lazy(() => import('./pages/borrower/create'));
-const ReturnerSeachPage = React.lazy(() => import('./pages/returner/search'));
-const ReturnerCreatePage = React.lazy(() => import('./pages/returner/create'));
+const ReturnSeachPage = React.lazy(() => import('./pages/return/search'));
+const ReturnCreatePage = React.lazy(() => import('./pages/return/create'));
 
 const NotFoundPage = React.lazy(() => import('./pages/not-found'));
 
@@ -106,16 +106,16 @@ const routes = [
     isPrivate: true,
   },
   {
-    path: '/returner/search',
+    path: '/return/search',
     exact: true,
     layout: PrivateRoute,
-    main: ReturnerSeachPage,
+    main: ReturnSeachPage,
     isPrivate: true,
   },
   {
-    path: '/returner/create',
+    path: '/return/create',
     layout: PrivateRoute,
-    main: ReturnerCreatePage,
+    main: ReturnCreatePage,
     isPrivate: true,
   },
   {

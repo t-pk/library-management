@@ -1,9 +1,10 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { SettingOutlined, DownOutlined, CaretDownOutlined, SearchOutlined } from '@ant-design/icons';
+import { SettingOutlined, DownOutlined, CaretDownOutlined, CheckSquareOutlined, CheckOutlined, SearchOutlined, CloseCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { AutoComplete, Button, Cascader, Input, Select, Space, Row, Dropdown, Checkbox, Table, Form, Tag, InputNumber, Radio } from 'antd';
 import debounce from 'lodash.debounce';
 import { internalCall } from '../../../../renderer/actions';
-import { formatDMY_HMS } from '../../../utils/index';
+import { Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { formatDMY_HMS,formatDMY, objectToQueryString } from '../../../utils/index';
 const { Option } = Select;
 
 import './ui.scss';
@@ -13,6 +14,7 @@ const reStyle = { minWidth: "32%" };
 
 const BorrowerSearchPage = () => {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
   const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
   const [borrowers, setBorrowers] = useState([]);
   const [documents, setDocuments] = useState([]);
@@ -55,9 +57,20 @@ const BorrowerSearchPage = () => {
       rowSpan: boolean ? (borrower.countBorrowerId - borrower.rest) : 0
     }
   }
-
+  const showDropDrown = (record) => {
+    return borrowers.filter((borrower) => borrower.borrowerId === record.borrowerId).some((borrower) => !borrower.returnDetail);
+  }
   const createReturns = (record) => () => {
-    console.log("createReturns", record);
+    const data = {
+      borrowerId: record.borrowerId, readerId: record.borrower.reader.id,
+      readerName: record.borrower.reader.fullName,
+      citizenIdentify: record.borrower.reader.citizenIdentify,
+      civilServantId: record.borrower.reader.civilServantId,
+      studentId: record.borrower.reader.studentId,
+      readerTypeId: record.borrower.reader.readerTypeId,
+    };
+    const queryString = objectToQueryString(data);
+    return navigate(`/return/create?${queryString}`);
   };
 
   const columns = [
@@ -77,7 +90,14 @@ const BorrowerSearchPage = () => {
     },
     {
       title: 'Tên Tài Liệu',
+      align: 'center',
       dataIndex: ['document', 'name'],
+    },
+    {
+      title: 'Đã Trả',
+      dataIndex: 'returnDetail',
+      align: 'center',
+      render: (isReturn) => isReturn && <CheckCircleOutlined style={{ fontSize: 20, color: 'green' }} />
     },
     {
       title: 'Mã Sinh Viên',
@@ -103,26 +123,52 @@ const BorrowerSearchPage = () => {
       onCell: groupByBorrower
     },
     {
+      title: 'Hạn Trả',
+      dataIndex: 'createdAt',
+      align: 'center',
+      render: (dateTime) => {
+        return formatDMY(dateTime)
+      },
+      onCell: groupByBorrower
+    },
+    {
+      title: 'Ngày Trả',
+      dataIndex: ['returnDetail', 'createdAt'],
+      align: 'center',
+      render: (dateTime) => {
+        return dateTime && formatDMY_HMS(dateTime)
+      },
+    },
+    {
       title: 'Action',
       key: 'operation',
       fixed: 'right',
       align: 'center',
       width: 150,
       onCell: groupByBorrower,
-      render: (_, record) => (
-        <Space size="middle">
+      render: (_, record) => {
+        const showCreateReturn = showDropDrown(record);
+        let items = [{
+          label: <a onClick={createReturns(record)}>Tạo Phiếu Phạt</a>,
+          key: '1',
+        }];
+        if (showCreateReturn) {
+          items.push({
+            label: <a onClick={createReturns(record)}>Tạo Phiếu Trả</a>,
+            key: '0',
+          });
+        }
+        return <Space size="middle">
           <Dropdown menu={{
-            items: [{
-              label: <a onClick={createReturns(record)}>Tạo Phiếu Trả</a>,
-              key: '0',
-            }]
+            items
           }}>
             <a>
               More Action <DownOutlined />
             </a>
           </Dropdown>
         </Space>
-      ),
+
+      }
     },
   ];
 
@@ -144,9 +190,9 @@ const BorrowerSearchPage = () => {
 
   const getInitData = () => {
 
-    internalCall({ key: 'readerType-search'});
-    internalCall({ key: 'borrower-search'});
-    internalCall({ key: 'document-search'});
+    internalCall({ key: 'readerType-search' });
+    internalCall({ key: 'borrower-search' });
+    internalCall({ key: 'document-search' });
 
     const getData = async (arg) => {
       if (arg && arg.data) {
