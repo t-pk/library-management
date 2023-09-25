@@ -2,10 +2,14 @@ import { Op } from "sequelize";
 import countBy from "lodash.countby";
 import { DocumentSchema, unitOfWork, BorrowerSchema, BorrowerDetailSchema, ReaderSchema, sequelize } from "../db";
 
+interface IObject {
+  [key: string]: string | {}
+}
+
 export const getBorrowers = async (request: any) => {
   try {
-    let readerQuery: any = {};
-    let borrowerQuery: any = {};
+    let readerQuery: IObject = {};
+    let borrowerQuery: IObject = {};
 
     if (request.id) borrowerQuery.id = request.id;
     if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
@@ -31,38 +35,34 @@ export const getBorrowers = async (request: any) => {
 
     const borrowerObj: { [key in string]: number } = countBy(borrowers, 'borrowerId');
 
-    let resultObj: any = {};
+    let resultObj: { [key in string]: number } = {};
 
-    const caculate = () => {
+    const limit = 20;
+    let count = 0;
+    let mark = 0;
 
-      const limit = 20;
-      let count = 0;
-      let mark = 0;
+    for (const [_, value] of Object.entries(borrowerObj).reverse()) {
+      count += value;
+      if (Math.floor(count / limit) > mark) {
+        let start = mark * limit;
+        const end = count;
 
-      for (const [_, value] of Object.entries(borrowerObj).reverse()) {
-        count += value;
-        if (Math.floor(count / limit) > mark) {
-          let start = mark * limit;
-          const end = count;
+        let jump = Math.floor(count / limit) - mark;
 
-          let jump = Math.floor(count / limit) - mark;
+        if (jump <= 0) continue;
 
-          if (jump <= 0) continue;
-
-          else {
-            while (jump > 0) {
-              ++mark;
-              while ((start + limit) < end) {
-                resultObj[start + limit] = (mark * limit) - (count - value);
-                start++;
-              }
-              jump--;
+        else {
+          while (jump > 0) {
+            ++mark;
+            while ((start + limit) < end) {
+              resultObj[start + limit] = (mark * limit) - (count - value);
+              start++;
             }
+            jump--;
           }
         }
       }
     }
-    caculate();
     borrowersJSON = borrowersJSON.map((borrower, index) => ({ ...borrower, countBorrowerId: borrowerObj[borrower.borrowerId], rest: resultObj[index] || 0 }));
     return borrowersJSON;
   } catch (error) {

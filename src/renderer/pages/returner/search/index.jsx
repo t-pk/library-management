@@ -144,9 +144,9 @@ const ReturnerSearchPage = () => {
 
   const getInitData = () => {
 
-    internalCall({ key: 'readerType-search', data: {} });
-    internalCall({ key: 'borrower-search', data: {} });
-    internalCall({ key: 'document-search', data: {} });
+    internalCall({ key: 'readerType-search'});
+    internalCall({ key: 'borrower-search'});
+    internalCall({ key: 'document-search'});
 
     const getData = async (arg) => {
       if (arg && arg.data) {
@@ -274,7 +274,7 @@ const ReturnerSearchPage = () => {
           total: borrowers.length,
           onChange: handlePageChange,
         }}
-        scroll={{ x: 1400, y: 450 }}
+        // scroll={{ x: 1400, y: 600 }}
       />
     </>
   )

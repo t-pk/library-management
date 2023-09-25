@@ -48,7 +48,7 @@ let mainWindow: BrowserWindow | null = null;
 ipcMain.on('ipc-database', async (event, arg) => {
   try {
     let result;
-    const data = arg.data;
+    const data = arg.data || {};
     await getUserId();
     if (arg.key.includes('create') || arg.key.includes('update')) {
 
@@ -153,7 +153,7 @@ const createWindow = async () => {
   mainWindow = new BrowserWindow({
     show: false,
     width: 1377,
-    minHeight: 865,
+    minHeight: 1000,
     minWidth: 1377,
     icon: getAssetPath('icon.png'),
     webPreferences: {

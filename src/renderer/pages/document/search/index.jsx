@@ -77,9 +77,9 @@ const DocumentSearchPage = () => {
 
   const getInitData = () => {
 
-    internalCall({ key: 'publisher-search', data: {} });
-    internalCall({ key: 'author-search', data: {} });
-    internalCall({ key: 'documentType-search', data: {} });
+    internalCall({ key: 'publisher-search'});
+    internalCall({ key: 'author-search'});
+    internalCall({ key: 'documentType-search'});
 
     const getData = async (arg) => {
       if (arg && arg.data) {

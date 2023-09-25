@@ -144,9 +144,9 @@ const BorrowerSearchPage = () => {
 
   const getInitData = () => {
 
-    internalCall({ key: 'readerType-search', data: {} });
-    internalCall({ key: 'borrower-search', data: {} });
-    internalCall({ key: 'document-search', data: {} });
+    internalCall({ key: 'readerType-search'});
+    internalCall({ key: 'borrower-search'});
+    internalCall({ key: 'document-search'});
 
     const getData = async (arg) => {
       if (arg && arg.data) {

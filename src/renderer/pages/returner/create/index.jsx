@@ -48,8 +48,8 @@ const ReturnerCreatePage = () => {
 
   const getInitData = () => {
 
-    internalCall({ key: 'readerType-search', data: {} });
-    internalCall({ key: 'document-search', data: {} });
+    internalCall({ key: 'readerType-search'});
+    internalCall({ key: 'document-search'});
 
 
     const getData = async (arg) => {

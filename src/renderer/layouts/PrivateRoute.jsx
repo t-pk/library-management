@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Layout, Menu, Spin, theme } from 'antd';
+import { Button, Layout, Menu, Space, Spin, theme } from 'antd';
 import {
   AppstoreOutlined,
   MailOutlined,
@@ -93,8 +93,8 @@ const PrivateRoute = ({
         breakpoint="lg"
         collapsedWidth="0"
       >
-        <div className="demo-logo" >
-          <Button style={{ width: '200px' }}></Button>
+        <div className="logo-icon" >
+          <h4 style={{textAlign: 'center', color:'white'}}>Library Management</h4>
         </div>
         <Menu
           theme="dark"

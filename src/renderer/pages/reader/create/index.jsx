@@ -36,7 +36,7 @@ const ReaderCreatePage = () => {
 
   const getInitData = () => {
 
-    internalCall({ key: 'readerType-search', data: {} });
+    internalCall({ key: 'readerType-search'});
 
     const getData = async (arg) => {
       if (arg && arg.data) {

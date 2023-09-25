@@ -32,14 +32,14 @@ const DocumentCreatePage = () => {
   useEffect(() => { getInitData() }, []);
 
   const getInitData = () => {
-    internalCall({ key: 'publisher-search', data: {} });
+    internalCall({ key: 'publisher-search'});
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {
       if (arg && arg.data) {
         setPublishers(arg.data.map((item) => ({ id: item.id, value: item.name })));
       }
     });
 
-    internalCall({ key: 'author-search', data: {} });
+    internalCall({ key: 'author-search'});
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {
       if (arg && arg.data) {
         setPublishers(arg.data.map((item) => ({ id: item.id, value: item.name })));
