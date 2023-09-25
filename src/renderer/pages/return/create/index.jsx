@@ -62,7 +62,6 @@ const ReturnCreatePage = () => {
           console.log("arg", arg);
           setBorrowedDocuments(arg.data.map((item) => ({ value: item.id, label: item.name })));
         }
-
       }
     };
     window.electron.ipcRenderer.on('ipc-database', getData);
@@ -89,6 +88,8 @@ const ReturnCreatePage = () => {
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {
       if (arg.data) {
         await delay(1000);
+        form.resetFields(['documentIds']);
+        getInitData({ borrowerId: form.getFieldValue('borrowerId') });
         setLoading(false);
         messageApi.destroy(key);
         if (arg.data) showMessage('success', 'Created Reader.');

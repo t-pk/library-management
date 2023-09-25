@@ -4,7 +4,7 @@ import { AutoComplete, Button, Cascader, Input, Select, Space, Row, Dropdown, Ch
 import debounce from 'lodash.debounce';
 import { internalCall } from '../../../../renderer/actions';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { formatDMY_HMS,formatDMY, objectToQueryString } from '../../../utils/index';
+import { formatDMY_HMS, formatDMY, objectToQueryString } from '../../../utils/index';
 const { Option } = Select;
 
 import './ui.scss';
@@ -148,16 +148,17 @@ const BorrowerSearchPage = () => {
       onCell: groupByBorrower,
       render: (_, record) => {
         const showCreateReturn = showDropDrown(record);
-        let items = [{
-          label: <a onClick={createReturns(record)}>Tạo Phiếu Phạt</a>,
-          key: '1',
-        }];
+        let items = [];
         if (showCreateReturn) {
           items.push({
             label: <a onClick={createReturns(record)}>Tạo Phiếu Trả</a>,
             key: '0',
           });
         }
+        items.push({
+          label: <a onClick={createReturns(record)}>Tạo Phiếu Phạt</a>,
+          key: '1',
+        });
         return <Space size="middle">
           <Dropdown menu={{
             items

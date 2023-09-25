@@ -1,9 +1,10 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { SettingOutlined, DownOutlined, CaretDownOutlined, SearchOutlined } from '@ant-design/icons';
+import { SettingOutlined, DownOutlined, CaretDownOutlined, CheckSquareOutlined, CheckOutlined, SearchOutlined, CloseCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { AutoComplete, Button, Cascader, Input, Select, Space, Row, Dropdown, Checkbox, Table, Form, Tag, InputNumber, Radio } from 'antd';
 import debounce from 'lodash.debounce';
 import { internalCall } from '../../../../renderer/actions';
-import { formatDMY_HMS } from '../../../utils/index';
+import { Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { formatDMY_HMS,formatDMY, objectToQueryString } from '../../../utils/index';
 const { Option } = Select;
 
 import './ui.scss';
@@ -13,6 +14,7 @@ const reStyle = { minWidth: "32%" };
 
 const ReturnSearchPage = () => {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
   const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
   const [returns, setReturns] = useState([]);
   const [documents, setDocuments] = useState([]);
@@ -27,103 +29,140 @@ const ReturnSearchPage = () => {
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {
       setLoading(false);
       if (arg && arg.data) {
-        console.log(arg.data);
+        console.log(arg.data.length);
         setReturns(arg.data);
       }
     });
   }
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
-  const groupByReturn = (returnCol, index) => {
+  const groupByReturns = (iReturn, index) => {
     const reIndex = currentPage >= 2 ? (currentPage * pageSize - pageSize) + index : index;
     let boolean = false;
     if (reIndex === 0) {
       boolean = true;
     }
-    else if (returnCol.returnColId !== (returns[reIndex - 1].returnColId)) {
+    else if (iReturn.returnId !== (returns[reIndex - 1].returnId)) {
       boolean = true;
     }
     else {
-      boolean = (returnCol.countreturnColId - returnCol.rest) !== (returns[reIndex - 1].countreturnColId - returns[reIndex - 1].rest);
+      boolean = (iReturn.countReturnId - iReturn.rest) !== (returns[reIndex - 1].countReturnId - returns[reIndex - 1].rest);
       let count = 0;
       if (reIndex % 10 === 0) {
         for (let i = 0; i < reIndex; i++) {
-          count += returns[i].countreturnColId;
+          count += returns[i].countReturnId;
         }
       }
     };
+    console.log(boolean, index, iReturn);
     return {
-      rowSpan: boolean ? (returnCol.countreturnColId - returnCol.rest) : 0
+      rowSpan: boolean ? (iReturn.countReturnId - iReturn.rest) : 0
     }
-  }
+  };
 
+  const showDropDrown = (record) => {
+    return returns.filter((iReturn) => iReturn.iReturnId === record.iReturnId).some((iReturn) => !iReturn.returnDetail);
+  }
   const createReturns = (record) => () => {
-    console.log("createReturns", record);
+    const data = {
+      iReturnId: record.iReturnId, readerId: record.iReturn.reader.id,
+      readerName: record.iReturn.reader.fullName,
+      citizenIdentify: record.iReturn.reader.citizenIdentify,
+      civilServantId: record.iReturn.reader.civilServantId,
+      studentId: record.iReturn.reader.studentId,
+      readerTypeId: record.iReturn.reader.readerTypeId,
+    };
+    const queryString = objectToQueryString(data);
+    return navigate(`/return/create?${queryString}`);
   };
 
   const columns = [
+    {
+      title: 'Mã Chi Tiet Tra',
+      dataIndex: 'id',
+      render: (id) => id,
+      align: 'center',
+      onCell: groupByReturns
+    },
     {
       title: 'Mã Độc Giả',
       dataIndex: ['return', 'reader', 'id'],
       render: (id) => id,
       align: 'center',
-      onCell: groupByReturn
+      onCell: groupByReturns
     },
     {
       title: 'Tên Độc Giả',
       dataIndex: ['return', 'reader', 'fullName'],
       render: (fullName) => fullName,
       align: 'center',
-      onCell: groupByReturn
+      onCell: groupByReturns
     },
     {
       title: 'Tên Tài Liệu',
-      dataIndex: ['document', 'name'],
+      align: 'center',
+      dataIndex: ['borrowerDetail', 'document', 'name'],
+    },
+    // {
+    //   title: 'Đã Trả',
+    //   dataIndex: 'returnDetail',
+    //   align: 'center',
+    //   render: (isReturn) => isReturn && <CheckCircleOutlined style={{ fontSize: 20, color: 'green' }} />
+    // },
+    {
+      title: 'Ngày Trả',
+      dataIndex: 'createdAt',
+      align: 'center',
+      render: (dateTime) => {
+        return dateTime && formatDMY_HMS(dateTime)
+      },
     },
     {
       title: 'Mã Sinh Viên',
       dataIndex: ['return', 'reader', 'studentId'],
       render: (studentId) => studentId,
       align: 'center',
-      onCell: groupByReturn
+      onCell: groupByReturns
     },
     {
-      title: 'Mã Nhân Viên - Cán Bộ',
+      title: 'Mã N.Viên - C.Bộ',
       dataIndex: ['return', 'reader', 'civilServantId'],
       render: (civilServantId) => civilServantId,
       align: 'center',
-      onCell: groupByReturn
+      onCell: groupByReturns
     },
-    {
-      title: 'Ngày Mượn',
-      dataIndex: 'createdAt',
-      align: 'center',
-      render: (dateTime) => {
-        return formatDMY_HMS(dateTime)
-      },
-      onCell: groupByReturn
-    },
-    {
-      title: 'Action',
-      key: 'operation',
-      fixed: 'right',
-      align: 'center',
-      width: 150,
-      onCell: groupByReturn,
-      render: (_, record) => (
-        <Space size="middle">
-          <Dropdown menu={{
-            items: [{
-              label: <a onClick={createReturns(record)}>Tạo Phiếu Trả</a>,
-              key: '0',
-            }]
-          }}>
-            <a>
-              More Action <DownOutlined />
-            </a>
-          </Dropdown>
-        </Space>
-      ),
-    },
+    // {
+    //   title: 'Ngày Mượn',
+    //   dataIndex: 'createdAt',
+    //   align: 'center',
+    //   render: (dateTime) => {
+    //     return formatDMY_HMS(dateTime)
+    //   },
+    //   onCell: groupByReturns
+    // },
+    // {
+    //   title: 'Action',
+    //   key: 'operation',
+    //   fixed: 'right',
+    //   align: 'center',
+    //   width: 150,
+    //   onCell: groupByReturns,
+    //   render: (_, record) => {
+    //     let items = [{
+    //       label: <a onClick={createReturns(record)}>Tạo Phiếu Phạt</a>,
+    //       key: '1',
+    //     }];
+    //     return <Space size="middle">
+    //       <Dropdown menu={{
+    //         items
+    //       }}>
+    //         <a>
+    //           More Action <DownOutlined />
+    //         </a>
+    //       </Dropdown>
+    //     </Space>
+
+    //   }
+    // },
   ];
 
   useEffect(() => {
@@ -144,9 +183,9 @@ const ReturnSearchPage = () => {
 
   const getInitData = () => {
 
-    internalCall({ key: 'readerType-search'});
-    internalCall({ key: 'return-search'});
-    internalCall({ key: 'document-search'});
+    internalCall({ key: 'readerType-search' });
+    // internalCall({ key: 'iReturn-search' });
+    internalCall({ key: 'document-search' });
 
     const getData = async (arg) => {
       if (arg && arg.data) {
@@ -156,12 +195,12 @@ const ReturnSearchPage = () => {
           setReaderTypes(resReaders);
         }
 
-        if (arg.key === 'return-search') {
-          setReturns(arg.data);
-        }
-        if (arg.key === 'document-search') {
-          setDocuments(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
-        }
+        // if (arg.key === 'iReturn-search') {
+        //   setReturns(arg.data);
+        // }
+        // if (arg.key === 'document-search') {
+        //   setDocuments(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
+        // }
       }
     };
     window.electron.ipcRenderer.on('ipc-database', getData);
@@ -274,7 +313,7 @@ const ReturnSearchPage = () => {
           total: returns.length,
           onChange: handlePageChange,
         }}
-        // scroll={{ x: 1400, y: 600 }}
+        scroll={{ x: 1400, y: 450 }}
       />
     </>
   )

@@ -10,14 +10,20 @@ export const getBorrowers = async (request: any) => {
   try {
     let readerQuery: IObject = {};
     let borrowerQuery: IObject = {};
+    let borrowerDetailQuery: IObject = {}
 
+    if (request.documentIds && request.documentIds.length) {
+      borrowerDetailQuery.documentId = { [Op.in]: request.documentIds };
+    }
     if (request.id) borrowerQuery.id = request.id;
     if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
     if (request.studentId) readerQuery.studentId = request.studentId;
+    if (request.readerTypeId) readerQuery.readerTypeId = request.readerTypeId;
     if (request.civilServantId) readerQuery.civilServantId = request.civilServantId;
     if (request.readerId) readerQuery.id = request.readerId;
 
     const borrowers = await BorrowerDetailSchema.findAll({
+      where: borrowerDetailQuery,
       include: [{
         model: DocumentSchema
       },
