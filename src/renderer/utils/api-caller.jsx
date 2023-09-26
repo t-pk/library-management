@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Modal, message } from 'antd';
-import * as urlAPI from '../constants/urlAPI';
+import * as urlAPI from '../constants/url-api.jsx';
 import { LOGIN_URL, TOKEN_KEY } from '../constants';
 import history from './history';
 
