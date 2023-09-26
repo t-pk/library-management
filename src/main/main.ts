@@ -25,6 +25,7 @@ import { createReader, getReaders } from './databases/logic/reader';
 import { createBorrow, getBorrows } from './databases/logic/borrow';
 import { getBorrowDetail } from './databases/logic/borrow-detail';
 import { createReturn, getReturns } from './databases/logic/return';
+import { createRemind, getReminds } from './databases/logic/remind';
 
 sequelize.authenticate();
 sequelize.sync({ force: false }).then((res) => {
@@ -113,7 +114,12 @@ ipcMain.on('ipc-database', async (event, arg) => {
       case 'return-search':
         result = await getReturns(data);
         break;
-
+      case 'remind-create':
+        result = await createRemind(data);
+        break;
+      case 'remind-search':
+        result = await getReminds(data);
+        break;
       default:
         break
     }
@@ -131,7 +137,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const isDebug =
-process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+  process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 if (isDebug) {
   require('electron-debug')();

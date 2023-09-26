@@ -23,7 +23,6 @@ const RemindCreatePage = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
-  const [borrowedDocuments, setBorrowedDocuments] = useState([]);
 
   const [messageApi, contextHolder] = message.useMessage();
   const readerTypeId = Form.useWatch('readerTypeId', form);
@@ -34,7 +33,6 @@ const RemindCreatePage = () => {
     let borrowInfo = queryStringToObject(location.search);
     borrowInfo.readerTypeId = +borrowInfo.readerTypeId;
     form.setFieldsValue(borrowInfo);
-    console.log("borrowInfo", borrowInfo);
 
     getInitData(borrowInfo);
     if (readerTypeId === 1) {
@@ -58,13 +56,9 @@ const RemindCreatePage = () => {
       if (arg && arg.data) {
         if (arg.key === 'readerType-search')
           setReaderTypes(arg.data.map((item) => ({ value: item.id, label: item.name })));
-        if (arg.key === 'borrowDetail-search') {
-          console.log("arg", arg);
-          setBorrowedDocuments(arg.data.map((item) => ({ value: item.id, label: item.name })));
-        }
       }
     };
-    window.electron.ipcRenderer.on('ipc-database', getData);
+    window.electron.ipcRenderer.once('ipc-database', getData);
   }
 
   const showMessage = (type, content) => {
@@ -83,16 +77,15 @@ const RemindCreatePage = () => {
     setLoading(true);
     showMessage('loading', 'loading...')
     const data = { ...values };
-    internalCall({ key: 'return-create', data });
+    internalCall({ key: 'remind-create', data });
 
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {
       if (arg.data) {
         await delay(1000);
-        form.resetFields(['documentIds']);
-        getInitData({ borrowId: form.getFieldValue('borrowId') });
+        form.resetFields();
         setLoading(false);
         messageApi.destroy(key);
-        if (arg.data) showMessage('success', 'Created Reader.');
+        if (arg.data) showMessage('success', 'Created Remind.');
 
         else showMessage('error', arg.error);
         await delay(2000);
@@ -135,23 +128,8 @@ const RemindCreatePage = () => {
           <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" disabled={true} />
         </Form.Item>
 
-        <Form.Item name="documentIds" label="Tài Liệu Mang Trả" style={reStyle}
-          rules={[{
-            validator: async (_, values = []) => {
-              const doc = values.every((id) => borrowedDocuments.map((document) => document.value).includes(id));
-              if (!doc || !values.length) return Promise.reject(new Error('Please select item on List!'));
-            }
-          }]} >
-          <Select
-            mode='multiple'
-            options={borrowedDocuments}
-            // onSearch={findDocuments}
-            placeholder=""
-            className='custom-autocomplete'
-            filterOption={(inputValue, option) =>
-              option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-            }
-          />
+        <Form.Item name="description" label="Mô Tả" style={reStyle}  >
+          <Input.TextArea rows={5} showCount maxLength={200} />
         </Form.Item>
 
         <Form.Item label={" "} {...tailFormItemLayout} style={{ ...reStyle }}>

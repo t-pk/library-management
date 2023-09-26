@@ -58,6 +58,7 @@ export const PenaltySchema = sequelize.define('penalties', IPenalty, {...attribu
 // BorrowSchema.belongsTo(DocumentSchema, { foreignKey: { allowNull: false, name: 'documentId' } });
 BorrowSchema.belongsTo(ReaderSchema, { foreignKey: { allowNull: false, name: 'readerId' } });
 BorrowSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
+BorrowSchema.hasOne(RemindSchema);
 
 BorrowDetailSchema.belongsTo(BorrowSchema, { foreignKey: { allowNull: false, name: 'borrowId' } });
 BorrowDetailSchema.belongsTo(DocumentSchema, { foreignKey: { allowNull: false, name: 'documentId' } });
@@ -77,8 +78,10 @@ DocumentSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'upd
 
 ReaderSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
 ReaderSchema.belongsTo(ReaderTypeSchema, { foreignKey: { allowNull: false, name: 'readerTypeId' } });
-ReaderTypeSchema.hasOne(ReaderSchema);
+ReaderSchema.hasMany(BorrowSchema);
 ReaderSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' } });
+ReaderTypeSchema.hasOne(ReaderSchema);
+
 
 ReturnSchema.belongsTo(ReaderSchema, { foreignKey: { allowNull: false, name: 'readerId' } });
 ReturnSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
