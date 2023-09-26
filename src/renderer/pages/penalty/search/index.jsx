@@ -16,7 +16,7 @@ const PenaltySearchPage = (props) => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
-  const [reminds, setReminds] = useState([]);
+  const [penalties, setPenalties] = useState([]);
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
   const readerTypeId = Form.useWatch('readerTypeId', form);
@@ -24,10 +24,11 @@ const PenaltySearchPage = (props) => {
   const pageSize = 20; // Number of items per page
 
   const handleDebounceFn = (reState) => {
-    props.callDatabase({ key: 'remind-search', data: reState });
-    props.listenOnce('remind-search', (arg) => {
+    props.callDatabase({ key: 'penalty-search', data: reState });
+    props.listenOnce('penalty-search', (arg) => {
+      console.log('penarg', arg);
       setLoading(false);
-      setReminds(arg.data || []);
+      setPenalties(arg.data || []);
     });
   }
 
@@ -35,35 +36,58 @@ const PenaltySearchPage = (props) => {
 
   const columns = [
     {
-      title: 'Mã Độc Giả',
+      title: 'Mã Phiếu Phạt',
       dataIndex:  'id',
       render: (id) => id,
       align: 'center',
     },
     {
+      title: 'Mã Độc Giả',
+      dataIndex:  ['return', 'borrow', 'reader', 'id'],
+      render: (id) => id,
+      align: 'center',
+    },
+    {
       title: 'Tên Độc Giả',
-      dataIndex: 'fullName',
+      dataIndex:  ['return', 'borrow', 'reader', 'fullName'],
       render: (fullName) => fullName,
       align: 'center',
     },
     {
-      title: 'Số Lần Nhắc Nhở',
-      dataIndex: 'total',
+      title: 'Số  Tiền Phạt',
+      dataIndex: 'totalAmount',
       align: 'center',
-      // render: (dateTime) => {
-      //   return dateTime && formatDMY_HMS(dateTime)
-      // },
+      render: (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')+ ' vnđ'
+    },
+    {
+      title: 'Đã Đóng Phạt',
+      dataIndex: 'compensation',
+      render: (compensation) => compensation && <CheckCircleOutlined style={{ fontSize: 20, color: 'green' }} />,
+      align: 'center',
+    },
+    {
+      title: 'Mô Tả',
+      dataIndex: 'description',
+      align: 'center',
+    },
+    {
+      title: 'Ngày Tạo Phiếu Phạt',
+      dataIndex: 'createdAt',
+      align: 'center',
+      render: (dateTime) => {
+        return formatDMY_HMS(dateTime)
+      },
     },
     {
       title: 'Mã Sinh Viên',
       dataIndex: 'studentId',
-      render: (studentId) => studentId,
+      dataIndex:  ['return', 'borrow', 'reader', 'studentId'],
       align: 'center',
     },
     {
       title: 'Mã N.Viên - C.Bộ',
       dataIndex: 'civilServantId',
-      render: (civilServantId) => civilServantId,
+      dataIndex:  ['return', 'borrow', 'reader', 'civilServantId'],
       align: 'center',
     },
   ];
@@ -87,7 +111,6 @@ const PenaltySearchPage = (props) => {
   const getInitData = () => {
 
     internalCall({ key: 'readerType-search' });
-    internalCall({ key: 'remind-search' });
 
     const getData = async (arg) => {
       if (arg && arg.data) {
@@ -121,23 +144,23 @@ const PenaltySearchPage = (props) => {
     debounceFc(inputState);
   }
 
-  const debounceRemind = async (value) => {
+  const debouncePenalty = async (value) => {
     const [id, name] = value.split('-');
     let data = {};
     if (id && !isNaN(id)) data.id = id.trim();
     if (name) data.name = name.trim();
     if (!name && isNaN(id)) data.name = value.trim();
 
-    internalCall({ key: 'remind-search', data });
+    internalCall({ key: 'penalty-search', data });
 
     window.electron.ipcRenderer.once('ipc-database', (arg) => {
-      setReminds(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
+      setPenalties(arg.data);
     });
   }
 
-  const documentFc = useCallback(debounce(debounceRemind, 400), []);
+  const documentFc = useCallback(debounce(debouncePenalty, 400), []);
 
-  const findreminds = (value) => {
+  const findpenalties = (value) => {
     documentFc(value);
   }
 
@@ -178,7 +201,7 @@ const PenaltySearchPage = (props) => {
       </Form>
       <Table
         columns={columns}
-        dataSource={reminds}
+        dataSource={penalties}
         bordered={true}
         loading={loading}
         rowKey={'id'}
@@ -187,7 +210,7 @@ const PenaltySearchPage = (props) => {
         pagination={{
           current: currentPage,
           pageSize: pageSize,
-          total: reminds.length,
+          total: penalties.length,
           onChange: handlePageChange,
         }}
         scroll={{ x: 1400, y: 450 }}

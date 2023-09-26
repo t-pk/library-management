@@ -26,7 +26,7 @@ import { createBorrow, getBorrows } from './databases/logic/borrow';
 import { getBorrowDetail } from './databases/logic/borrow-detail';
 import { createReturn, getReturns } from './databases/logic/return';
 import { createRemind, getReminds } from './databases/logic/remind';
-import { createPenalty } from './databases/logic/penalty';
+import { createPenalty, getPenalties } from './databases/logic/penalty';
 
 sequelize.authenticate();
 sequelize.sync({ force: false }).then((res) => {
@@ -123,6 +123,9 @@ ipcMain.on('ipc-database', async (event, arg) => {
         break;
       case 'penalty-create':
         result = await createPenalty(data);
+        break;
+      case 'penalty-search':
+        result = await getPenalties(data);
         break;
       default:
         break

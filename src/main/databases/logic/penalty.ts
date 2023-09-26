@@ -1,6 +1,6 @@
 
 import countBy from "lodash.countby";
-import { BorrowSchema, PenaltySchema, ReaderSchema, RemindSchema, sequelize, unitOfWork } from "../db";
+import { BorrowSchema, PenaltySchema, ReaderSchema, RemindSchema, ReturnSchema, sequelize, unitOfWork } from "../db";
 import { Op } from "sequelize";
 
 export const createPenalty = async (request: any) => {
@@ -27,14 +27,17 @@ export const getPenalties = async (request: any) => {
     readerQuery.civilServantId = request.civilServantId;
   }
 
-  const reminds = await ReaderSchema.findAll({
-    where: readerQuery, include: [{
-      model: BorrowSchema, attributes: [], required: true,
-      include: [{ model: RemindSchema, attributes: [], required: true }]
-    }], attributes: ['id', 'fullName', 'studentId', 'civilServantId', [sequelize.fn('COUNT', sequelize.col('*')), 'total']],
+  const penalties = await PenaltySchema.findAll({
+    include: [{
+      model: ReturnSchema, required: true,
+      include: [{
+        model: BorrowSchema, required: true,
+        include: [{ model: ReaderSchema, required: true, where: readerQuery, }]
+      }]
+    }],
     order: [["id", "DESC"]],
-    group: ['readers.id', 'readers.full_name', 'readers.student_id', 'readers.civil_servant_id'],
   });
-  let remindJSON = reminds.map((remind) => remind.toJSON());
-  return remindJSON;
+  let penaltiesJSON = penalties.map((penalty) => penalty.toJSON());
+  console.log("penaltiesJSON", penaltiesJSON);
+  return penaltiesJSON;
 }
