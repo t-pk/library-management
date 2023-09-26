@@ -28,7 +28,7 @@ const PenaltySearchPage = (props) => {
     props.callDatabase({ key: 'return-search', data: reState });
     const test = (arg) => {
       setLoading(false);
-      setReturns(arg.data);
+      setReturns(arg.data || []);
     }
     props.listenOnce('return-search', test);
     // internalCall({ key: 'return-search', data: reState });

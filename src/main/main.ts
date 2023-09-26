@@ -52,6 +52,7 @@ ipcMain.on('ipc-database', async (event, arg) => {
     let result;
     const data = arg.data || {};
     await getUserId();
+    console.log("arg", arg);
     if (arg.key.includes('create') || arg.key.includes('update')) {
 
       const userId = await getUserId();

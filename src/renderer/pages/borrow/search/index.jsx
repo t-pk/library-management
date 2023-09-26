@@ -60,7 +60,8 @@ const BorrowSearchPage = () => {
   const showDropDrown = (record) => {
     return borrows.filter((borrow) => borrow.borrowId === record.borrowId).some((borrow) => !borrow.returnDetail);
   }
-  const createReturns = (record) => () => {
+  const createReturns = (key,record) => () => {
+    console.log("key", key);
     const data = {
       borrowId: record.borrowId, readerId: record.borrow.reader.id,
       readerName: record.borrow.reader.fullName,
@@ -70,7 +71,15 @@ const BorrowSearchPage = () => {
       readerTypeId: record.borrow.reader.readerTypeId,
     };
     const queryString = objectToQueryString(data);
-    return navigate(`/return/create?${queryString}`);
+    if(key === 1) {
+      return navigate(`/return/create?${queryString}`);
+    }
+    if(key === 2) {
+      return navigate(`/remind/create?${queryString}`);
+    }
+    if(key === 3) {
+      return navigate(`/penalty/create?${queryString}`);
+    }
   };
 
   const columns = [
@@ -158,13 +167,17 @@ const BorrowSearchPage = () => {
         let items = [];
         if (showCreateReturn) {
           items.push({
-            label: <a onClick={createReturns(record)}>Tạo Phiếu Trả</a>,
-            key: '0',
+            label: <a onClick={createReturns(1, record)}>Tạo Phiếu Trả</a>,
+            key: '1',
           });
         }
         items.push({
-          label: <a onClick={createReturns(record)}>Tạo Phiếu Phạt</a>,
-          key: '1',
+          label: <a onClick={createReturns(2, record)}>Tạo Phiếu Nhắc Nhở</a>,
+          key: '2',
+        });
+        items.push({
+          label: <a onClick={createReturns(3, record)}>Tạo Phiếu Phạt</a>,
+          key: '3',
         });
         return <Space size="middle">
           <Dropdown menu={{

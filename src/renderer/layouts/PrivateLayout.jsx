@@ -73,12 +73,12 @@ const PrivateLayout = ({
         getItem('Tìm Kiếm', '/return/search'),
         getItem('Thêm Mới', '/return/create')
       ]),
-      getItem('Phiếu Nhắc Nhở', '/remind', <AppstoreOutlined />,
+    getItem('Phiếu Nhắc Nhở', '/remind', <AppstoreOutlined />,
       [
         getItem('Tìm Kiếm', '/remind/search'),
         getItem('Thêm Mới', '/remind/create')
       ]),
-      getItem('Phiếu Phạt', '/penalty', <AppstoreOutlined />,
+    getItem('Phiếu Phạt', '/penalty', <AppstoreOutlined />,
       [
         getItem('Tìm Kiếm', '/penalty/search'),
         getItem('Thêm Mới', '/penalty/create')
@@ -122,17 +122,6 @@ const PrivateLayout = ({
   const listenOn = async (key, callback) => {
     window.electron.ipcRenderer.on('ipc-database', async (arg) => {
       if (arg && arg.key === key)
-       await callback(arg);
-      else {
-        showMessage('error', arg.error);
-      }
-    })
-  }
-
-  const listenOnce = async(key, callback) => {
-    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
-      console.log("window.electron.ipcRenderer", arg);
-      if (arg && arg.key === key)
         await callback(arg);
       else {
         showMessage('error', arg.error);
@@ -140,10 +129,19 @@ const PrivateLayout = ({
     })
   }
 
+  const listenOnce = async (key, callback) => {
+    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
+      console.log("window.electron.ipcRenderer", arg);
+      if (!arg || arg.error)
+        showMessage('error', arg.error);
+      await callback(arg);
+    })
+  }
+
 
   return localStorage.getItem('TOKEN_KEY') ? (
     <>
-           <img className="logo-login" src={backgroundUrl} style={{width:'100%', position: 'absolute'}} alt="icon" ></img>
+      <img className="logo-login" src={backgroundUrl} style={{ width: '100%', position: 'absolute' }} alt="icon" ></img>
       <Layout>
         <Sider
           breakpoint="lg"
@@ -176,7 +174,7 @@ const PrivateLayout = ({
           />
 
           <Spin spinning={spinning} wrapperClassName={`${animate == location.pathname ? 'my-animation' : ''}`}>
-          {contextHolder}
+            {contextHolder}
             <Content
               style={{
                 padding: 15,

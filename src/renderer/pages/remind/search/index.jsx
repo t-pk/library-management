@@ -26,19 +26,12 @@ const RemindSearchPage = (props) => {
 
   const handleDebounceFn = (reState) => {
     props.callDatabase({ key: 'return-search', data: reState });
-    const test = (arg) => {
+    props.listenOnce('return-search', (arg) => {
       setLoading(false);
-      setReturns(arg.data);
-    }
-    props.listenOnce('return-search', test);
-    // internalCall({ key: 'return-search', data: reState });
-    // window.electron.ipcRenderer.once('ipc-database', async (arg) => {
-    //   setLoading(false);
-    //   if (arg && arg.data) {
-    //     setReturns(arg.data);
-    //   }
-    // });
+      setReturns(arg.data || []);
+    });
   }
+
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
   const groupByReturns = (iReturn, index) => {
     const reIndex = currentPage >= 2 ? (currentPage * pageSize - pageSize) + index : index;
@@ -69,7 +62,7 @@ const RemindSearchPage = (props) => {
 
   const columns = [
     {
-      title: 'Mã Phieu Tra',
+      title: 'Mã Phiếu Nhắc Nhở',
       dataIndex: ['return', 'id'],
       render: (id) => id,
       align: 'center',
@@ -90,18 +83,12 @@ const RemindSearchPage = (props) => {
       onCell: groupByReturns
     },
     {
-      title: 'Tên Tài Liệu',
+      title: 'Mã Phiếu Mượn',
       align: 'center',
       dataIndex: ['borrowDetail', 'document', 'name'],
     },
-    // {
-    //   title: 'Đã Trả',
-    //   dataIndex: 'returnDetail',
-    //   align: 'center',
-    //   render: (isReturn) => isReturn && <CheckCircleOutlined style={{ fontSize: 20, color: 'green' }} />
-    // },
     {
-      title: 'Ngày Trả',
+      title: 'Số Lần Nhắc Nhở',
       dataIndex: 'createdAt',
       align: 'center',
       render: (dateTime) => {
@@ -122,39 +109,6 @@ const RemindSearchPage = (props) => {
       align: 'center',
       onCell: groupByReturns
     },
-    // {
-    //   title: 'Ngày Mượn',
-    //   dataIndex: 'createdAt',
-    //   align: 'center',
-    //   render: (dateTime) => {
-    //     return formatDMY_HMS(dateTime)
-    //   },
-    //   onCell: groupByReturns
-    // },
-    // {
-    //   title: 'Action',
-    //   key: 'operation',
-    //   fixed: 'right',
-    //   align: 'center',
-    //   width: 150,
-    //   onCell: groupByReturns,
-    //   render: (_, record) => {
-    //     let items = [{
-    //       label: <a onClick={createReturns(record)}>Tạo Phiếu Phạt</a>,
-    //       key: '1',
-    //     }];
-    //     return <Space size="middle">
-    //       <Dropdown menu={{
-    //         items
-    //       }}>
-    //         <a>
-    //           More Action <DownOutlined />
-    //         </a>
-    //       </Dropdown>
-    //     </Space>
-
-    //   }
-    // },
   ];
 
   useEffect(() => {
@@ -176,7 +130,6 @@ const RemindSearchPage = (props) => {
   const getInitData = () => {
 
     internalCall({ key: 'readerType-search' });
-    // internalCall({ key: 'iReturn-search' });
     internalCall({ key: 'document-search' });
 
     const getData = async (arg) => {
@@ -186,10 +139,6 @@ const RemindSearchPage = (props) => {
           resReaders.push({ id: undefined, label: 'Skip' });
           setReaderTypes(resReaders);
         }
-
-        // if (arg.key === 'return-search') {
-        //   setReturns(arg.data);
-        // }
         if (arg.key === 'document-search') {
           setDocuments(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
         }
@@ -197,7 +146,6 @@ const RemindSearchPage = (props) => {
     };
     window.electron.ipcRenderer.on('ipc-database', getData);
   }
-
 
   const onChange = (e) => {
     setLoading(true);
