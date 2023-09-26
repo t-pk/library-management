@@ -39,6 +39,21 @@ const ReturnSearchPage = (props) => {
     //   }
     // });
   }
+  const createReturns = (record) => () => {
+    console.log("key", record);
+    const data = {
+      returnId: record.returnId, readerId: record.return.reader.id,
+      readerName: record.return.reader.fullName,
+      citizenIdentify: record.return.reader.citizenIdentify,
+      civilServantId: record.return.reader.civilServantId,
+      studentId: record.return.reader.studentId,
+      readerTypeId: record.return.reader.readerTypeId,
+    };
+    const queryString = objectToQueryString(data);
+    return navigate(`/penalty/create?${queryString}`);
+  };
+
+
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
   const groupByReturns = (iReturn, index) => {
     const reIndex = currentPage >= 2 ? (currentPage * pageSize - pageSize) + index : index;
@@ -131,30 +146,30 @@ const ReturnSearchPage = (props) => {
     //   },
     //   onCell: groupByReturns
     // },
-    // {
-    //   title: 'Action',
-    //   key: 'operation',
-    //   fixed: 'right',
-    //   align: 'center',
-    //   width: 150,
-    //   onCell: groupByReturns,
-    //   render: (_, record) => {
-    //     let items = [{
-    //       label: <a onClick={createReturns(record)}>Tạo Phiếu Phạt</a>,
-    //       key: '1',
-    //     }];
-    //     return <Space size="middle">
-    //       <Dropdown menu={{
-    //         items
-    //       }}>
-    //         <a>
-    //           More Action <DownOutlined />
-    //         </a>
-    //       </Dropdown>
-    //     </Space>
+    {
+      title: 'Action',
+      key: 'operation',
+      fixed: 'right',
+      align: 'center',
+      width: 150,
+      onCell: groupByReturns,
+      render: (_, record) => {
+        let items = [{
+          label: <a onClick={createReturns(record)}>Tạo Phiếu Phạt</a>,
+          key: '1',
+        }];
+        return <Space size="middle">
+          <Dropdown menu={{
+            items
+          }}>
+            <a>
+              More Action <DownOutlined />
+            </a>
+          </Dropdown>
+        </Space>
 
-    //   }
-    // },
+      }
+    },
   ];
 
   useEffect(() => {

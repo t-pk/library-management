@@ -6,13 +6,14 @@ import {
   message,
   Select,
   Radio,
-  AutoComplete
+  AutoComplete,
+  InputNumber,
+  Checkbox
 } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { internalCall, delay } from '../../../actions';
 import { queryStringToObject } from '../../../utils/index';
-import debounce from 'lodash.debounce';
 
 const reStyle = { minWidth: "32%" };
 
@@ -23,7 +24,6 @@ const PenaltyCreatePage = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
-  const [borrowedDocuments, setBorrowedDocuments] = useState([]);
 
   const [messageApi, contextHolder] = message.useMessage();
   const readerTypeId = Form.useWatch('readerTypeId', form);
@@ -31,12 +31,11 @@ const PenaltyCreatePage = () => {
   const key = 'updatable';
 
   useEffect(() => {
-    let borrowInfo = queryStringToObject(location.search);
-    borrowInfo.readerTypeId = +borrowInfo.readerTypeId;
-    form.setFieldsValue(borrowInfo);
-    console.log("borrowInfo", borrowInfo);
+    let returnInfo = queryStringToObject(location.search);
+    returnInfo.readerTypeId = +returnInfo.readerTypeId;
+    form.setFieldsValue(returnInfo);
 
-    getInitData(borrowInfo);
+    getInitData();
     if (readerTypeId === 1) {
       form.setFieldsValue({ civilServantId: undefined });
     }
@@ -45,26 +44,17 @@ const PenaltyCreatePage = () => {
     }
   }, [readerTypeId, location]);
 
-  const getInitData = (borrowInfo) => {
+  const getInitData = () => {
 
     internalCall({ key: 'readerType-search' });
-
-    if (borrowInfo && borrowInfo.borrowId) {
-      const requestBorrowDetail = { borrowId: borrowInfo.borrowId };
-      internalCall({ key: 'borrowDetail-search', data: requestBorrowDetail });
-    }
 
     const getData = async (arg) => {
       if (arg && arg.data) {
         if (arg.key === 'readerType-search')
           setReaderTypes(arg.data.map((item) => ({ value: item.id, label: item.name })));
-        if (arg.key === 'borrowDetail-search') {
-          console.log("arg", arg);
-          setBorrowedDocuments(arg.data.map((item) => ({ value: item.id, label: item.name })));
-        }
       }
     };
-    window.electron.ipcRenderer.on('ipc-database', getData);
+    window.electron.ipcRenderer.once('ipc-database', getData);
   }
 
   const showMessage = (type, content) => {
@@ -83,16 +73,15 @@ const PenaltyCreatePage = () => {
     setLoading(true);
     showMessage('loading', 'loading...')
     const data = { ...values };
-    internalCall({ key: 'return-create', data });
+    internalCall({ key: 'penalty-create', data });
 
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {
       if (arg.data) {
         await delay(1000);
-        form.resetFields(['documentIds']);
-        getInitData({ borrowId: form.getFieldValue('borrowId') });
+        form.resetFields();
         setLoading(false);
         messageApi.destroy(key);
-        if (arg.data) showMessage('success', 'Created Reader.');
+        if (arg.data) showMessage('success', 'Created Penalty.');
 
         else showMessage('error', arg.error);
         await delay(2000);
@@ -107,7 +96,7 @@ const PenaltyCreatePage = () => {
         style={{ display: 'flex', flexWrap: 'wrap' }}
         scrollToFirstError>
 
-        <Form.Item name="borrowId" label="Mã Phiếu Mượn" style={reStyle}>
+        <Form.Item name="returnId" label="Mã Phiếu Trả" style={reStyle}>
           <Input disabled={true} />
         </Form.Item>
 
@@ -135,23 +124,16 @@ const PenaltyCreatePage = () => {
           <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" disabled={true} />
         </Form.Item>
 
-        <Form.Item name="documentIds" label="Tài Liệu Mang Trả" style={reStyle}
-          rules={[{
-            validator: async (_, values = []) => {
-              const doc = values.every((id) => borrowedDocuments.map((document) => document.value).includes(id));
-              if (!doc || !values.length) return Promise.reject(new Error('Please select item on List!'));
-            }
-          }]} >
-          <Select
-            mode='multiple'
-            options={borrowedDocuments}
-            // onSearch={findDocuments}
-            placeholder=""
-            className='custom-autocomplete'
-            filterOption={(inputValue, option) =>
-              option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-            }
-          />
+        <Form.Item name="totalAmount" label="Số Tiền Phạt" style={reStyle} rules={[{ required: true, message: 'Please input your totalAmount!' }, { type: 'number', min: 1000, max: 100000000, message: 'min >= 1,000 and max <= 100,000,000' }]}>
+          <InputNumber min={1} style={{ width: '100%' }} formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} />
+        </Form.Item>
+
+        <Form.Item name="compensation" label=" " valuePropName="checked" style={{ ...reStyle }} {...tailFormItemLayout} >
+          <Checkbox> Đã Đóng Phạt </Checkbox>
+        </Form.Item>
+
+        <Form.Item name="description" label="Mô Tả" style={reStyle}  >
+          <Input.TextArea rows={5} showCount maxLength={200} />
         </Form.Item>
 
         <Form.Item label={" "} {...tailFormItemLayout} style={{ ...reStyle }}>

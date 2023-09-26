@@ -6,11 +6,7 @@ export const IPenalty = {
     primaryKey: true,
     autoIncrement: true
   },
-  borrowId: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  borrowDetailId: {
+  returnId: {
     type: DataTypes.INTEGER,
     allowNull: false
   },

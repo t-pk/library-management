@@ -65,11 +65,6 @@ BorrowDetailSchema.belongsTo(DocumentSchema, { foreignKey: { allowNull: false, n
 BorrowDetailSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
 BorrowDetailSchema.hasOne(ReturnDetailSchema, { foreignKey: { allowNull: true, name: 'borrowDetailId' } });
 
-BorrowSchema.hasMany(BorrowDetailSchema,  { as: {
-  singular: 'borrowDetail', // Singular form of the alias
-  plural: 'borrowDetails',  // Plural form of the alias
-}, foreignKey:  { allowNull: false, name: 'borrowId' } })
-
 DocumentSchema.belongsTo(AuthorSchema, { foreignKey: { allowNull: false, name: 'authorId' } });
 DocumentSchema.belongsTo(PublisherSchema, { foreignKey: { allowNull: false, name: 'publisherId' } });
 DocumentSchema.belongsTo(DocumentTypeSchema, { foreignKey: { allowNull: false, name: 'documentTypeId' } });
@@ -81,7 +76,6 @@ ReaderSchema.belongsTo(ReaderTypeSchema, { foreignKey: { allowNull: false, name:
 ReaderSchema.hasMany(BorrowSchema);
 ReaderSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' } });
 ReaderTypeSchema.hasOne(ReaderSchema);
-
 
 ReturnSchema.belongsTo(ReaderSchema, { foreignKey: { allowNull: false, name: 'readerId' } });
 ReturnSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
@@ -98,8 +92,7 @@ RemindSchema.belongsTo(BorrowSchema, { foreignKey: { allowNull: false, name: 'bo
 
 PenaltySchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
 PenaltySchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' } });
-PenaltySchema.belongsTo(BorrowSchema, { foreignKey: { allowNull: false, name: 'borrowId' } });
-PenaltySchema.belongsTo(BorrowDetailSchema, { foreignKey: { allowNull: false, name: 'borrowDetailId' } });
+PenaltySchema.belongsTo(ReturnSchema, { foreignKey: { allowNull: false, name: 'returnId' } });
 
 export const unitOfWork = (callback: any) => {
   const isolationLevel = Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE;
