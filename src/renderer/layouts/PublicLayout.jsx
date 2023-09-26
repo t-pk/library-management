@@ -3,7 +3,7 @@ import React from 'react';
 import { Route, Redirect, Navigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const PublicRoute = ({
+const PublicLayout = ({
   element: Component,
 }) =>
   <Component />
@@ -15,4 +15,4 @@ const PublicRoute = ({
 //   path: PropTypes.string.isRequired,
 // };
 
-export default PublicRoute;
+export default PublicLayout;

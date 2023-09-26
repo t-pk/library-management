@@ -11,7 +11,7 @@ import backgroundUrl from '../assets/background.svg';
 const { Header, Content, Sider } = Layout;
 import './css.css';
 
-const PrivateRoute = ({
+const PrivateLayout = ({
   element: Component,
 }) => {
   const [animate, setAnimate] = useState('/document/search');
@@ -73,7 +73,16 @@ const PrivateRoute = ({
         getItem('Tìm Kiếm', '/return/search'),
         getItem('Thêm Mới', '/return/create')
       ]),
-    getItem('Phiếu phạt', 'phat/request'),
+      getItem('Phiếu Nhắc Nhở', '/remind', <AppstoreOutlined />,
+      [
+        getItem('Tìm Kiếm', '/remind/search'),
+        getItem('Thêm Mới', '/remind/create')
+      ]),
+      getItem('Phiếu Phạt', '/penalty', <AppstoreOutlined />,
+      [
+        getItem('Tìm Kiếm', '/penalty/search'),
+        getItem('Thêm Mới', '/penalty/create')
+      ]),
     getItem('Tác Giả', '/author', <AppstoreOutlined />,
       [
         getItem('Tìm Kiếm', '/author/search'),
@@ -189,11 +198,11 @@ const PrivateRoute = ({
   );
 };
 
-// PrivateRoute.propTypes = {
+// PrivateLayout.propTypes = {
 //   element: PropTypes.elementType.isRequired,
 //   layout: PropTypes.elementType.isRequired,
 //   exact: PropTypes.bool.isRequired,
 //   path: PropTypes.string.isRequired,
 // };
 
-export default PrivateRoute;
+export default PrivateLayout;

@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { SettingOutlined, DownOutlined, CaretDownOutlined, CheckSquareOutlined, CheckOutlined, SearchOutlined, CloseCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { AutoComplete, Button, Cascader, Input, Select, Space, Row, Dropdown, Checkbox, Table, Form, Tag, InputNumber, Radio } from 'antd';
 import debounce from 'lodash.debounce';
-import { internalCall } from '../../../actions';
+import { internalCall } from '../../../../renderer/actions';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { formatDMY_HMS, formatDMY, objectToQueryString } from '../../../utils/index';
 const { Option } = Select;
@@ -12,11 +12,11 @@ import './ui.scss';
 const formItemLayout = { labelCol: { xs: { span: 30 }, sm: { span: 30 } }, wrapperCol: { xs: { span: 40 }, sm: { span: 23 } } };
 const reStyle = { minWidth: "32%" };
 
-const BorrowSearchPage = () => {
+const RemindSearchPage = (props) => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
-  const [borrows, setBorrows] = useState([]);
+  const [returns, setReturns] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
@@ -24,160 +24,137 @@ const BorrowSearchPage = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const pageSize = 20; // Number of items per page
 
-  const handleDebounceFn = reState => {
-    internalCall({ key: 'borrow-search', data: reState });
-    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
+  const handleDebounceFn = (reState) => {
+    props.callDatabase({ key: 'return-search', data: reState });
+    const test = (arg) => {
       setLoading(false);
-      if (arg && arg.data) {
-        console.log(arg.data);
-        setBorrows(arg.data);
-      }
-    });
+      setReturns(arg.data);
+    }
+    props.listenOnce('return-search', test);
+    // internalCall({ key: 'return-search', data: reState });
+    // window.electron.ipcRenderer.once('ipc-database', async (arg) => {
+    //   setLoading(false);
+    //   if (arg && arg.data) {
+    //     setReturns(arg.data);
+    //   }
+    // });
   }
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
-  const groupByBorrow = (borrow, index) => {
+  const groupByReturns = (iReturn, index) => {
     const reIndex = currentPage >= 2 ? (currentPage * pageSize - pageSize) + index : index;
     let boolean = false;
     if (reIndex === 0) {
       boolean = true;
     }
-    else if (borrow.borrowId !== (borrows[reIndex - 1].borrowId)) {
+    else if (iReturn.returnId !== (returns[reIndex - 1].returnId)) {
       boolean = true;
     }
     else {
-      boolean = (borrow.countBorrowId - borrow.rest) !== (borrows[reIndex - 1].countBorrowId - borrows[reIndex - 1].rest);
+      boolean = (iReturn.countReturnId - iReturn.rest) !== (returns[reIndex - 1].countReturnId - returns[reIndex - 1].rest);
       let count = 0;
       if (reIndex % 10 === 0) {
         for (let i = 0; i < reIndex; i++) {
-          count += borrows[i].countBorrowId;
+          count += returns[i].countReturnId;
         }
       }
     };
     return {
-      rowSpan: boolean ? (borrow.countBorrowId - borrow.rest) : 0
+      rowSpan: boolean ? (iReturn.countReturnId - iReturn.rest) : 0
     }
-  }
-  const showDropDrown = (record) => {
-    return borrows.filter((borrow) => borrow.borrowId === record.borrowId).some((borrow) => !borrow.returnDetail);
-  }
-  const createReturns = (record) => () => {
-    const data = {
-      borrowId: record.borrowId, readerId: record.borrow.reader.id,
-      readerName: record.borrow.reader.fullName,
-      citizenIdentify: record.borrow.reader.citizenIdentify,
-      civilServantId: record.borrow.reader.civilServantId,
-      studentId: record.borrow.reader.studentId,
-      readerTypeId: record.borrow.reader.readerTypeId,
-    };
-    const queryString = objectToQueryString(data);
-    return navigate(`/return/create?${queryString}`);
   };
+
+  const showDropDrown = (record) => {
+    return returns.filter((iReturn) => iReturn.iReturnId === record.iReturnId).some((iReturn) => !iReturn.returnDetail);
+  }
 
   const columns = [
     {
-      title: 'Mã Phiếu Mượn',
-      dataIndex: ['borrow', 'id'],
+      title: 'Mã Phieu Tra',
+      dataIndex: ['return', 'id'],
       render: (id) => id,
       align: 'center',
-      onCell: groupByBorrow
+      onCell: groupByReturns
     },
     {
       title: 'Mã Độc Giả',
-      dataIndex: ['borrow', 'reader', 'id'],
+      dataIndex: ['return', 'reader', 'id'],
       render: (id) => id,
       align: 'center',
-      onCell: groupByBorrow
+      onCell: groupByReturns
     },
     {
       title: 'Tên Độc Giả',
-      dataIndex: ['borrow', 'reader', 'fullName'],
+      dataIndex: ['return', 'reader', 'fullName'],
       render: (fullName) => fullName,
       align: 'center',
-      onCell: groupByBorrow
+      onCell: groupByReturns
     },
     {
       title: 'Tên Tài Liệu',
       align: 'center',
-      dataIndex: ['document', 'name'],
+      dataIndex: ['borrowDetail', 'document', 'name'],
     },
-    {
-      title: 'Đã Trả',
-      dataIndex: 'returnDetail',
-      align: 'center',
-      render: (isReturn) => isReturn && <CheckCircleOutlined style={{ fontSize: 20, color: 'green' }} />
-    },
-    {
-      title: 'Mã Sinh Viên',
-      dataIndex: ['borrow', 'reader', 'studentId'],
-      render: (studentId) => studentId,
-      align: 'center',
-      onCell: groupByBorrow
-    },
-    {
-      title: 'Mã Nhân Viên - Cán Bộ',
-      dataIndex: ['borrow', 'reader', 'civilServantId'],
-      render: (civilServantId) => civilServantId,
-      align: 'center',
-      onCell: groupByBorrow
-    },
-    {
-      title: 'Ngày Mượn',
-      dataIndex: 'createdAt',
-      align: 'center',
-      render: (dateTime) => {
-        return formatDMY_HMS(dateTime)
-      },
-      onCell: groupByBorrow
-    },
-    {
-      title: 'Hạn Trả',
-      dataIndex: 'createdAt',
-      align: 'center',
-      render: (dateTime) => {
-        return formatDMY(dateTime)
-      },
-      onCell: groupByBorrow
-    },
+    // {
+    //   title: 'Đã Trả',
+    //   dataIndex: 'returnDetail',
+    //   align: 'center',
+    //   render: (isReturn) => isReturn && <CheckCircleOutlined style={{ fontSize: 20, color: 'green' }} />
+    // },
     {
       title: 'Ngày Trả',
-      dataIndex: ['returnDetail', 'createdAt'],
+      dataIndex: 'createdAt',
       align: 'center',
       render: (dateTime) => {
         return dateTime && formatDMY_HMS(dateTime)
       },
     },
     {
-      title: 'Action',
-      key: 'operation',
-      fixed: 'right',
+      title: 'Mã Sinh Viên',
+      dataIndex: ['return', 'reader', 'studentId'],
+      render: (studentId) => studentId,
       align: 'center',
-      width: 150,
-      onCell: groupByBorrow,
-      render: (_, record) => {
-        const showCreateReturn = showDropDrown(record);
-        let items = [];
-        if (showCreateReturn) {
-          items.push({
-            label: <a onClick={createReturns(record)}>Tạo Phiếu Trả</a>,
-            key: '0',
-          });
-        }
-        items.push({
-          label: <a onClick={createReturns(record)}>Tạo Phiếu Phạt</a>,
-          key: '1',
-        });
-        return <Space size="middle">
-          <Dropdown menu={{
-            items
-          }}>
-            <a>
-              More Action <DownOutlined />
-            </a>
-          </Dropdown>
-        </Space>
-
-      }
+      onCell: groupByReturns
     },
+    {
+      title: 'Mã N.Viên - C.Bộ',
+      dataIndex: ['return', 'reader', 'civilServantId'],
+      render: (civilServantId) => civilServantId,
+      align: 'center',
+      onCell: groupByReturns
+    },
+    // {
+    //   title: 'Ngày Mượn',
+    //   dataIndex: 'createdAt',
+    //   align: 'center',
+    //   render: (dateTime) => {
+    //     return formatDMY_HMS(dateTime)
+    //   },
+    //   onCell: groupByReturns
+    // },
+    // {
+    //   title: 'Action',
+    //   key: 'operation',
+    //   fixed: 'right',
+    //   align: 'center',
+    //   width: 150,
+    //   onCell: groupByReturns,
+    //   render: (_, record) => {
+    //     let items = [{
+    //       label: <a onClick={createReturns(record)}>Tạo Phiếu Phạt</a>,
+    //       key: '1',
+    //     }];
+    //     return <Space size="middle">
+    //       <Dropdown menu={{
+    //         items
+    //       }}>
+    //         <a>
+    //           More Action <DownOutlined />
+    //         </a>
+    //       </Dropdown>
+    //     </Space>
+
+    //   }
+    // },
   ];
 
   useEffect(() => {
@@ -199,7 +176,7 @@ const BorrowSearchPage = () => {
   const getInitData = () => {
 
     internalCall({ key: 'readerType-search' });
-    internalCall({ key: 'borrow-search' });
+    // internalCall({ key: 'iReturn-search' });
     internalCall({ key: 'document-search' });
 
     const getData = async (arg) => {
@@ -210,9 +187,9 @@ const BorrowSearchPage = () => {
           setReaderTypes(resReaders);
         }
 
-        if (arg.key === 'borrow-search') {
-          setBorrows(arg.data);
-        }
+        // if (arg.key === 'return-search') {
+        //   setReturns(arg.data);
+        // }
         if (arg.key === 'document-search') {
           setDocuments(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
         }
@@ -224,6 +201,7 @@ const BorrowSearchPage = () => {
 
   const onChange = (e) => {
     setLoading(true);
+    setCurrentPage(1);
     let reState = {};
     if (e.target.id === 'documents') {
       const documentIds = e.target.value.map((item) => item.split('-')[0].trim());
@@ -316,7 +294,7 @@ const BorrowSearchPage = () => {
       </Form>
       <Table
         columns={columns}
-        dataSource={borrows}
+        dataSource={returns}
         bordered={true}
         loading={loading}
         rowKey={'id'}
@@ -325,7 +303,7 @@ const BorrowSearchPage = () => {
         pagination={{
           current: currentPage,
           pageSize: pageSize,
-          total: borrows.length,
+          total: returns.length,
           onChange: handlePageChange,
         }}
         scroll={{ x: 1400, y: 450 }}
@@ -333,4 +311,4 @@ const BorrowSearchPage = () => {
     </>
   )
 };
-export default BorrowSearchPage;
+export default RemindSearchPage;

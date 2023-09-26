@@ -11,6 +11,8 @@ import { IAuthor } from './schema/author';
 import { IPublisher } from './schema/publisher';
 import { IDocumentType } from './schema/document-type';
 import { IReaderType } from './schema/reader-type';
+import { IRemind } from './schema/remind';
+import { IPenalty } from './schema/penalty';
 
 export const sequelize = new Sequelize.Sequelize('postgres://postgres:123456@localhost:5433/library', {
   dialectModule: pg,
@@ -48,6 +50,10 @@ export const PublisherSchema = sequelize.define('publishers', IPublisher, attrib
 export const DocumentTypeSchema = sequelize.define('documentTypes', IDocumentType, {...attributeCommon, tableName: 'document_types'});
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */ 
 export const ReaderTypeSchema = sequelize.define('readerTypes', IReaderType, {...attributeCommon, tableName: 'reader_types'});
+/** @type import("sequelize").ModelStatic<import("sequelize").Model> */
+export const RemindSchema = sequelize.define('reminds', IRemind, {...attributeCommon, tableName: 'reminds'});
+/** @type import("sequelize").ModelStatic<import("sequelize").Model> */ 
+export const PenaltySchema = sequelize.define('penalties', IPenalty, {...attributeCommon, tableName: 'penalties'});
 
 // BorrowSchema.belongsTo(DocumentSchema, { foreignKey: { allowNull: false, name: 'documentId' } });
 BorrowSchema.belongsTo(ReaderSchema, { foreignKey: { allowNull: false, name: 'readerId' } });
@@ -83,6 +89,14 @@ ReturnDetailSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 
 
 UserSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
 UserSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' } });
+
+RemindSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
+RemindSchema.belongsTo(BorrowSchema, { foreignKey: { allowNull: false, name: 'borrowId' } });
+
+PenaltySchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
+PenaltySchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' } });
+PenaltySchema.belongsTo(BorrowSchema, { foreignKey: { allowNull: false, name: 'borrowId' } });
+PenaltySchema.belongsTo(BorrowDetailSchema, { foreignKey: { allowNull: false, name: 'borrowDetailId' } });
 
 export const unitOfWork = (callback: any) => {
   const isolationLevel = Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE;
