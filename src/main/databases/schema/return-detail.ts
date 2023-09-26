@@ -10,7 +10,7 @@ export const IReturnDetail = {
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  borrowerDetailId: {
+  borrowDetailId: {
     type: DataTypes.INTEGER,
     allowNull: false
   },

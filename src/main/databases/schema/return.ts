@@ -6,7 +6,7 @@ export const IReturn = {
     primaryKey: true,
     autoIncrement: true
   },
-  borrowerId: {
+  borrowId: {
     type: DataTypes.INTEGER,
     allowNull: false
   },

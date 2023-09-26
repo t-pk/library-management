@@ -22,8 +22,8 @@ import { createPublisher, getPublishers } from './databases/logic/publisher';
 import { getDocumentTypes } from './databases/logic/document-type';
 import { getReaderTypes } from './databases/logic/reader-type';
 import { createReader, getReaders } from './databases/logic/reader';
-import { createBorrower, getBorrowers } from './databases/logic/borrower';
-import { getBorrowerDetail } from './databases/logic/borrower-detail';
+import { createBorrow, getBorrows } from './databases/logic/borrow';
+import { getBorrowDetail } from './databases/logic/borrow-detail';
 import { createReturn, getReturns } from './databases/logic/return';
 
 sequelize.authenticate();
@@ -97,14 +97,14 @@ ipcMain.on('ipc-database', async (event, arg) => {
       case 'reader-search':
         result = await getReaders(data);
         break;
-      case 'borrower-create':
-        result = await createBorrower(data);
+      case 'borrow-create':
+        result = await createBorrow(data);
         break;
-      case 'borrower-search':
-        result = await getBorrowers(data);
+      case 'borrow-search':
+        result = await getBorrows(data);
         break;
-      case 'borrowerDetail-search':
-        result = await getBorrowerDetail(data);
+      case 'borrowDetail-search':
+        result = await getBorrowDetail(data);
         break;
       case 'return-create':
         result = await createReturn(data);

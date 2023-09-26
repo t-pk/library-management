@@ -30,7 +30,7 @@ const ReaderSearchPage = () => {
       studentId: record.studentId, civilServantId: record.civilServantId || ''
     };
     const queryString = objectToQueryString(data);
-    return navigate(`/borrower/create?${queryString}`);
+    return navigate(`/borrow/create?${queryString}`);
   }
 
   const columns = [

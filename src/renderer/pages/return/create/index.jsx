@@ -31,12 +31,12 @@ const ReturnCreatePage = () => {
   const key = 'updatable';
 
   useEffect(() => {
-    let borrowerInfo = queryStringToObject(location.search);
-    borrowerInfo.readerTypeId = +borrowerInfo.readerTypeId;
-    form.setFieldsValue(borrowerInfo);
-    console.log("borrowerInfo", borrowerInfo);
+    let borrowInfo = queryStringToObject(location.search);
+    borrowInfo.readerTypeId = +borrowInfo.readerTypeId;
+    form.setFieldsValue(borrowInfo);
+    console.log("borrowInfo", borrowInfo);
 
-    getInitData(borrowerInfo);
+    getInitData(borrowInfo);
     if (readerTypeId === 1) {
       form.setFieldsValue({ civilServantId: undefined });
     }
@@ -45,20 +45,20 @@ const ReturnCreatePage = () => {
     }
   }, [readerTypeId, location]);
 
-  const getInitData = (borrowerInfo) => {
+  const getInitData = (borrowInfo) => {
 
     internalCall({ key: 'readerType-search' });
 
-    if (borrowerInfo && borrowerInfo.borrowerId) {
-      const requestBorrowerDetail = { borrowerId: borrowerInfo.borrowerId };
-      internalCall({ key: 'borrowerDetail-search', data: requestBorrowerDetail });
+    if (borrowInfo && borrowInfo.borrowId) {
+      const requestBorrowDetail = { borrowId: borrowInfo.borrowId };
+      internalCall({ key: 'borrowDetail-search', data: requestBorrowDetail });
     }
 
     const getData = async (arg) => {
       if (arg && arg.data) {
         if (arg.key === 'readerType-search')
           setReaderTypes(arg.data.map((item) => ({ value: item.id, label: item.name })));
-        if (arg.key === 'borrowerDetail-search') {
+        if (arg.key === 'borrowDetail-search') {
           console.log("arg", arg);
           setBorrowedDocuments(arg.data.map((item) => ({ value: item.id, label: item.name })));
         }
@@ -89,7 +89,7 @@ const ReturnCreatePage = () => {
       if (arg.data) {
         await delay(1000);
         form.resetFields(['documentIds']);
-        getInitData({ borrowerId: form.getFieldValue('borrowerId') });
+        getInitData({ borrowId: form.getFieldValue('borrowId') });
         setLoading(false);
         messageApi.destroy(key);
         if (arg.data) showMessage('success', 'Created Reader.');
@@ -107,7 +107,7 @@ const ReturnCreatePage = () => {
         style={{ display: 'flex', flexWrap: 'wrap' }}
         scrollToFirstError>
 
-        <Form.Item name="borrowerId" label="Mã Phiếu Mượn" style={reStyle}>
+        <Form.Item name="borrowId" label="Mã Phiếu Mượn" style={reStyle}>
           <Input disabled={true} />
         </Form.Item>
 

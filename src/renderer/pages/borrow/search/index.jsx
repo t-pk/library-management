@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { SettingOutlined, DownOutlined, CaretDownOutlined, CheckSquareOutlined, CheckOutlined, SearchOutlined, CloseCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { AutoComplete, Button, Cascader, Input, Select, Space, Row, Dropdown, Checkbox, Table, Form, Tag, InputNumber, Radio } from 'antd';
 import debounce from 'lodash.debounce';
-import { internalCall } from '../../../../renderer/actions';
+import { internalCall } from '../../../actions';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { formatDMY_HMS, formatDMY, objectToQueryString } from '../../../utils/index';
 const { Option } = Select;
@@ -12,11 +12,11 @@ import './ui.scss';
 const formItemLayout = { labelCol: { xs: { span: 30 }, sm: { span: 30 } }, wrapperCol: { xs: { span: 40 }, sm: { span: 23 } } };
 const reStyle = { minWidth: "32%" };
 
-const BorrowerSearchPage = () => {
+const BorrowSearchPage = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
-  const [borrowers, setBorrowers] = useState([]);
+  const [borrows, setBorrows] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
@@ -25,49 +25,49 @@ const BorrowerSearchPage = () => {
   const pageSize = 20; // Number of items per page
 
   const handleDebounceFn = reState => {
-    internalCall({ key: 'borrower-search', data: reState });
+    internalCall({ key: 'borrow-search', data: reState });
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {
       setLoading(false);
       if (arg && arg.data) {
         console.log(arg.data);
-        setBorrowers(arg.data);
+        setBorrows(arg.data);
       }
     });
   }
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
-  const groupByBorrower = (borrower, index) => {
+  const groupByBorrow = (borrow, index) => {
     const reIndex = currentPage >= 2 ? (currentPage * pageSize - pageSize) + index : index;
     let boolean = false;
     if (reIndex === 0) {
       boolean = true;
     }
-    else if (borrower.borrowerId !== (borrowers[reIndex - 1].borrowerId)) {
+    else if (borrow.borrowId !== (borrows[reIndex - 1].borrowId)) {
       boolean = true;
     }
     else {
-      boolean = (borrower.countBorrowerId - borrower.rest) !== (borrowers[reIndex - 1].countBorrowerId - borrowers[reIndex - 1].rest);
+      boolean = (borrow.countBorrowId - borrow.rest) !== (borrows[reIndex - 1].countBorrowId - borrows[reIndex - 1].rest);
       let count = 0;
       if (reIndex % 10 === 0) {
         for (let i = 0; i < reIndex; i++) {
-          count += borrowers[i].countBorrowerId;
+          count += borrows[i].countBorrowId;
         }
       }
     };
     return {
-      rowSpan: boolean ? (borrower.countBorrowerId - borrower.rest) : 0
+      rowSpan: boolean ? (borrow.countBorrowId - borrow.rest) : 0
     }
   }
   const showDropDrown = (record) => {
-    return borrowers.filter((borrower) => borrower.borrowerId === record.borrowerId).some((borrower) => !borrower.returnDetail);
+    return borrows.filter((borrow) => borrow.borrowId === record.borrowId).some((borrow) => !borrow.returnDetail);
   }
   const createReturns = (record) => () => {
     const data = {
-      borrowerId: record.borrowerId, readerId: record.borrower.reader.id,
-      readerName: record.borrower.reader.fullName,
-      citizenIdentify: record.borrower.reader.citizenIdentify,
-      civilServantId: record.borrower.reader.civilServantId,
-      studentId: record.borrower.reader.studentId,
-      readerTypeId: record.borrower.reader.readerTypeId,
+      borrowId: record.borrowId, readerId: record.borrow.reader.id,
+      readerName: record.borrow.reader.fullName,
+      citizenIdentify: record.borrow.reader.citizenIdentify,
+      civilServantId: record.borrow.reader.civilServantId,
+      studentId: record.borrow.reader.studentId,
+      readerTypeId: record.borrow.reader.readerTypeId,
     };
     const queryString = objectToQueryString(data);
     return navigate(`/return/create?${queryString}`);
@@ -76,17 +76,17 @@ const BorrowerSearchPage = () => {
   const columns = [
     {
       title: 'Mã Độc Giả',
-      dataIndex: ['borrower', 'reader', 'id'],
+      dataIndex: ['borrow', 'reader', 'id'],
       render: (id) => id,
       align: 'center',
-      onCell: groupByBorrower
+      onCell: groupByBorrow
     },
     {
       title: 'Tên Độc Giả',
-      dataIndex: ['borrower', 'reader', 'fullName'],
+      dataIndex: ['borrow', 'reader', 'fullName'],
       render: (fullName) => fullName,
       align: 'center',
-      onCell: groupByBorrower
+      onCell: groupByBorrow
     },
     {
       title: 'Tên Tài Liệu',
@@ -101,17 +101,17 @@ const BorrowerSearchPage = () => {
     },
     {
       title: 'Mã Sinh Viên',
-      dataIndex: ['borrower', 'reader', 'studentId'],
+      dataIndex: ['borrow', 'reader', 'studentId'],
       render: (studentId) => studentId,
       align: 'center',
-      onCell: groupByBorrower
+      onCell: groupByBorrow
     },
     {
       title: 'Mã Nhân Viên - Cán Bộ',
-      dataIndex: ['borrower', 'reader', 'civilServantId'],
+      dataIndex: ['borrow', 'reader', 'civilServantId'],
       render: (civilServantId) => civilServantId,
       align: 'center',
-      onCell: groupByBorrower
+      onCell: groupByBorrow
     },
     {
       title: 'Ngày Mượn',
@@ -120,7 +120,7 @@ const BorrowerSearchPage = () => {
       render: (dateTime) => {
         return formatDMY_HMS(dateTime)
       },
-      onCell: groupByBorrower
+      onCell: groupByBorrow
     },
     {
       title: 'Hạn Trả',
@@ -129,7 +129,7 @@ const BorrowerSearchPage = () => {
       render: (dateTime) => {
         return formatDMY(dateTime)
       },
-      onCell: groupByBorrower
+      onCell: groupByBorrow
     },
     {
       title: 'Ngày Trả',
@@ -145,7 +145,7 @@ const BorrowerSearchPage = () => {
       fixed: 'right',
       align: 'center',
       width: 150,
-      onCell: groupByBorrower,
+      onCell: groupByBorrow,
       render: (_, record) => {
         const showCreateReturn = showDropDrown(record);
         let items = [];
@@ -192,7 +192,7 @@ const BorrowerSearchPage = () => {
   const getInitData = () => {
 
     internalCall({ key: 'readerType-search' });
-    internalCall({ key: 'borrower-search' });
+    internalCall({ key: 'borrow-search' });
     internalCall({ key: 'document-search' });
 
     const getData = async (arg) => {
@@ -203,8 +203,8 @@ const BorrowerSearchPage = () => {
           setReaderTypes(resReaders);
         }
 
-        if (arg.key === 'borrower-search') {
-          setBorrowers(arg.data);
+        if (arg.key === 'borrow-search') {
+          setBorrows(arg.data);
         }
         if (arg.key === 'document-search') {
           setDocuments(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
@@ -309,7 +309,7 @@ const BorrowerSearchPage = () => {
       </Form>
       <Table
         columns={columns}
-        dataSource={borrowers}
+        dataSource={borrows}
         bordered={true}
         loading={loading}
         rowKey={'id'}
@@ -318,7 +318,7 @@ const BorrowerSearchPage = () => {
         pagination={{
           current: currentPage,
           pageSize: pageSize,
-          total: borrowers.length,
+          total: borrows.length,
           onChange: handlePageChange,
         }}
         scroll={{ x: 1400, y: 450 }}
@@ -326,4 +326,4 @@ const BorrowerSearchPage = () => {
     </>
   )
 };
-export default BorrowerSearchPage;
+export default BorrowSearchPage;

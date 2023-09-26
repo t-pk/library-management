@@ -1,6 +1,6 @@
 import { Op } from 'sequelize';
 import countBy from "lodash.countby";
-import { BorrowerDetailSchema, DocumentSchema, ReaderSchema, ReturnDetailSchema, ReturnSchema, unitOfWork } from '../db';
+import { BorrowDetailSchema, DocumentSchema, ReaderSchema, ReturnDetailSchema, ReturnSchema, unitOfWork } from '../db';
 
 interface IObject {
   [key: string]: string | {}
@@ -10,14 +10,14 @@ export const createReturn = async (request: any) => {
   return unitOfWork(async (transaction: any) => {
     const returnData: any = await ReturnSchema.findOrCreate({
       where: {
-        borrowerId: request.borrowerId,
+        borrowId: request.borrowId,
         createdBy: 2,
         readerId: request.readerId,
         description: request.description || ''
       }, transaction, raw: true, returning: true
     });
-    const borrowerDetails = await BorrowerDetailSchema.findAll({ where: { borrowerId: request.borrowerId, documentId: { [Op.in]: request.documentIds } }, raw: true, transaction });
-    const retrurnDetails = borrowerDetails.map((borrowerDetail: any) => ({ borrowerDetailId: borrowerDetail.id, returnId: returnData[0].id, createdBy: request.createdBy }));
+    const borrowDetails = await BorrowDetailSchema.findAll({ where: { borrowId: request.borrowId, documentId: { [Op.in]: request.documentIds } }, raw: true, transaction });
+    const retrurnDetails = borrowDetails.map((borrowDetail: any) => ({ borrowDetailId: borrowDetail.id, returnId: returnData[0].id, createdBy: request.createdBy }));
     return await ReturnDetailSchema.bulkCreate(retrurnDetails, { transaction, returning: true });
   })
 }
@@ -27,10 +27,10 @@ export const getReturns = async (request: any) => {
   try {
     let readerQuery: IObject = {};
     let returnQuery: IObject = {};
-    let borrowerDetail: IObject = {}
+    let borrowDetail: IObject = {}
 
     if (request.documentIds && request.documentIds.length) {
-      borrowerDetail.documentId = { [Op.in]: request.documentIds };
+      borrowDetail.documentId = { [Op.in]: request.documentIds };
     }
     if (request.id) returnQuery.id = request.id;
     if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
@@ -41,7 +41,6 @@ export const getReturns = async (request: any) => {
     if (request.readerId) readerQuery.id = request.readerId;
 
     const returnDetails = await ReturnDetailSchema.findAll({
-      where:{x:1},
       include: [
         {
           model: ReturnSchema, include: [{
@@ -51,12 +50,12 @@ export const getReturns = async (request: any) => {
           required: true
         },
         {
-          model: BorrowerDetailSchema,
+          model: BorrowDetailSchema,
           include: [{
             model: DocumentSchema
           },
           ],
-          where: borrowerDetail
+          where: borrowDetail
         },
       ],
       order: [['returnId', 'DESC'], ['id', 'DESC']],

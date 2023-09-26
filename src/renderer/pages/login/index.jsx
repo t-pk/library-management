@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate, Redirect } from 'react-router-dom';
 import { internalCall } from 'renderer/actions';
 import icon from '../../assets/icon.jpeg';
+import backgroundUrl from '../../assets/background.svg';
 import './ui.css';
 
 const MESSAGE_LOGIN_FAIL =
@@ -51,7 +52,9 @@ const LoginPage = () => {
   };
 
   return (
+   
     <div id="login-content">
+       <img className="logo-login" src={backgroundUrl} style={{width:'100%', position: 'absolute'}} alt="icon" ></img>
       <Form
         name="basic"
         initialValues={{ remember: true }}

@@ -1,29 +1,29 @@
 import { Op } from "sequelize";
 import countBy from "lodash.countby";
-import { DocumentSchema, unitOfWork, BorrowerSchema, BorrowerDetailSchema, ReaderSchema, sequelize, ReturnDetailSchema } from "../db";
+import { DocumentSchema, unitOfWork, BorrowSchema, BorrowDetailSchema, ReaderSchema, sequelize, ReturnDetailSchema } from "../db";
 
 interface IObject {
   [key: string]: string | {}
 }
 
-export const getBorrowers = async (request: any) => {
+export const getBorrows = async (request: any) => {
   try {
     let readerQuery: IObject = {};
-    let borrowerQuery: IObject = {};
-    let borrowerDetailQuery: IObject = {}
+    let borrowQuery: IObject = {};
+    let borrowDetailQuery: IObject = {}
 
     if (request.documentIds && request.documentIds.length) {
-      borrowerDetailQuery.documentId = { [Op.in]: request.documentIds };
+      borrowDetailQuery.documentId = { [Op.in]: request.documentIds };
     }
-    if (request.id) borrowerQuery.id = request.id;
+    if (request.id) borrowQuery.id = request.id;
     if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
     if (request.studentId) readerQuery.studentId = request.studentId;
     if (request.readerTypeId) readerQuery.readerTypeId = request.readerTypeId;
     if (request.civilServantId) readerQuery.civilServantId = request.civilServantId;
     if (request.readerId) readerQuery.id = request.readerId;
 
-    const borrowers = await BorrowerDetailSchema.findAll({
-      where: borrowerDetailQuery,
+    const borrows = await BorrowDetailSchema.findAll({
+      where: borrowDetailQuery,
       include: [{
         model: DocumentSchema
       },
@@ -31,18 +31,18 @@ export const getBorrowers = async (request: any) => {
         model: ReturnDetailSchema
       },
       {
-        model: BorrowerSchema,
-        where: borrowerQuery,
+        model: BorrowSchema,
+        where: borrowQuery,
         include: [{
           model: ReaderSchema,
           where: readerQuery
         }]
       }],
-      order: [['borrowerId', 'DESC'], ['id', 'DESC']],
+      order: [['borrowId', 'DESC'], ['id', 'DESC']],
     });
-    let borrowersJSON = borrowers.map(borrower => borrower.toJSON());
+    let borrowsJSON = borrows.map(borrow => borrow.toJSON());
 
-    const borrowerObj: { [key in string]: number } = countBy(borrowers, 'borrowerId');
+    const borrowObj: { [key in string]: number } = countBy(borrows, 'borrowId');
 
     let resultObj: { [key in string]: number } = {};
 
@@ -50,7 +50,7 @@ export const getBorrowers = async (request: any) => {
     let count = 0;
     let mark = 0;
 
-    for (const [_, value] of Object.entries(borrowerObj).reverse()) {
+    for (const [_, value] of Object.entries(borrowObj).reverse()) {
       count += value;
       if (Math.floor(count / limit) > mark) {
         let start = mark * limit;
@@ -72,27 +72,27 @@ export const getBorrowers = async (request: any) => {
         }
       }
     }
-    borrowersJSON = borrowersJSON.map((borrower, index) => ({ ...borrower, countBorrowerId: borrowerObj[borrower.borrowerId], rest: resultObj[index] || 0 }));
-    return borrowersJSON;
+    borrowsJSON = borrowsJSON.map((borrow, index) => ({ ...borrow, countBorrowId: borrowObj[borrow.borrowId], rest: resultObj[index] || 0 }));
+    return borrowsJSON;
   } catch (error) {
     console.log("getDocuments", error);
   }
 }
 
-export const createBorrower = async (request: any) => {
+export const createBorrow = async (request: any) => {
   return unitOfWork(async (transaction: any) => {
-    const borrower = {
+    const borrow = {
       readerId: request.readerId,
       createdBy: request.createdBy
     };
 
-    const borrowerRes = await BorrowerSchema.create(borrower, { transaction, raw: true, returning: true });
+    const borrowRes = await BorrowSchema.create(borrow, { transaction, raw: true, returning: true });
 
-    const borrowerDetail = request.documentIds.map((documentId: any) => ({
-      borrowerId: borrowerRes.dataValues.id,
+    const borrowDetail = request.documentIds.map((documentId: any) => ({
+      borrowId: borrowRes.dataValues.id,
       documentId: +documentId, quantity: 1,
       createdBy: request.createdBy
     }));
-    return BorrowerDetailSchema.bulkCreate(borrowerDetail, { transaction });
+    return BorrowDetailSchema.bulkCreate(borrowDetail, { transaction });
   })
 }

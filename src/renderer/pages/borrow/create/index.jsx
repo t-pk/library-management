@@ -19,7 +19,7 @@ const reStyle = { minWidth: "32%" };
 const formItemLayout = { labelCol: { xs: { span: 30 }, sm: { span: 30 } }, wrapperCol: { xs: { span: 40 }, sm: { span: 23 } } };
 const tailFormItemLayout = { wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } }, };
 
-const BorrowerCreatePage = () => {
+const BorrowCreatePage = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
@@ -85,7 +85,7 @@ const BorrowerCreatePage = () => {
     const data = { ...values };
     const documentIds = values.documentIds.map((document) => +document.split('-')[0].trim());
     data.documentIds = documentIds;
-    internalCall({ key: 'borrower-create', data });
+    internalCall({ key: 'borrow-create', data });
 
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {
       if (arg.data) {
@@ -182,4 +182,4 @@ const BorrowerCreatePage = () => {
   );
 };
 
-export default BorrowerCreatePage;
+export default BorrowCreatePage;

@@ -1,14 +1,23 @@
 import { DataTypes, Sequelize } from 'sequelize';
 
-export const IBorrower = {
+export const IBorrowDetail = {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  readerId: {
+  borrowId: {
     type: DataTypes.INTEGER,
     allowNull: false
+  },
+  documentId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  quantity: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 1
   },
   createdAt: {
     type: DataTypes.DATE,

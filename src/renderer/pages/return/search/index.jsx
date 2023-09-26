@@ -92,7 +92,7 @@ const ReturnSearchPage = (props) => {
     {
       title: 'Tên Tài Liệu',
       align: 'center',
-      dataIndex: ['borrowerDetail', 'document', 'name'],
+      dataIndex: ['borrowDetail', 'document', 'name'],
     },
     // {
     //   title: 'Đã Trả',

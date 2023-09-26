@@ -7,6 +7,7 @@ import {
 
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { internalCall } from '../actions';
+import backgroundUrl from '../assets/background.svg';
 const { Header, Content, Sider } = Layout;
 import './css.css';
 
@@ -62,10 +63,10 @@ const PrivateRoute = ({
         getItem('Thêm Mới', '/reader/create'),
       ]),
 
-    getItem('Phiếu mượn', '/borrower', <AppstoreOutlined />,
+    getItem('Phiếu mượn', '/borrow', <AppstoreOutlined />,
       [
-        getItem('Tìm Kiếm', '/borrower/search'),
-        getItem('Thêm Mới', '/borrower/create')
+        getItem('Tìm Kiếm', '/borrow/search'),
+        getItem('Thêm Mới', '/borrow/create')
       ]),
     getItem('Phiếu Trả', '/return', <AppstoreOutlined />,
       [
@@ -133,6 +134,7 @@ const PrivateRoute = ({
 
   return localStorage.getItem('TOKEN_KEY') ? (
     <>
+           <img className="logo-login" src={backgroundUrl} style={{width:'100%', position: 'absolute'}} alt="icon" ></img>
       <Layout>
         <Sider
           breakpoint="lg"
