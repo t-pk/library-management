@@ -1,7 +1,6 @@
 import React from 'react';
 
-import PrivateLayout from './layouts/PrivateLayout';
-import PublicLayout from './layouts/PublicLayout';
+import { PrivateLayout, PublicLayout } from './layouts';
 
 const LoginPage = React.lazy(() => import('./pages/login'));
 const DocumentSeachPage = React.lazy(() => import('./pages/document/search'));
