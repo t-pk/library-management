@@ -1,21 +1,56 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { SettingOutlined, DownOutlined, CaretDownOutlined, CheckSquareOutlined, CheckOutlined, SearchOutlined, CloseCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
-import { AutoComplete, Button, Cascader, Input, Select, Space, Row, Dropdown, Checkbox, Table, Form, Tag, InputNumber, Radio } from 'antd';
+import {
+  SettingOutlined,
+  DownOutlined,
+  CaretDownOutlined,
+  CheckSquareOutlined,
+  CheckOutlined,
+  SearchOutlined,
+  CloseCircleOutlined,
+  CheckCircleOutlined,
+} from '@ant-design/icons';
+import {
+  AutoComplete,
+  Button,
+  Cascader,
+  Input,
+  Select,
+  Space,
+  Row,
+  Dropdown,
+  Checkbox,
+  Table,
+  Form,
+  Tag,
+  InputNumber,
+  Radio,
+} from 'antd';
 import debounce from 'lodash.debounce';
 import { internalCall } from '../../../../renderer/actions';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { formatDMY_HMS, formatDMY, objectToQueryString } from '../../../utils/index';
+import {
+  formatDMY_HMS,
+  formatDMY,
+  objectToQueryString,
+} from '../../../utils/index';
 const { Option } = Select;
 
 import './ui.scss';
 
-const formItemLayout = { labelCol: { xs: { span: 30 }, sm: { span: 30 } }, wrapperCol: { xs: { span: 40 }, sm: { span: 23 } } };
-const reStyle = { minWidth: "32%" };
+const formItemLayout = {
+  labelCol: { xs: { span: 30 }, sm: { span: 30 } },
+  wrapperCol: { xs: { span: 40 }, sm: { span: 23 } },
+};
+const reStyle = { minWidth: '32%' };
 
 const RemindSearchPage = (props) => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
+  const [inputState, setinputState] = useState({
+    fullName: '',
+    id: 0,
+    studentId: '',
+  });
   const [reminds, setReminds] = useState([]);
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
@@ -29,14 +64,14 @@ const RemindSearchPage = (props) => {
       setLoading(false);
       setReminds(arg.data || []);
     });
-  }
+  };
 
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
 
   const columns = [
     {
       title: 'Mã Độc Giả',
-      dataIndex:  'id',
+      dataIndex: 'id',
       render: (id) => id,
       align: 'center',
     },
@@ -80,26 +115,27 @@ const RemindSearchPage = (props) => {
     if (readerTypeId === undefined) {
       form.setFieldsValue({ studentId: undefined });
       form.setFieldsValue({ civilServantId: undefined });
-    };
-
+    }
   }, [readerTypeId]);
 
   const getInitData = () => {
-
     internalCall({ key: 'readerType-search' });
     internalCall({ key: 'remind-search' });
 
     const getData = async (arg) => {
       if (arg && arg.data) {
         if (arg.key === 'readerType-search') {
-          const resReaders = arg.data.map((item) => ({ value: item.id, label: item.name }));
+          const resReaders = arg.data.map((item) => ({
+            value: item.id,
+            label: item.name,
+          }));
           resReaders.push({ id: undefined, label: 'Skip' });
           setReaderTypes(resReaders);
         }
       }
     };
     window.electron.ipcRenderer.on('ipc-database', getData);
-  }
+  };
 
   const onChange = (e) => {
     setLoading(true);
@@ -107,8 +143,7 @@ const RemindSearchPage = (props) => {
     let reState = {};
     if (e.target.name === 'readerTypeId') {
       reState = { ...inputState, [e.target.name]: e.target.value };
-    }
-    else {
+    } else {
       reState = { ...inputState, [e.target.id]: e.target.value };
     }
 
@@ -119,7 +154,7 @@ const RemindSearchPage = (props) => {
   const onClick = () => {
     setLoading(true);
     debounceFc(inputState);
-  }
+  };
 
   const debounceRemind = async (value) => {
     const [id, name] = value.split('-');
@@ -131,15 +166,20 @@ const RemindSearchPage = (props) => {
     internalCall({ key: 'remind-search', data });
 
     window.electron.ipcRenderer.once('ipc-database', (arg) => {
-      setReminds(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
+      setReminds(
+        arg.data.map((item) => ({
+          id: item.id,
+          value: `${item.id} - ${item.name}`,
+        }))
+      );
     });
-  }
+  };
 
   const documentFc = useCallback(debounce(debounceRemind, 400), []);
 
   const findreminds = (value) => {
     documentFc(value);
-  }
+  };
 
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
@@ -147,33 +187,57 @@ const RemindSearchPage = (props) => {
 
   return (
     <>
-      <Form  {...formItemLayout} form={form}
-        layout="vertical" name="dynamic_rule"
+      <Form
+        {...formItemLayout}
+        form={form}
+        layout="vertical"
+        name="dynamic_rule"
         style={{ display: 'flex', flexWrap: 'wrap' }}
-        scrollToFirstError initialValues={{ readerTypeId: undefined }}>
-
+        scrollToFirstError
+        initialValues={{ readerTypeId: undefined }}
+      >
         <Form.Item label="Mã Độc Giả" style={reStyle}>
           <Input id="readerId" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item label="Tên Độc Giả" style={reStyle}  >
+        <Form.Item label="Tên Độc Giả" style={reStyle}>
           <Input id="fullName" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item name="studentId" label="Mã Sinh Viên" style={reStyle} >
-          <Input disabled={readerTypeId && readerTypeId !== 1} id="studentId" onChange={onChange} />
+        <Form.Item name="studentId" label="Mã Sinh Viên" style={reStyle}>
+          <Input
+            disabled={readerTypeId && readerTypeId !== 1}
+            id="studentId"
+            onChange={onChange}
+          />
         </Form.Item>
 
-        <Form.Item name="civilServantId" label="Mã Cán Bộ - Nhân Viên" style={reStyle} >
-          <Input disabled={readerTypeId && readerTypeId !== 2} id="civilServantId" onChange={onChange} />
+        <Form.Item
+          name="civilServantId"
+          label="Mã Cán Bộ - Nhân Viên"
+          style={reStyle}
+        >
+          <Input
+            disabled={readerTypeId && readerTypeId !== 2}
+            id="civilServantId"
+            onChange={onChange}
+          />
         </Form.Item>
 
         <Form.Item name="readerTypeId" label="Loại Độc Giả" style={reStyle}>
-          <Radio.Group name="readerTypeId" onChange={onChange} options={readerTypes} optionType="button" buttonStyle="solid" />
+          <Radio.Group
+            name="readerTypeId"
+            onChange={onChange}
+            options={readerTypes}
+            optionType="button"
+            buttonStyle="solid"
+          />
         </Form.Item>
 
         <Form.Item style={reStyle} label=" ">
-          <Button onClick={onClick} type='primary' icon={<SearchOutlined />}>Search</Button>
+          <Button onClick={onClick} type="primary" icon={<SearchOutlined />}>
+            Search
+          </Button>
         </Form.Item>
       </Form>
       <Table
@@ -183,7 +247,7 @@ const RemindSearchPage = (props) => {
         loading={loading}
         rowKey={'id'}
         tableLayout={'fixed'}
-        size='small'
+        size="small"
         pagination={{
           current: currentPage,
           pageSize: pageSize,
@@ -193,6 +257,6 @@ const RemindSearchPage = (props) => {
         scroll={{ x: 1400, y: 450 }}
       />
     </>
-  )
+  );
 };
 export default RemindSearchPage;

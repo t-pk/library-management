@@ -5,18 +5,28 @@ import './ui.scss';
 
 const style = { minWidth: '28%', marginRight: '10px' };
 
-const SearchFC = ({ columns, onClick, onChange, inputState, documents, loading, rowSelection, validates }) => {
-
+const SearchFC = ({
+  columns,
+  onClick,
+  onChange,
+  inputState,
+  documents,
+  loading,
+  rowSelection,
+  validates,
+}) => {
   const camelize = (str) => {
-    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word) {
-      return word.toUpperCase();
-    }).replace(/\s+/g, '');
-  }
+    return str
+      .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word) {
+        return word.toUpperCase();
+      })
+      .replace(/\s+/g, '');
+  };
 
   const ExportComponent = () => {
-    console.log("12321");
-    return Object.keys(validates).map((item) =>
-      <Form.Item style={style} key={item} >
+    console.log('12321');
+    return Object.keys(validates).map((item) => (
+      <Form.Item style={style} key={item}>
         <Input
           placeholder={camelize(item)}
           value={inputState[item]}
@@ -26,15 +36,17 @@ const SearchFC = ({ columns, onClick, onChange, inputState, documents, loading, 
           maxLength={validates[item].max}
         />
       </Form.Item>
-    )
-  }
+    ));
+  };
 
   return (
     <>
       <Form style={{ display: 'flex' }}>
         <ExportComponent />
         <Form.Item style={style}>
-          <Button onClick={onClick} type='primary' icon={<SearchOutlined />}>Search</Button>
+          <Button onClick={onClick} type="primary" icon={<SearchOutlined />}>
+            Search
+          </Button>
         </Form.Item>
       </Form>
       <Table
@@ -47,6 +59,6 @@ const SearchFC = ({ columns, onClick, onChange, inputState, documents, loading, 
         loading={loading}
       />
     </>
-  )
+  );
 };
 export default SearchFC;

@@ -1,21 +1,56 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { SettingOutlined, DownOutlined, CaretDownOutlined, CheckSquareOutlined, CheckOutlined, SearchOutlined, CloseCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
-import { AutoComplete, Button, Cascader, Input, Select, Space, Row, Dropdown, Checkbox, Table, Form, Tag, InputNumber, Radio } from 'antd';
+import {
+  SettingOutlined,
+  DownOutlined,
+  CaretDownOutlined,
+  CheckSquareOutlined,
+  CheckOutlined,
+  SearchOutlined,
+  CloseCircleOutlined,
+  CheckCircleOutlined,
+} from '@ant-design/icons';
+import {
+  AutoComplete,
+  Button,
+  Cascader,
+  Input,
+  Select,
+  Space,
+  Row,
+  Dropdown,
+  Checkbox,
+  Table,
+  Form,
+  Tag,
+  InputNumber,
+  Radio,
+} from 'antd';
 import debounce from 'lodash.debounce';
 import { internalCall } from '../../../actions';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { formatDMY_HMS, formatDMY, objectToQueryString } from '../../../utils/index';
+import {
+  formatDMY_HMS,
+  formatDMY,
+  objectToQueryString,
+} from '../../../utils/index';
 const { Option } = Select;
 
 import './ui.scss';
 
-const formItemLayout = { labelCol: { xs: { span: 30 }, sm: { span: 30 } }, wrapperCol: { xs: { span: 40 }, sm: { span: 23 } } };
-const reStyle = { minWidth: "32%" };
+const formItemLayout = {
+  labelCol: { xs: { span: 30 }, sm: { span: 30 } },
+  wrapperCol: { xs: { span: 40 }, sm: { span: 23 } },
+};
+const reStyle = { minWidth: '32%' };
 
 const BorrowSearchPage = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
+  const [inputState, setinputState] = useState({
+    fullName: '',
+    id: 0,
+    studentId: '',
+  });
   const [borrows, setBorrows] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -24,7 +59,7 @@ const BorrowSearchPage = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const pageSize = 20; // Number of items per page
 
-  const handleDebounceFn = reState => {
+  const handleDebounceFn = (reState) => {
     internalCall({ key: 'borrow-search', data: reState });
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {
       setLoading(false);
@@ -33,37 +68,41 @@ const BorrowSearchPage = () => {
         setBorrows(arg.data);
       }
     });
-  }
+  };
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
   const groupByBorrow = (borrow, index) => {
-    const reIndex = currentPage >= 2 ? (currentPage * pageSize - pageSize) + index : index;
+    const reIndex =
+      currentPage >= 2 ? currentPage * pageSize - pageSize + index : index;
     let boolean = false;
     if (reIndex === 0) {
       boolean = true;
-    }
-    else if (borrow.borrowId !== (borrows[reIndex - 1].borrowId)) {
+    } else if (borrow.borrowId !== borrows[reIndex - 1].borrowId) {
       boolean = true;
-    }
-    else {
-      boolean = (borrow.countBorrowId - borrow.rest) !== (borrows[reIndex - 1].countBorrowId - borrows[reIndex - 1].rest);
+    } else {
+      boolean =
+        borrow.countBorrowId - borrow.rest !==
+        borrows[reIndex - 1].countBorrowId - borrows[reIndex - 1].rest;
       let count = 0;
       if (reIndex % 10 === 0) {
         for (let i = 0; i < reIndex; i++) {
           count += borrows[i].countBorrowId;
         }
       }
-    };
-    return {
-      rowSpan: boolean ? (borrow.countBorrowId - borrow.rest) : 0
     }
-  }
+    return {
+      rowSpan: boolean ? borrow.countBorrowId - borrow.rest : 0,
+    };
+  };
   const showDropDrown = (record) => {
-    return borrows.filter((borrow) => borrow.borrowId === record.borrowId).some((borrow) => !borrow.returnDetail);
-  }
-  const createReturns = (key,record) => () => {
-    console.log("key", key);
+    return borrows
+      .filter((borrow) => borrow.borrowId === record.borrowId)
+      .some((borrow) => !borrow.returnDetail);
+  };
+  const createReturns = (key, record) => () => {
+    console.log('key', key);
     const data = {
-      borrowId: record.borrowId, readerId: record.borrow.reader.id,
+      borrowId: record.borrowId,
+      readerId: record.borrow.reader.id,
       readerName: record.borrow.reader.fullName,
       citizenIdentify: record.borrow.reader.citizenIdentify,
       civilServantId: record.borrow.reader.civilServantId,
@@ -71,13 +110,13 @@ const BorrowSearchPage = () => {
       readerTypeId: record.borrow.reader.readerTypeId,
     };
     const queryString = objectToQueryString(data);
-    if(key === 1) {
+    if (key === 1) {
       return navigate(`/return/create?${queryString}`);
     }
-    if(key === 2) {
+    if (key === 2) {
       return navigate(`/remind/create?${queryString}`);
     }
-    if(key === 3) {
+    if (key === 3) {
       return navigate(`/penalty/create?${queryString}`);
     }
   };
@@ -88,21 +127,21 @@ const BorrowSearchPage = () => {
       dataIndex: ['borrow', 'id'],
       render: (id) => id,
       align: 'center',
-      onCell: groupByBorrow
+      onCell: groupByBorrow,
     },
     {
       title: 'Mã Độc Giả',
       dataIndex: ['borrow', 'reader', 'id'],
       render: (id) => id,
       align: 'center',
-      onCell: groupByBorrow
+      onCell: groupByBorrow,
     },
     {
       title: 'Tên Độc Giả',
       dataIndex: ['borrow', 'reader', 'fullName'],
       render: (fullName) => fullName,
       align: 'center',
-      onCell: groupByBorrow
+      onCell: groupByBorrow,
     },
     {
       title: 'Tên Tài Liệu',
@@ -113,46 +152,49 @@ const BorrowSearchPage = () => {
       title: 'Đã Trả',
       dataIndex: 'returnDetail',
       align: 'center',
-      render: (isReturn) => isReturn && <CheckCircleOutlined style={{ fontSize: 20, color: 'green' }} />
+      render: (isReturn) =>
+        isReturn && (
+          <CheckCircleOutlined style={{ fontSize: 20, color: 'green' }} />
+        ),
     },
     {
       title: 'Mã Sinh Viên',
       dataIndex: ['borrow', 'reader', 'studentId'],
       render: (studentId) => studentId,
       align: 'center',
-      onCell: groupByBorrow
+      onCell: groupByBorrow,
     },
     {
       title: 'Mã Nhân Viên - Cán Bộ',
       dataIndex: ['borrow', 'reader', 'civilServantId'],
       render: (civilServantId) => civilServantId,
       align: 'center',
-      onCell: groupByBorrow
+      onCell: groupByBorrow,
     },
     {
       title: 'Ngày Mượn',
       dataIndex: 'createdAt',
       align: 'center',
       render: (dateTime) => {
-        return formatDMY_HMS(dateTime)
+        return formatDMY_HMS(dateTime);
       },
-      onCell: groupByBorrow
+      onCell: groupByBorrow,
     },
     {
       title: 'Hạn Trả',
       dataIndex: 'createdAt',
       align: 'center',
       render: (dateTime) => {
-        return formatDMY(dateTime)
+        return formatDMY(dateTime);
       },
-      onCell: groupByBorrow
+      onCell: groupByBorrow,
     },
     {
       title: 'Ngày Trả',
       dataIndex: ['returnDetail', 'createdAt'],
       align: 'center',
       render: (dateTime) => {
-        return dateTime && formatDMY_HMS(dateTime)
+        return dateTime && formatDMY_HMS(dateTime);
       },
     },
     {
@@ -179,17 +221,20 @@ const BorrowSearchPage = () => {
           label: <a onClick={createReturns(3, record)}>Tạo Phiếu Phạt</a>,
           key: '3',
         });
-        return <Space size="middle">
-          <Dropdown menu={{
-            items
-          }}>
-            <a>
-              More Action <DownOutlined />
-            </a>
-          </Dropdown>
-        </Space>
-
-      }
+        return (
+          <Space size="middle">
+            <Dropdown
+              menu={{
+                items,
+              }}
+            >
+              <a>
+                More Action <DownOutlined />
+              </a>
+            </Dropdown>
+          </Space>
+        );
+      },
     },
   ];
 
@@ -205,12 +250,10 @@ const BorrowSearchPage = () => {
     if (readerTypeId === undefined) {
       form.setFieldsValue({ studentId: undefined });
       form.setFieldsValue({ civilServantId: undefined });
-    };
-
+    }
   }, [readerTypeId]);
 
   const getInitData = () => {
-
     internalCall({ key: 'readerType-search' });
     internalCall({ key: 'borrow-search' });
     internalCall({ key: 'document-search' });
@@ -218,7 +261,10 @@ const BorrowSearchPage = () => {
     const getData = async (arg) => {
       if (arg && arg.data) {
         if (arg.key === 'readerType-search') {
-          const resReaders = arg.data.map((item) => ({ value: item.id, label: item.name }));
+          const resReaders = arg.data.map((item) => ({
+            value: item.id,
+            label: item.name,
+          }));
           resReaders.push({ id: undefined, label: 'Skip' });
           setReaderTypes(resReaders);
         }
@@ -227,25 +273,29 @@ const BorrowSearchPage = () => {
           setBorrows(arg.data);
         }
         if (arg.key === 'document-search') {
-          setDocuments(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
+          setDocuments(
+            arg.data.map((item) => ({
+              id: item.id,
+              value: `${item.id} - ${item.name}`,
+            }))
+          );
         }
       }
     };
     window.electron.ipcRenderer.on('ipc-database', getData);
-  }
-
+  };
 
   const onChange = (e) => {
     setLoading(true);
     let reState = {};
     if (e.target.id === 'documents') {
-      const documentIds = e.target.value.map((item) => item.split('-')[0].trim());
+      const documentIds = e.target.value.map((item) =>
+        item.split('-')[0].trim()
+      );
       reState = { ...inputState, documentIds: documentIds };
-    }
-    else if (e.target.name === 'readerTypeId') {
+    } else if (e.target.name === 'readerTypeId') {
       reState = { ...inputState, [e.target.name]: e.target.value };
-    }
-    else {
+    } else {
       reState = { ...inputState, [e.target.id]: e.target.value };
     }
 
@@ -256,7 +306,7 @@ const BorrowSearchPage = () => {
   const onClick = () => {
     setLoading(true);
     debounceFc(inputState);
-  }
+  };
 
   const debounceDocument = async (value) => {
     const [id, name] = value.split('-');
@@ -268,15 +318,20 @@ const BorrowSearchPage = () => {
     internalCall({ key: 'document-search', data });
 
     window.electron.ipcRenderer.once('ipc-database', (arg) => {
-      setDocuments(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
+      setDocuments(
+        arg.data.map((item) => ({
+          id: item.id,
+          value: `${item.id} - ${item.name}`,
+        }))
+      );
     });
-  }
+  };
 
   const documentFc = useCallback(debounce(debounceDocument, 400), []);
 
   const findDocuments = (value) => {
     documentFc(value);
-  }
+  };
 
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
@@ -284,11 +339,15 @@ const BorrowSearchPage = () => {
 
   return (
     <>
-      <Form  {...formItemLayout} form={form}
-        layout="vertical" name="dynamic_rule"
+      <Form
+        {...formItemLayout}
+        form={form}
+        layout="vertical"
+        name="dynamic_rule"
         style={{ display: 'flex', flexWrap: 'wrap' }}
-        scrollToFirstError initialValues={{ readerTypeId: undefined }}>
-
+        scrollToFirstError
+        initialValues={{ readerTypeId: undefined }}
+      >
         <Form.Item label="Mã Độc Giả" style={reStyle}>
           <Input id="readerId" onChange={onChange} />
         </Form.Item>
@@ -296,35 +355,58 @@ const BorrowSearchPage = () => {
         <Form.Item name="documents" label="Tài Liệu" style={reStyle}>
           <Select
             onSearch={findDocuments}
-            mode='multiple'
+            mode="multiple"
             options={documents}
             placeholder=""
-            className='custom-autocomplete'
-            onChange={(value) => onChange({ target: { id: 'documents', value } })}
+            className="custom-autocomplete"
+            onChange={(value) =>
+              onChange({ target: { id: 'documents', value } })
+            }
             filterOption={(inputValue, option) =>
-              option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+              option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !==
+              -1
             }
           />
         </Form.Item>
 
-        <Form.Item label="Tên Độc Giả" style={reStyle}  >
+        <Form.Item label="Tên Độc Giả" style={reStyle}>
           <Input id="fullName" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item name="studentId" label="Mã Sinh Viên" style={reStyle} >
-          <Input disabled={readerTypeId && readerTypeId !== 1} id="studentId" onChange={onChange} />
+        <Form.Item name="studentId" label="Mã Sinh Viên" style={reStyle}>
+          <Input
+            disabled={readerTypeId && readerTypeId !== 1}
+            id="studentId"
+            onChange={onChange}
+          />
         </Form.Item>
 
-        <Form.Item name="civilServantId" label="Mã Cán Bộ - Nhân Viên" style={reStyle} >
-          <Input disabled={readerTypeId && readerTypeId !== 2} id="civilServantId" onChange={onChange} />
+        <Form.Item
+          name="civilServantId"
+          label="Mã Cán Bộ - Nhân Viên"
+          style={reStyle}
+        >
+          <Input
+            disabled={readerTypeId && readerTypeId !== 2}
+            id="civilServantId"
+            onChange={onChange}
+          />
         </Form.Item>
 
         <Form.Item name="readerTypeId" label="Loại Độc Giả" style={reStyle}>
-          <Radio.Group name="readerTypeId" onChange={onChange} options={readerTypes} optionType="button" buttonStyle="solid" />
+          <Radio.Group
+            name="readerTypeId"
+            onChange={onChange}
+            options={readerTypes}
+            optionType="button"
+            buttonStyle="solid"
+          />
         </Form.Item>
 
         <Form.Item style={reStyle} label=" ">
-          <Button onClick={onClick} type='primary' icon={<SearchOutlined />}>Search</Button>
+          <Button onClick={onClick} type="primary" icon={<SearchOutlined />}>
+            Search
+          </Button>
         </Form.Item>
       </Form>
       <Table
@@ -334,7 +416,7 @@ const BorrowSearchPage = () => {
         loading={loading}
         rowKey={'id'}
         tableLayout={'fixed'}
-        size='small'
+        size="small"
         pagination={{
           current: currentPage,
           pageSize: pageSize,
@@ -344,6 +426,6 @@ const BorrowSearchPage = () => {
         scroll={{ x: 1400, y: 450 }}
       />
     </>
-  )
+  );
 };
 export default BorrowSearchPage;

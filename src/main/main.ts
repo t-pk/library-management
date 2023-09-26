@@ -36,7 +36,6 @@ VALUES(6, 'admin', 'c9e9c18a2d3cc1af154d08be8b13929cc6f6d84afdb477524c52c8f0ae85
 `);
   sequelize.query(`INSERT INTO reader_types ("id","name", status, created_at, updated_at) VALUES(1,'Sinh Viên', true, '2023-09-21 00:13:56.237', '2023-09-21 00:13:56.237');
 INSERT INTO reader_types (2,"name", status, created_at, updated_at) VALUES('Cán Bộ - Nhân Viên', true, '2023-09-21 00:14:14.005', '2023-09-21 00:14:14.005');`);
-
 });
 
 class AppUpdater {
@@ -54,9 +53,8 @@ ipcMain.on('ipc-database', async (event, arg) => {
     let result;
     const data = arg.data || {};
     await getUserId();
-    console.log("arg", arg);
+    console.log('arg', arg);
     if (arg.key.includes('create') || arg.key.includes('update')) {
-
       const userId = await getUserId();
 
       if (arg.key.includes('create')) {
@@ -68,7 +66,11 @@ ipcMain.on('ipc-database', async (event, arg) => {
     switch (arg.key) {
       case 'user-login':
         const password = encryptPassword(data.password);
-        result = await UserSchema.findOne({ where: { username: data.username, password }, raw: true, attributes: ['id', 'username', 'position'] });
+        result = await UserSchema.findOne({
+          where: { username: data.username, password },
+          raw: true,
+          attributes: ['id', 'username', 'position'],
+        });
         break;
       case 'document-search':
         result = await getDocuments(data);
@@ -128,12 +130,12 @@ ipcMain.on('ipc-database', async (event, arg) => {
         result = await getPenalties(data);
         break;
       default:
-        break
+        break;
     }
     // console.log(result);
     event.reply('ipc-database', { key: arg.key, data: result });
   } catch (error) {
-    console.log("JSON.stringify(error)", error);
+    console.log('JSON.stringify(error)', error);
     event.reply('ipc-database', { error: JSON.stringify(error) });
   }
 });
@@ -144,7 +146,9 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const isDebug =
-  process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+  process.env.NODE_ENV === 'production' ||
+  process.env.NODE_ENV === 'development' ||
+  process.env.DEBUG_PROD === 'true';
 
 if (isDebug) {
   require('electron-debug')();
@@ -220,14 +224,13 @@ const createWindow = async () => {
   new AppUpdater();
 };
 
-
 export const getUserId = () => {
   return (mainWindow as BrowserWindow).webContents
     .executeJavaScript('localStorage.getItem("TOKEN_KEY");', true)
-    .then(result => {
+    .then((result) => {
       return JSON.parse(result || `{}`).id || 0;
     });
-}
+};
 /**
  * Add event listeners...
  */

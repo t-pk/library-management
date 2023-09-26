@@ -4,56 +4,56 @@ export const IDocument = {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
-    autoIncrement: true
+    autoIncrement: true,
   },
   name: {
     type: DataTypes.STRING(256),
-    allowNull: false
+    allowNull: false,
   },
   documentTypeId: {
     type: DataTypes.SMALLINT,
-    allowNull: false
+    allowNull: false,
   },
   publisherId: {
     type: DataTypes.SMALLINT,
-    allowNull: false
+    allowNull: false,
   },
   authorId: {
     type: DataTypes.SMALLINT,
-    allowNull: false
+    allowNull: false,
   },
   publishYear: {
     type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: true,
   },
   special: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
-    defaultValue: false
+    defaultValue: false,
   },
   status: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
-    defaultValue: true
+    defaultValue: true,
   },
   quantity: {
     type: DataTypes.SMALLINT,
-    allowNull: false
+    allowNull: false,
   },
   createdAt: {
     type: DataTypes.DATE,
-    defaultValue: Sequelize.fn('now')
+    defaultValue: Sequelize.fn('now'),
   },
   createdBy: {
     type: DataTypes.SMALLINT,
-    allowNull: false
+    allowNull: false,
   },
   updatedAt: {
     type: DataTypes.DATE,
-    defaultValue: Sequelize.fn('now')
+    defaultValue: Sequelize.fn('now'),
   },
   updatedBy: {
     type: DataTypes.SMALLINT,
-    allowNull: true
+    allowNull: true,
   },
 };

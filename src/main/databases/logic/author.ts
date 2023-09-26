@@ -1,11 +1,11 @@
-import { AuthorSchema, unitOfWork } from "../db";
-import {Op} from "sequelize";
+import { AuthorSchema, unitOfWork } from '../db';
+import { Op } from 'sequelize';
 
 export const createAuthor = async (request: any) => {
   return unitOfWork((transaction: any) => {
     return AuthorSchema.create(request, { transaction });
-  })
-}
+  });
+};
 
 export const getAuthors = async (request: any) => {
   let query: any = {};
@@ -15,5 +15,9 @@ export const getAuthors = async (request: any) => {
   if (request.name) {
     query.name = { [Op.iLike]: '%' + request.name + '%' };
   }
-  return AuthorSchema.findAll({ where: query, raw: true , order:[["id", "ASC"]]});
-}
+  return AuthorSchema.findAll({
+    where: query,
+    raw: true,
+    order: [['id', 'ASC']],
+  });
+};

@@ -24,7 +24,7 @@ const LoginPage = () => {
       content: MESSAGE_LOGIN_FAIL,
       className: 'custom-class',
       style: {
-        textAlign: "right"
+        textAlign: 'right',
       },
     });
   };
@@ -45,16 +45,20 @@ const LoginPage = () => {
         content: arg.error,
         className: 'custom-class',
         style: {
-          textAlign: "right"
+          textAlign: 'right',
         },
       });
     });
   };
 
   return (
-   
     <div id="login-content">
-       <img className="logo-login" src={backgroundUrl} style={{width:'100%', position: 'absolute'}} alt="icon" ></img>
+      <img
+        className="logo-login"
+        src={backgroundUrl}
+        style={{ width: '100%', position: 'absolute' }}
+        alt="icon"
+      ></img>
       <Form
         name="basic"
         initialValues={{ remember: true }}

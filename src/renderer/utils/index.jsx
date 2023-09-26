@@ -1,7 +1,7 @@
 export const objectToQueryString = (obj) => {
   const queryParams = new URLSearchParams(obj);
   return queryParams.toString();
-}
+};
 
 export const queryStringToObject = (queryString) => {
   const queryParams = new URLSearchParams(queryString);
@@ -13,7 +13,7 @@ export const queryStringToObject = (queryString) => {
     queryObject[key] = decodeURIComponent(value);
   });
   return queryObject;
-}
+};
 
 export const formatDMY_HMS = (date) => {
   const day = String(date.getDate()).padStart(2, '0');
@@ -24,7 +24,7 @@ export const formatDMY_HMS = (date) => {
   const seconds = String(date.getSeconds()).padStart(2, '0');
 
   return `${day}/${month}/${year} ${hours}:${minutes}:00`;
-}
+};
 
 export const formatDMY = (date) => {
   const day = String(date.getDate()).padStart(2, '0');
@@ -32,4 +32,4 @@ export const formatDMY = (date) => {
   const year = date.getFullYear();
 
   return `${day}/${month}/${year}`;
-}
+};

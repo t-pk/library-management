@@ -6,13 +6,17 @@ import PublicLayout from './layouts/PublicLayout';
 const LoginPage = React.lazy(() => import('./pages/login'));
 const DocumentSeachPage = React.lazy(() => import('./pages/document/search'));
 const DocumentCreatePage = React.lazy(() => import('./pages/document/create'));
-const DocumentRequestPage = React.lazy(() => import('./pages/document/request'));
+const DocumentRequestPage = React.lazy(() =>
+  import('./pages/document/request')
+);
 const ReaderSeachPage = React.lazy(() => import('./pages/reader/search'));
 const ReaderCreatePage = React.lazy(() => import('./pages/reader/create'));
 const AuthorSeachPage = React.lazy(() => import('./pages/author/search'));
 const AuthorCreatePage = React.lazy(() => import('./pages/author/create'));
 const PublisherSeachPage = React.lazy(() => import('./pages/publisher/search'));
-const PublisherCreatePage = React.lazy(() => import('./pages/publisher/create'));
+const PublisherCreatePage = React.lazy(() =>
+  import('./pages/publisher/create')
+);
 
 const BorrowSeachPage = React.lazy(() => import('./pages/borrow/search'));
 const BorrowCreatePage = React.lazy(() => import('./pages/borrow/create'));

@@ -9,7 +9,7 @@ const HeaderPage = () => {
   const [css, setCss] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [content, setContent] = useState(
-    'please waiting, system is processing...',
+    'please waiting, system is processing...'
   );
 
   const showModal = () => {

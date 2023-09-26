@@ -3,10 +3,7 @@ import React from 'react';
 import { Route, Redirect, Navigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const PublicLayout = ({
-  element: Component,
-}) =>
-  <Component />
+const PublicLayout = ({ element: Component }) => <Component />;
 
 // PrivateRoute.propTypes = {
 //   element: PropTypes.elementType.isRequired,

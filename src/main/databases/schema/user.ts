@@ -4,47 +4,47 @@ export const IUser = {
   id: {
     type: DataTypes.SMALLINT,
     primaryKey: true,
-    autoIncrement: true
+    autoIncrement: true,
   },
   username: {
     type: DataTypes.STRING(32),
-    allowNull: false
+    allowNull: false,
   },
   password: {
     type: DataTypes.STRING(128),
-    allowNull: false
+    allowNull: false,
   },
   email: {
     type: DataTypes.STRING(32),
-    allowNull: true
+    allowNull: true,
   },
   phoneNumber: {
     type: DataTypes.STRING(16),
-    allowNull: true
+    allowNull: true,
   },
   status: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
-    defaultValue: false
+    defaultValue: false,
   },
   position: {
     type: DataTypes.STRING(32),
-    allowNull: false
+    allowNull: false,
   },
   createdAt: {
     type: DataTypes.DATE,
-    defaultValue: Sequelize.fn('now')
+    defaultValue: Sequelize.fn('now'),
   },
   createdBy: {
     type: DataTypes.SMALLINT,
-    allowNull: false
+    allowNull: false,
   },
   updatedAt: {
     type: DataTypes.DATE,
-    defaultValue: Sequelize.fn('now')
+    defaultValue: Sequelize.fn('now'),
   },
   updatedBy: {
     type: DataTypes.SMALLINT,
-    allowNull: true
+    allowNull: true,
   },
 };

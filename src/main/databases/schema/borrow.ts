@@ -4,18 +4,18 @@ export const IBorrow = {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
-    autoIncrement: true
+    autoIncrement: true,
   },
   readerId: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
   },
   createdAt: {
     type: DataTypes.DATE,
-    defaultValue: Sequelize.fn('now')
+    defaultValue: Sequelize.fn('now'),
   },
   createdBy: {
     type: DataTypes.SMALLINT,
-    allowNull: false
+    allowNull: false,
   },
 };

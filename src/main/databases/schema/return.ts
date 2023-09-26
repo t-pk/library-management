@@ -4,11 +4,11 @@ export const IReturn = {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
-    autoIncrement: true
+    autoIncrement: true,
   },
   borrowId: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
   },
   description: {
     type: DataTypes.STRING(255),
@@ -16,10 +16,10 @@ export const IReturn = {
   },
   createdAt: {
     type: DataTypes.DATE,
-    defaultValue: Sequelize.fn('now')
+    defaultValue: Sequelize.fn('now'),
   },
   createdBy: {
     type: DataTypes.SMALLINT,
-    allowNull: false
+    allowNull: false,
   },
 };

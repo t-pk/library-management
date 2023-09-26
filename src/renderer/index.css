@@ -21,26 +21,32 @@
   box-shadow: none;
 }
 
-.ant-select-focused:where(.css-dev-only-do-not-override-14wr7n2).ant-select:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer) .ant-select-selector {
+.ant-select-focused:where(.css-dev-only-do-not-override-14wr7n2).ant-select:not(
+    .ant-select-disabled
+  ):not(.ant-select-customize-input):not(.ant-pagination-size-changer)
+  .ant-select-selector {
   box-shadow: none;
   border-color: #cdc2c2 !important;
 }
-
 
 .ant-select-selection-search-input {
   font-size: 14px;
 }
 
-.ant-select-selection-overflow{
+.ant-select-selection-overflow {
   width: 100px;
 }
 
-:where(.css-dev-only-do-not-override-14wr7n2).ant-radio-button-wrapper-disabled.ant-radio-button-wrapper-checked{
+:where(
+    .css-dev-only-do-not-override-14wr7n2
+  ).ant-radio-button-wrapper-disabled.ant-radio-button-wrapper-checked {
   background-color: #2972cf99;
-  color: #fff
+  color: #fff;
 }
 
-:where(.css-dev-only-do-not-override-1a6vqd1).ant-menu-dark .ant-menu-item, :where(.css-dev-only-do-not-override-1a6vqd1).ant-menu-dark>.ant-menu .ant-menu-item{
+:where(.css-dev-only-do-not-override-1a6vqd1).ant-menu-dark .ant-menu-item,
+:where(.css-dev-only-do-not-override-1a6vqd1).ant-menu-dark
+  > .ant-menu
+  .ant-menu-item {
   border-radius: 0;
-
 }

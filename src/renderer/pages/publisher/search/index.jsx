@@ -1,6 +1,23 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { SettingOutlined, DownOutlined, CaretDownOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Cascader, Input, Select, Space, Row, Dropdown, Checkbox, Table, Form, Tag } from 'antd';
+import {
+  SettingOutlined,
+  DownOutlined,
+  CaretDownOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
+import {
+  Button,
+  Cascader,
+  Input,
+  Select,
+  Space,
+  Row,
+  Dropdown,
+  Checkbox,
+  Table,
+  Form,
+  Tag,
+} from 'antd';
 import debounce from 'lodash.debounce';
 import { internalCall } from '../../../../renderer/actions';
 const { Option } = Select;
@@ -10,7 +27,7 @@ const columns = [
   {
     title: 'Id',
     dataIndex: 'id',
-    key: 'id'
+    key: 'id',
   },
   {
     title: 'Name',
@@ -21,7 +38,9 @@ const columns = [
     title: 'Status',
     dataIndex: 'status',
     key: 'status',
-    render: (text, record) => <Tag color={text ? 'green' : 'red'}>{text ? 'Active' : 'Deactived'}</Tag>,
+    render: (text, record) => (
+      <Tag color={text ? 'green' : 'red'}>{text ? 'Active' : 'Deactived'}</Tag>
+    ),
   },
   {
     title: 'Description',
@@ -36,15 +55,15 @@ const PublisherSearchPage = () => {
   const [inputState, setinputState] = useState({
     name: '',
     id: '',
-    type: ''
+    type: '',
   });
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     debounceFc(inputState);
-  }, [])
-  const handleDebounceFn = reState => {
+  }, []);
+  const handleDebounceFn = (reState) => {
     internalCall({ key: 'publisher-search', data: reState });
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {
       setLoading(false);
@@ -53,7 +72,7 @@ const PublisherSearchPage = () => {
         setDocuments(arg.data);
       }
     });
-  }
+  };
   const debounceFc = useCallback(debounce(handleDebounceFn, 300), []);
 
   const onChange = (e) => {
@@ -66,7 +85,7 @@ const PublisherSearchPage = () => {
   const onClick = () => {
     setLoading(true);
     debounceFc(inputState);
-  }
+  };
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -76,8 +95,8 @@ const PublisherSearchPage = () => {
 
   return (
     <>
-      <Form style={{ display: 'flex' }} layout='vertical'>
-        <Form.Item style={style} label="Mã Nhà Xuất Bản" >
+      <Form style={{ display: 'flex' }} layout="vertical">
+        <Form.Item style={style} label="Mã Nhà Xuất Bản">
           <Input
             placeholder=""
             value={inputState.id}
@@ -97,7 +116,9 @@ const PublisherSearchPage = () => {
           />
         </Form.Item>
         <Form.Item style={style} label=" ">
-          <Button onClick={onClick} type='primary' icon={<SearchOutlined />}>Search</Button>
+          <Button onClick={onClick} type="primary" icon={<SearchOutlined />}>
+            Search
+          </Button>
         </Form.Item>
       </Form>
       <Table
@@ -112,6 +133,6 @@ const PublisherSearchPage = () => {
         tableLayout={'fixed'}
       />
     </>
-  )
+  );
 };
 export default PublisherSearchPage;

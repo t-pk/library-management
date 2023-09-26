@@ -280,6 +280,6 @@ UserList.propTypes = {
       id: PropTypes.string.isRequired,
       fullName: PropTypes.string.isRequired,
       email: PropTypes.string.isRequired,
-    }),
+    })
   ),
 };

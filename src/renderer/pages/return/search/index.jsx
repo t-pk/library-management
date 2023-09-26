@@ -1,21 +1,56 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { SettingOutlined, DownOutlined, CaretDownOutlined, CheckSquareOutlined, CheckOutlined, SearchOutlined, CloseCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
-import { AutoComplete, Button, Cascader, Input, Select, Space, Row, Dropdown, Checkbox, Table, Form, Tag, InputNumber, Radio } from 'antd';
+import {
+  SettingOutlined,
+  DownOutlined,
+  CaretDownOutlined,
+  CheckSquareOutlined,
+  CheckOutlined,
+  SearchOutlined,
+  CloseCircleOutlined,
+  CheckCircleOutlined,
+} from '@ant-design/icons';
+import {
+  AutoComplete,
+  Button,
+  Cascader,
+  Input,
+  Select,
+  Space,
+  Row,
+  Dropdown,
+  Checkbox,
+  Table,
+  Form,
+  Tag,
+  InputNumber,
+  Radio,
+} from 'antd';
 import debounce from 'lodash.debounce';
 import { internalCall } from '../../../../renderer/actions';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { formatDMY_HMS, formatDMY, objectToQueryString } from '../../../utils/index';
+import {
+  formatDMY_HMS,
+  formatDMY,
+  objectToQueryString,
+} from '../../../utils/index';
 const { Option } = Select;
 
 import './ui.scss';
 
-const formItemLayout = { labelCol: { xs: { span: 30 }, sm: { span: 30 } }, wrapperCol: { xs: { span: 40 }, sm: { span: 23 } } };
-const reStyle = { minWidth: "32%" };
+const formItemLayout = {
+  labelCol: { xs: { span: 30 }, sm: { span: 30 } },
+  wrapperCol: { xs: { span: 40 }, sm: { span: 23 } },
+};
+const reStyle = { minWidth: '32%' };
 
 const ReturnSearchPage = (props) => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
+  const [inputState, setinputState] = useState({
+    fullName: '',
+    id: 0,
+    studentId: '',
+  });
   const [returns, setReturns] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -29,7 +64,7 @@ const ReturnSearchPage = (props) => {
     const test = (arg) => {
       setLoading(false);
       setReturns(arg.data);
-    }
+    };
     props.listenOnce('return-search', test);
     // internalCall({ key: 'return-search', data: reState });
     // window.electron.ipcRenderer.once('ipc-database', async (arg) => {
@@ -38,11 +73,12 @@ const ReturnSearchPage = (props) => {
     //     setReturns(arg.data);
     //   }
     // });
-  }
+  };
   const createReturns = (record) => () => {
-    console.log("key", record);
+    console.log('key', record);
     const data = {
-      returnId: record.returnId, readerId: record.return.reader.id,
+      returnId: record.returnId,
+      readerId: record.return.reader.id,
       readerName: record.return.reader.fullName,
       citizenIdentify: record.return.reader.citizenIdentify,
       civilServantId: record.return.reader.civilServantId,
@@ -53,34 +89,36 @@ const ReturnSearchPage = (props) => {
     return navigate(`/penalty/create?${queryString}`);
   };
 
-
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
   const groupByReturns = (iReturn, index) => {
-    const reIndex = currentPage >= 2 ? (currentPage * pageSize - pageSize) + index : index;
+    const reIndex =
+      currentPage >= 2 ? currentPage * pageSize - pageSize + index : index;
     let boolean = false;
     if (reIndex === 0) {
       boolean = true;
-    }
-    else if (iReturn.returnId !== (returns[reIndex - 1].returnId)) {
+    } else if (iReturn.returnId !== returns[reIndex - 1].returnId) {
       boolean = true;
-    }
-    else {
-      boolean = (iReturn.countReturnId - iReturn.rest) !== (returns[reIndex - 1].countReturnId - returns[reIndex - 1].rest);
+    } else {
+      boolean =
+        iReturn.countReturnId - iReturn.rest !==
+        returns[reIndex - 1].countReturnId - returns[reIndex - 1].rest;
       let count = 0;
       if (reIndex % 10 === 0) {
         for (let i = 0; i < reIndex; i++) {
           count += returns[i].countReturnId;
         }
       }
-    };
-    return {
-      rowSpan: boolean ? (iReturn.countReturnId - iReturn.rest) : 0
     }
+    return {
+      rowSpan: boolean ? iReturn.countReturnId - iReturn.rest : 0,
+    };
   };
 
   const showDropDrown = (record) => {
-    return returns.filter((iReturn) => iReturn.iReturnId === record.iReturnId).some((iReturn) => !iReturn.returnDetail);
-  }
+    return returns
+      .filter((iReturn) => iReturn.iReturnId === record.iReturnId)
+      .some((iReturn) => !iReturn.returnDetail);
+  };
 
   const columns = [
     {
@@ -88,21 +126,21 @@ const ReturnSearchPage = (props) => {
       dataIndex: ['return', 'id'],
       render: (id) => id,
       align: 'center',
-      onCell: groupByReturns
+      onCell: groupByReturns,
     },
     {
       title: 'Mã Độc Giả',
       dataIndex: ['return', 'reader', 'id'],
       render: (id) => id,
       align: 'center',
-      onCell: groupByReturns
+      onCell: groupByReturns,
     },
     {
       title: 'Tên Độc Giả',
       dataIndex: ['return', 'reader', 'fullName'],
       render: (fullName) => fullName,
       align: 'center',
-      onCell: groupByReturns
+      onCell: groupByReturns,
     },
     {
       title: 'Tên Tài Liệu',
@@ -120,7 +158,7 @@ const ReturnSearchPage = (props) => {
       dataIndex: 'createdAt',
       align: 'center',
       render: (dateTime) => {
-        return dateTime && formatDMY_HMS(dateTime)
+        return dateTime && formatDMY_HMS(dateTime);
       },
     },
     {
@@ -128,14 +166,14 @@ const ReturnSearchPage = (props) => {
       dataIndex: ['return', 'reader', 'studentId'],
       render: (studentId) => studentId,
       align: 'center',
-      onCell: groupByReturns
+      onCell: groupByReturns,
     },
     {
       title: 'Mã N.Viên - C.Bộ',
       dataIndex: ['return', 'reader', 'civilServantId'],
       render: (civilServantId) => civilServantId,
       align: 'center',
-      onCell: groupByReturns
+      onCell: groupByReturns,
     },
     // {
     //   title: 'Ngày Mượn',
@@ -154,21 +192,26 @@ const ReturnSearchPage = (props) => {
       width: 150,
       onCell: groupByReturns,
       render: (_, record) => {
-        let items = [{
-          label: <a onClick={createReturns(record)}>Tạo Phiếu Phạt</a>,
-          key: '1',
-        }];
-        return <Space size="middle">
-          <Dropdown menu={{
-            items
-          }}>
-            <a>
-              More Action <DownOutlined />
-            </a>
-          </Dropdown>
-        </Space>
-
-      }
+        let items = [
+          {
+            label: <a onClick={createReturns(record)}>Tạo Phiếu Phạt</a>,
+            key: '1',
+          },
+        ];
+        return (
+          <Space size="middle">
+            <Dropdown
+              menu={{
+                items,
+              }}
+            >
+              <a>
+                More Action <DownOutlined />
+              </a>
+            </Dropdown>
+          </Space>
+        );
+      },
     },
   ];
 
@@ -184,12 +227,10 @@ const ReturnSearchPage = (props) => {
     if (readerTypeId === undefined) {
       form.setFieldsValue({ studentId: undefined });
       form.setFieldsValue({ civilServantId: undefined });
-    };
-
+    }
   }, [readerTypeId]);
 
   const getInitData = () => {
-
     internalCall({ key: 'readerType-search' });
     // internalCall({ key: 'iReturn-search' });
     internalCall({ key: 'document-search' });
@@ -197,7 +238,10 @@ const ReturnSearchPage = (props) => {
     const getData = async (arg) => {
       if (arg && arg.data) {
         if (arg.key === 'readerType-search') {
-          const resReaders = arg.data.map((item) => ({ value: item.id, label: item.name }));
+          const resReaders = arg.data.map((item) => ({
+            value: item.id,
+            label: item.name,
+          }));
           resReaders.push({ id: undefined, label: 'Skip' });
           setReaderTypes(resReaders);
         }
@@ -206,26 +250,30 @@ const ReturnSearchPage = (props) => {
         //   setReturns(arg.data);
         // }
         if (arg.key === 'document-search') {
-          setDocuments(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
+          setDocuments(
+            arg.data.map((item) => ({
+              id: item.id,
+              value: `${item.id} - ${item.name}`,
+            }))
+          );
         }
       }
     };
     window.electron.ipcRenderer.on('ipc-database', getData);
-  }
-
+  };
 
   const onChange = (e) => {
     setLoading(true);
     setCurrentPage(1);
     let reState = {};
     if (e.target.id === 'documents') {
-      const documentIds = e.target.value.map((item) => item.split('-')[0].trim());
+      const documentIds = e.target.value.map((item) =>
+        item.split('-')[0].trim()
+      );
       reState = { ...inputState, documentIds: documentIds };
-    }
-    else if (e.target.name === 'readerTypeId') {
+    } else if (e.target.name === 'readerTypeId') {
       reState = { ...inputState, [e.target.name]: e.target.value };
-    }
-    else {
+    } else {
       reState = { ...inputState, [e.target.id]: e.target.value };
     }
 
@@ -236,7 +284,7 @@ const ReturnSearchPage = (props) => {
   const onClick = () => {
     setLoading(true);
     debounceFc(inputState);
-  }
+  };
 
   const debounceDocument = async (value) => {
     const [id, name] = value.split('-');
@@ -248,15 +296,20 @@ const ReturnSearchPage = (props) => {
     internalCall({ key: 'document-search', data });
 
     window.electron.ipcRenderer.once('ipc-database', (arg) => {
-      setDocuments(arg.data.map((item) => ({ id: item.id, value: `${item.id} - ${item.name}` })));
+      setDocuments(
+        arg.data.map((item) => ({
+          id: item.id,
+          value: `${item.id} - ${item.name}`,
+        }))
+      );
     });
-  }
+  };
 
   const documentFc = useCallback(debounce(debounceDocument, 400), []);
 
   const findDocuments = (value) => {
     documentFc(value);
-  }
+  };
 
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
@@ -264,11 +317,15 @@ const ReturnSearchPage = (props) => {
 
   return (
     <>
-      <Form  {...formItemLayout} form={form}
-        layout="vertical" name="dynamic_rule"
+      <Form
+        {...formItemLayout}
+        form={form}
+        layout="vertical"
+        name="dynamic_rule"
         style={{ display: 'flex', flexWrap: 'wrap' }}
-        scrollToFirstError initialValues={{ readerTypeId: undefined }}>
-
+        scrollToFirstError
+        initialValues={{ readerTypeId: undefined }}
+      >
         <Form.Item label="Mã Độc Giả" style={reStyle}>
           <Input id="readerId" onChange={onChange} />
         </Form.Item>
@@ -276,35 +333,58 @@ const ReturnSearchPage = (props) => {
         <Form.Item name="documents" label="Tài Liệu" style={reStyle}>
           <Select
             onSearch={findDocuments}
-            mode='multiple'
+            mode="multiple"
             options={documents}
             placeholder=""
-            className='custom-autocomplete'
-            onChange={(value) => onChange({ target: { id: 'documents', value } })}
+            className="custom-autocomplete"
+            onChange={(value) =>
+              onChange({ target: { id: 'documents', value } })
+            }
             filterOption={(inputValue, option) =>
-              option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+              option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !==
+              -1
             }
           />
         </Form.Item>
 
-        <Form.Item label="Tên Độc Giả" style={reStyle}  >
+        <Form.Item label="Tên Độc Giả" style={reStyle}>
           <Input id="fullName" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item name="studentId" label="Mã Sinh Viên" style={reStyle} >
-          <Input disabled={readerTypeId && readerTypeId !== 1} id="studentId" onChange={onChange} />
+        <Form.Item name="studentId" label="Mã Sinh Viên" style={reStyle}>
+          <Input
+            disabled={readerTypeId && readerTypeId !== 1}
+            id="studentId"
+            onChange={onChange}
+          />
         </Form.Item>
 
-        <Form.Item name="civilServantId" label="Mã Cán Bộ - Nhân Viên" style={reStyle} >
-          <Input disabled={readerTypeId && readerTypeId !== 2} id="civilServantId" onChange={onChange} />
+        <Form.Item
+          name="civilServantId"
+          label="Mã Cán Bộ - Nhân Viên"
+          style={reStyle}
+        >
+          <Input
+            disabled={readerTypeId && readerTypeId !== 2}
+            id="civilServantId"
+            onChange={onChange}
+          />
         </Form.Item>
 
         <Form.Item name="readerTypeId" label="Loại Độc Giả" style={reStyle}>
-          <Radio.Group name="readerTypeId" onChange={onChange} options={readerTypes} optionType="button" buttonStyle="solid" />
+          <Radio.Group
+            name="readerTypeId"
+            onChange={onChange}
+            options={readerTypes}
+            optionType="button"
+            buttonStyle="solid"
+          />
         </Form.Item>
 
         <Form.Item style={reStyle} label=" ">
-          <Button onClick={onClick} type='primary' icon={<SearchOutlined />}>Search</Button>
+          <Button onClick={onClick} type="primary" icon={<SearchOutlined />}>
+            Search
+          </Button>
         </Form.Item>
       </Form>
       <Table
@@ -314,7 +394,7 @@ const ReturnSearchPage = (props) => {
         loading={loading}
         rowKey={'id'}
         tableLayout={'fixed'}
-        size='small'
+        size="small"
         pagination={{
           current: currentPage,
           pageSize: pageSize,
@@ -324,6 +404,6 @@ const ReturnSearchPage = (props) => {
         scroll={{ x: 1400, y: 450 }}
       />
     </>
-  )
+  );
 };
 export default ReturnSearchPage;

@@ -4,22 +4,22 @@ export const IRemind = {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
-    autoIncrement: true
+    autoIncrement: true,
   },
   borrowId: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
   },
   description: {
     type: DataTypes.STRING(255),
-    allowNull: true
+    allowNull: true,
   },
   createdAt: {
     type: DataTypes.DATE,
-    defaultValue: Sequelize.fn('now')
+    defaultValue: Sequelize.fn('now'),
   },
   createdBy: {
     type: DataTypes.SMALLINT,
-    allowNull: false
-  }
+    allowNull: false,
+  },
 };

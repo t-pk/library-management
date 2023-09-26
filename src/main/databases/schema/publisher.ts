@@ -4,17 +4,17 @@ export const IPublisher = {
   id: {
     type: DataTypes.SMALLINT,
     primaryKey: true,
-    autoIncrement: true
+    autoIncrement: true,
   },
   name: {
     type: DataTypes.STRING(64),
     allowNull: false,
-    unique: true
+    unique: true,
   },
   status: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
-    defaultValue: false
+    defaultValue: false,
   },
   description: {
     type: DataTypes.STRING(512),
@@ -22,18 +22,18 @@ export const IPublisher = {
   },
   createdAt: {
     type: DataTypes.DATE,
-    defaultValue: Sequelize.fn('now')
+    defaultValue: Sequelize.fn('now'),
   },
   createdBy: {
     type: DataTypes.SMALLINT,
-    allowNull: false
+    allowNull: false,
   },
   updatedAt: {
     type: DataTypes.DATE,
-    defaultValue: Sequelize.fn('now')
+    defaultValue: Sequelize.fn('now'),
   },
   updatedBy: {
     type: DataTypes.SMALLINT,
-    allowNull: true
+    allowNull: true,
   },
 };

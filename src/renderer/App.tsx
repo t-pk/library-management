@@ -12,7 +12,7 @@ import routes from './routers';
 const color = '#174e94';
 
 const App = () => {
-  const adminRoutes = routes.map((route) =>
+  const adminRoutes = routes.map((route) => (
     <Route
       path={route.path}
       element={
@@ -27,35 +27,37 @@ const App = () => {
         </Suspense>
       }
     />
-  )
+  ));
   return (
-    <ConfigProvider theme={{
-      components: {
-        Menu: {borderRadius: 0, colorBgBase:'#FFF'},
-        Table:{headerBg: '#c1e1ff', fontWeightStrong: 530},
-        Layout: {
-          colorFillContentHover: '#cdc2c2',
-          headerBg: '#112c5ef2'
+    <ConfigProvider
+      theme={{
+        components: {
+          Menu: { borderRadius: 0, colorBgBase: '#FFF' },
+          Table: { headerBg: '#c1e1ff', fontWeightStrong: 530 },
+          Layout: {
+            colorFillContentHover: '#cdc2c2',
+            headerBg: '#112c5ef2',
+          },
+          Button: {
+            colorPrimary: color,
+          },
+          Input: {
+            hoverBorderColor: '#cdc2c2',
+            activeBorderColor: '#cdc2c2',
+            activeShadow: '#cdc2c2',
+          },
+          InputNumber: {
+            hoverBorderColor: '#cdc2c2',
+            activeBorderColor: '#cdc2c2',
+            activeShadow: '#cdc2c2',
+          },
         },
-        Button: {
-          colorPrimary: color,
+        token: {
+          fontFamily: '"Open Sans", sans-serif',
+          fontSize: 14,
         },
-        Input: {
-          hoverBorderColor: '#cdc2c2',
-          activeBorderColor: '#cdc2c2',
-          activeShadow: '#cdc2c2'
-        },
-        InputNumber: {
-          hoverBorderColor: '#cdc2c2',
-          activeBorderColor: '#cdc2c2',
-          activeShadow: '#cdc2c2'
-        },
-      }, token: {
-        fontFamily: '"Open Sans", sans-serif',
-        fontSize: 14
-      },
-    }}>
-
+      }}
+    >
       <Router>
         <Suspense
           fallback={

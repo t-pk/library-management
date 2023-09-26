@@ -24,7 +24,7 @@ instanceNext.interceptors.request.use(
   },
   (error) => {
     throw error;
-  },
+  }
 );
 
 /**
@@ -82,7 +82,7 @@ instanceNext.interceptors.response.use(
     if (error.request) return Promise.reject(error.request);
 
     return Promise.reject(error.message);
-  },
+  }
 );
 
 /**

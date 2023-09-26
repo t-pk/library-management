@@ -1,13 +1,20 @@
-
-import countBy from "lodash.countby";
-import { BorrowSchema, PenaltySchema, ReaderSchema, RemindSchema, ReturnSchema, sequelize, unitOfWork } from "../db";
-import { Op } from "sequelize";
+import countBy from 'lodash.countby';
+import {
+  BorrowSchema,
+  PenaltySchema,
+  ReaderSchema,
+  RemindSchema,
+  ReturnSchema,
+  sequelize,
+  unitOfWork,
+} from '../db';
+import { Op } from 'sequelize';
 
 export const createPenalty = async (request: any) => {
   return unitOfWork((transaction: any) => {
     return PenaltySchema.create(request, { transaction });
-  })
-}
+  });
+};
 
 export const getPenalties = async (request: any) => {
   let readerQuery: any = {};
@@ -28,16 +35,24 @@ export const getPenalties = async (request: any) => {
   }
 
   const penalties = await PenaltySchema.findAll({
-    include: [{
-      model: ReturnSchema, required: true,
-      include: [{
-        model: BorrowSchema, required: true,
-        include: [{ model: ReaderSchema, required: true, where: readerQuery, }]
-      }]
-    }],
-    order: [["id", "DESC"]],
+    include: [
+      {
+        model: ReturnSchema,
+        required: true,
+        include: [
+          {
+            model: BorrowSchema,
+            required: true,
+            include: [
+              { model: ReaderSchema, required: true, where: readerQuery },
+            ],
+          },
+        ],
+      },
+    ],
+    order: [['id', 'DESC']],
   });
   let penaltiesJSON = penalties.map((penalty) => penalty.toJSON());
-  console.log("penaltiesJSON", penaltiesJSON);
+  console.log('penaltiesJSON', penaltiesJSON);
   return penaltiesJSON;
-}
+};
