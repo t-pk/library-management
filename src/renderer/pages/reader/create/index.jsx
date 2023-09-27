@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Form, Input, message, Radio } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { delay } from '../../../utils/index';
@@ -83,21 +83,11 @@ const ReaderCreatePage = (props) => {
           <Input disabled={true} />
         </Form.Item>
 
-        <Form.Item
-          name="fullName"
-          label="Tên Độc Giả"
-          style={props.widthStyle}
-          rules={[{ required: true, message: 'Please input name' }]}
-        >
+        <Form.Item name="fullName" label="Tên Độc Giả" style={props.widthStyle} rules={[{ required: true, message: 'Please input name' }]}>
           <Input />
         </Form.Item>
 
-        <Form.Item
-          name="readerTypeId"
-          label="Loại Độc Giả"
-          style={props.widthStyle}
-          rules={[{ required: true, message: 'Please input civil servant!' }]}
-        >
+        <Form.Item name="readerTypeId" label="Loại Độc Giả" style={props.widthStyle} rules={[{ required: true, message: 'Please input civil servant!' }]}>
           <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" />
         </Form.Item>
 
@@ -179,14 +169,8 @@ const ReaderCreatePage = (props) => {
           <Input />
         </Form.Item>
 
-        <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...reStyle }}>
-          <Button
-            loading={loading}
-            style={{ minWidth: '96%' }}
-            type="primary"
-            htmlType="submit"
-            icon={<SaveOutlined />}
-          >
+        <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...props.widthStyle }}>
+          <Button loading={loading} style={{ minWidth: '96%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
             {' '}
             Submit{' '}
           </Button>

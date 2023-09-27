@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Form, Input, message, Radio } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
@@ -98,12 +98,7 @@ const RemindCreatePage = (props) => {
           <Input disabled={true} />
         </Form.Item>
 
-        <Form.Item
-          name="readerName"
-          label="Tên Độc Giả"
-          style={props.widthStyle}
-          rules={[{ required: true, message: 'Please input name' }]}
-        >
+        <Form.Item name="readerName" label="Tên Độc Giả" style={props.widthStyle} rules={[{ required: true, message: 'Please input name' }]}>
           <Input disabled={true} />
         </Form.Item>
 
@@ -172,14 +167,8 @@ const RemindCreatePage = (props) => {
           <Input.TextArea rows={5} showCount maxLength={200} />
         </Form.Item>
 
-        <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...reStyle }}>
-          <Button
-            loading={loading}
-            style={{ minWidth: '96%' }}
-            type="primary"
-            htmlType="submit"
-            icon={<SaveOutlined />}
-          >
+        <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...props.widthStyle }}>
+          <Button loading={loading} style={{ minWidth: '96%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
             {' '}
             Submit{' '}
           </Button>

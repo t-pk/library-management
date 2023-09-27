@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button, Form, Input, message, Select, Radio } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
@@ -37,8 +37,7 @@ const BorrowCreatePage = (props) => {
 
     props.listenOn(async (arg) => {
       if (arg && arg.data) {
-        if (arg.key === 'readerType-search')
-          setReaderTypes(arg.data.map((item) => ({ value: item.id, label: item.name })));
+        if (arg.key === 'readerType-search') setReaderTypes(arg.data.map((item) => ({ value: item.id, label: item.name })));
         if (arg.key === 'document-search')
           setDocuments(
             arg.data.map((item) => ({
@@ -127,12 +126,7 @@ const BorrowCreatePage = (props) => {
           <Input disabled={true} />
         </Form.Item>
 
-        <Form.Item
-          name="fullName"
-          label="Tên Độc Giả"
-          style={props.widthStyle}
-          rules={[{ required: true, message: 'Please input name' }]}
-        >
+        <Form.Item name="fullName" label="Tên Độc Giả" style={props.widthStyle} rules={[{ required: true, message: 'Please input name' }]}>
           <Input disabled={true} />
         </Form.Item>
 
@@ -220,14 +214,8 @@ const BorrowCreatePage = (props) => {
           />
         </Form.Item>
 
-        <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...reStyle }}>
-          <Button
-            loading={loading}
-            style={{ minWidth: '96%' }}
-            type="primary"
-            htmlType="submit"
-            icon={<SaveOutlined />}
-          >
+        <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...props.widthStyle }}>
+          <Button loading={loading} style={{ minWidth: '96%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
             {' '}
             Submit{' '}
           </Button>

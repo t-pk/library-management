@@ -1,47 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Layout, Menu, Space, Spin, theme, message } from 'antd';
+import { useState, useEffect } from 'react';
+import { Layout, Menu, Spin, theme, message } from 'antd';
 import { AppstoreOutlined, MailOutlined } from '@ant-design/icons';
-
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import backgroundUrl from '../assets/background.svg';
 const { Header, Content, Sider } = Layout;
 import './css.css';
 
 const PrivateLayout = ({ element: Component }) => {
-  const [animate, setAnimate] = useState('/document/search');
+  const location = useLocation();
+  const navigate = useNavigate();
   const [openKeys, setOpenKeys] = useState(['/']);
   const [spinning, setSpinning] = useState(false);
-  const location = useLocation();
+  const [animate, setAnimate] = useState('/document/search');
   const [messageApi, contextHolder] = message.useMessage();
+  const widthStyle = { minWidth: '32%' };
 
   const formItemLayout = {
     labelCol: { xs: { span: 30 }, sm: { span: 30 } },
     wrapperCol: { xs: { span: 40 }, sm: { span: 23 } },
   };
 
-  const tailFormItemLayout = {
-    wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } },
-  };
-
-  const widthStyle = { minWidth: '32%' };
-
-  const navigate = useNavigate();
+  const tailFormItemLayout = { wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } } };
 
   useEffect(() => {
     setAnimate(location.pathname === '/' ? '/document/search' : location.pathname);
-    console.log('location.pathname', location.pathname);
+
     const keyPath = '/' + location.pathname.split('/')[1];
     const keyAdmin = openKeys.find((key) => key === keyPath);
-    console.log({ keyAdmin });
+
     if (!keyAdmin) {
       const keys = openKeys.map((key) => key).concat(keyPath);
       setOpenKeys(keys);
     }
-    console.log(openKeys);
     setSpinning(true);
-    setTimeout(() => {
-      setSpinning(false);
-    }, 50);
+    setTimeout(() => setSpinning(false), 50);
   }, [location]);
 
   const {
@@ -49,12 +41,7 @@ const PrivateLayout = ({ element: Component }) => {
   } = theme.useToken();
 
   function getItem(label, key, icon, children) {
-    return {
-      key,
-      icon,
-      children,
-      label,
-    };
+    return { key, icon, children, label };
   }
   const items = [
     getItem('Tài Liệu', '/', <MailOutlined />, [
@@ -62,59 +49,23 @@ const PrivateLayout = ({ element: Component }) => {
       getItem('Thêm Mới', '/document/create'),
       getItem('Yêu Cầu Tài Liệu', '/document/request'),
     ]),
-    getItem('Độc Giả', '/reader', <AppstoreOutlined />, [
-      getItem('Tìm Kiếm', '/reader/search'),
-      getItem('Thêm Mới', '/reader/create'),
-    ]),
+    getItem('Độc Giả', '/reader', <AppstoreOutlined />, [getItem('Tìm Kiếm', '/reader/search'), getItem('Thêm Mới', '/reader/create')]),
 
-    getItem('Phiếu mượn', '/borrow', <AppstoreOutlined />, [
-      getItem('Tìm Kiếm', '/borrow/search'),
-      getItem('Thêm Mới', '/borrow/create'),
-    ]),
-    getItem('Phiếu Trả', '/return', <AppstoreOutlined />, [
-      getItem('Tìm Kiếm', '/return/search'),
-      getItem('Thêm Mới', '/return/create'),
-    ]),
-    getItem('Phiếu Nhắc Nhở', '/remind', <AppstoreOutlined />, [
-      getItem('Tìm Kiếm', '/remind/search'),
-      getItem('Thêm Mới', '/remind/create'),
-    ]),
-    getItem('Phiếu Phạt', '/penalty', <AppstoreOutlined />, [
-      getItem('Tìm Kiếm', '/penalty/search'),
-      getItem('Thêm Mới', '/penalty/create'),
-    ]),
-    getItem('Tác Giả', '/author', <AppstoreOutlined />, [
-      getItem('Tìm Kiếm', '/author/search'),
-      getItem('Thêm Mới', '/author/create'),
-    ]),
-    getItem('Nhà Xuất Bản', '/publisher', <AppstoreOutlined />, [
-      getItem('Tìm Kiếm', '/publisher/search'),
-      getItem('Thêm Mới', '/publisher/create'),
-    ]),
+    getItem('Phiếu mượn', '/borrow', <AppstoreOutlined />, [getItem('Tìm Kiếm', '/borrow/search'), getItem('Thêm Mới', '/borrow/create')]),
+    getItem('Phiếu Trả', '/return', <AppstoreOutlined />, [getItem('Tìm Kiếm', '/return/search'), getItem('Thêm Mới', '/return/create')]),
+    getItem('Phiếu Nhắc Nhở', '/remind', <AppstoreOutlined />, [getItem('Tìm Kiếm', '/remind/search'), getItem('Thêm Mới', '/remind/create')]),
+    getItem('Phiếu Phạt', '/penalty', <AppstoreOutlined />, [getItem('Tìm Kiếm', '/penalty/search'), getItem('Thêm Mới', '/penalty/create')]),
+    getItem('Tác Giả', '/author', <AppstoreOutlined />, [getItem('Tìm Kiếm', '/author/search'), getItem('Thêm Mới', '/author/create')]),
+    getItem('Nhà Xuất Bản', '/publisher', <AppstoreOutlined />, [getItem('Tìm Kiếm', '/publisher/search'), getItem('Thêm Mới', '/publisher/create')]),
   ];
 
-  const onOpenChange = (e) => {
-    setOpenKeys(e);
-  };
+  const onOpenChange = (e) => setOpenKeys(e);
 
   const showMessage = (type, content) => {
-    console.log('content', content);
-    messageApi.open({
-      key: '1',
-      type: 'success',
-      content: content,
-      duration: 5,
-      className: 'custom-class',
-      // style: {
-      //   textAlign: 'right',
-      //   paddingRight: 20,
-      //   marginTop: '47%',
-      // },
-    });
+    messageApi.open({ key: '1', type: type, content: content, duration: 5, className: 'custom-class' });
   };
 
   /**
-   *
    * @param {*} params {key: string, data: {}}
    */
   const callDatabase = (params) => {
@@ -124,9 +75,7 @@ const PrivateLayout = ({ element: Component }) => {
   const listenOn = async (callback) => {
     window.electron.ipcRenderer.on('ipc-database', async (arg) => {
       if (arg && arg.data) await callback(arg);
-      else {
-        showMessage('error', arg.error);
-      }
+      else showMessage('error', arg.error);
     });
   };
 
@@ -195,12 +144,5 @@ const PrivateLayout = ({ element: Component }) => {
     <Navigate to={'/login'} />
   );
 };
-
-// PrivateLayout.propTypes = {
-//   element: PropTypes.elementType.isRequired,
-//   layout: PropTypes.elementType.isRequired,
-//   exact: PropTypes.bool.isRequired,
-//   path: PropTypes.string.isRequired,
-// };
 
 export default PrivateLayout;

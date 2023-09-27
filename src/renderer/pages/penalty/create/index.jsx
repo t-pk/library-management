@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Form, Input, message, Radio, InputNumber, Checkbox } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
@@ -96,12 +96,7 @@ const PenaltyCreatePage = (props) => {
           <Input disabled={true} />
         </Form.Item>
 
-        <Form.Item
-          name="readerName"
-          label="Tên Độc Giả"
-          style={props.widthStyle}
-          rules={[{ required: true, message: 'Please input name' }]}
-        >
+        <Form.Item name="readerName" label="Tên Độc Giả" style={props.widthStyle} rules={[{ required: true, message: 'Please input name' }]}>
           <Input disabled={true} />
         </Form.Item>
 
@@ -180,20 +175,10 @@ const PenaltyCreatePage = (props) => {
             },
           ]}
         >
-          <InputNumber
-            min={1}
-            style={{ width: '100%' }}
-            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
-          />
+          <InputNumber min={1} style={{ width: '100%' }} formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} />
         </Form.Item>
 
-        <Form.Item
-          name="compensation"
-          label=" "
-          valuePropName="checked"
-          style={{ ...reStyle }}
-          {...props.tailFormItemLayout}
-        >
+        <Form.Item name="compensation" label=" " valuePropName="checked" style={{ ...props.widthStyle }} {...props.tailFormItemLayout}>
           <Checkbox> Đã Đóng Phạt </Checkbox>
         </Form.Item>
 
@@ -201,14 +186,8 @@ const PenaltyCreatePage = (props) => {
           <Input.TextArea rows={5} showCount maxLength={200} />
         </Form.Item>
 
-        <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...reStyle }}>
-          <Button
-            loading={loading}
-            style={{ minWidth: '96%' }}
-            type="primary"
-            htmlType="submit"
-            icon={<SaveOutlined />}
-          >
+        <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...props.widthStyle }}>
+          <Button loading={loading} style={{ minWidth: '96%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
             {' '}
             Submit{' '}
           </Button>

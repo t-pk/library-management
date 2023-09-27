@@ -18,14 +18,7 @@ const SearchFC = ({ columns, onClick, onChange, inputState, documents, loading, 
     console.log('12321');
     return Object.keys(validates).map((item) => (
       <Form.Item style={style} key={item}>
-        <Input
-          placeholder={camelize(item)}
-          value={inputState[item]}
-          style={style}
-          id={item}
-          onChange={onChange}
-          maxLength={validates[item].max}
-        />
+        <Input placeholder={camelize(item)} value={inputState[item]} style={style} id={item} onChange={onChange} maxLength={validates[item].max} />
       </Form.Item>
     ));
   };

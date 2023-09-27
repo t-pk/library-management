@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { AutoComplete, Button, Checkbox, Form, Input, InputNumber, message } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 
@@ -25,8 +25,7 @@ const DocumentCreatePage = (props) => {
       if (arg && arg.data) {
         if (arg.key === 'publisher-search') setPublishers(arg.data.map((item) => ({ id: item.id, value: item.name })));
         if (arg.key === 'author-search') setAuthors(arg.data.map((item) => ({ id: item.id, value: item.name })));
-        if (arg.key === 'documentType-search')
-          setDocumentTypes(arg.data.map((item) => ({ id: item.id, value: item.name })));
+        if (arg.key === 'documentType-search') setDocumentTypes(arg.data.map((item) => ({ id: item.id, value: item.name })));
       }
     });
   };
@@ -93,12 +92,7 @@ const DocumentCreatePage = (props) => {
           <Input disabled={true} />
         </Form.Item>
 
-        <Form.Item
-          name="name"
-          label="Tên Tài Liệu"
-          style={props.widthStyle}
-          rules={[{ required: true, message: 'Please input name' }]}
-        >
+        <Form.Item name="name" label="Tên Tài Liệu" style={props.widthStyle} rules={[{ required: true, message: 'Please input name' }]}>
           <Input.TextArea rows={1} showCount maxLength={200} />
         </Form.Item>
 
@@ -199,24 +193,12 @@ const DocumentCreatePage = (props) => {
         >
           <InputNumber min={1} style={{ width: '100%' }} />
         </Form.Item>
-        <Form.Item
-          name="special"
-          label={' '}
-          valuePropName="checked"
-          style={{ ...reStyle }}
-          {...props.tailFormItemLayout}
-        >
+        <Form.Item name="special" label={' '} valuePropName="checked" style={{ ...props.widthStyle }} {...props.tailFormItemLayout}>
           <Checkbox> Là Tài Liệu Đặc Biệt </Checkbox>
         </Form.Item>
 
-        <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...reStyle, textAlign: 'center' }}>
-          <Button
-            loading={loading}
-            style={{ minWidth: '50%' }}
-            type="primary"
-            htmlType="submit"
-            icon={<SaveOutlined />}
-          >
+        <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...props.widthStyle, textAlign: 'center' }}>
+          <Button loading={loading} style={{ minWidth: '50%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
             {' '}
             Submit{' '}
           </Button>

@@ -1,5 +1,5 @@
 import { Button, Spin } from 'antd';
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import { MemoryRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import routes from './routers';

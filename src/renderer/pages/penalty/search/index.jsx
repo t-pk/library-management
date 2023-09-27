@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { SearchOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { Button, Input, Table, Form, Radio } from 'antd';
 import debounce from 'lodash.debounce';
@@ -167,13 +167,7 @@ const PenaltySearchPage = (props) => {
         </Form.Item>
 
         <Form.Item name="readerTypeId" label="Loại Độc Giả" style={props.widthStyle}>
-          <Radio.Group
-            name="readerTypeId"
-            onChange={onChange}
-            options={readerTypes}
-            optionType="button"
-            buttonStyle="solid"
-          />
+          <Radio.Group name="readerTypeId" onChange={onChange} options={readerTypes} optionType="button" buttonStyle="solid" />
         </Form.Item>
 
         <Form.Item style={props.widthStyle} label=" ">

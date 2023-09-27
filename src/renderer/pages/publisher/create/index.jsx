@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, Checkbox, Form, Input, message } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { delay } from '../../../utils/index';
@@ -60,23 +60,12 @@ const PublisherCreatePage = (props) => {
           <Input disabled={true} />
         </Form.Item>
 
-        <Form.Item
-          name="name"
-          label="Tên Nhà Xuất Bản"
-          style={props.widthStyle}
-          rules={[{ required: true, message: 'Please input name!' }]}
-        >
+        <Form.Item name="name" label="Tên Nhà Xuất Bản" style={props.widthStyle} rules={[{ required: true, message: 'Please input name!' }]}>
           <Input style={{ width: '100%' }} />
         </Form.Item>
 
-        <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...reStyle, textAlign: 'center' }}>
-          <Button
-            loading={loading}
-            style={{ minWidth: '30%' }}
-            type="primary"
-            htmlType="submit"
-            icon={<SaveOutlined />}
-          >
+        <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...props.widthStyle, textAlign: 'center' }}>
+          <Button loading={loading} style={{ minWidth: '30%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
             {' '}
             Submit{' '}
           </Button>
@@ -90,13 +79,7 @@ const PublisherCreatePage = (props) => {
           <Input.TextArea rows={5} showCount maxLength={200} />
         </Form.Item>
 
-        <Form.Item
-          label="Trạng Thái"
-          name="status"
-          valuePropName="checked"
-          style={{ ...reStyle }}
-          {...props.tailFormItemLayout}
-        >
+        <Form.Item label="Trạng Thái" name="status" valuePropName="checked" style={{ ...props.widthStyle }} {...props.tailFormItemLayout}>
           <Checkbox> Hoạt Động </Checkbox>
         </Form.Item>
       </Form>

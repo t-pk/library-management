@@ -1,6 +1,6 @@
 import debounce from 'lodash.debounce';
 import { useNavigate } from 'react-router-dom';
-import React, { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Button, Input, Select, Space, Dropdown, Table, Form, Radio } from 'antd';
 import { DownOutlined, SearchOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { formatDMY_HMS, formatDMY, objectToQueryString } from '../../../utils/index';
@@ -327,13 +327,7 @@ const BorrowSearchPage = (props) => {
         </Form.Item>
 
         <Form.Item name="readerTypeId" label="Loại Độc Giả" style={props.widthStyle}>
-          <Radio.Group
-            name="readerTypeId"
-            onChange={onChange}
-            options={readerTypes}
-            optionType="button"
-            buttonStyle="solid"
-          />
+          <Radio.Group name="readerTypeId" onChange={onChange} options={readerTypes} optionType="button" buttonStyle="solid" />
         </Form.Item>
 
         <Form.Item style={props.widthStyle} label=" ">

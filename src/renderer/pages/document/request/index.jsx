@@ -1,10 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, Form, Input, InputNumber } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
-
-const reStyle = {
-  minWidth: '32%',
-};
 
 const DocumentRequestPage = (props) => {
   const [form] = Form.useForm();
@@ -24,25 +20,15 @@ const DocumentRequestPage = (props) => {
       style={{ display: 'flex', flexWrap: 'wrap' }}
       scrollToFirstError
     >
-      <Form.Item
-        name="name"
-        label="Tên Tài Liệu"
-        style={props.widthStyle}
-        rules={[{ required: true, message: 'Please input name' }]}
-      >
+      <Form.Item name="name" label="Tên Tài Liệu" style={props.widthStyle} rules={[{ required: true, message: 'Please input name' }]}>
         <Input.TextArea rows={1} showCount maxLength={200} />
       </Form.Item>
 
-      <Form.Item
-        name="publisher"
-        label="Nhà Xuất Bản"
-        style={props.widthStyle}
-        rules={[{ required: true, message: 'Please select publisher!' }]}
-      >
+      <Form.Item name="publisher" label="Nhà Xuất Bản" style={props.widthStyle} rules={[{ required: true, message: 'Please select publisher!' }]}>
         <Input style={{ width: '100%' }} />
       </Form.Item>
 
-      <Form.Item label=" " {...props.tailFormItemLayout} style={{ ...reStyle, textAlign: 'center' }}>
+      <Form.Item label=" " {...props.tailFormItemLayout} style={{ ...props.widthStyle, textAlign: 'center' }}>
         <Button style={{ minWidth: '50%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
           {' '}
           Submit{' '}

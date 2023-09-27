@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Select, Space, Dropdown, Table, Form, Radio } from 'antd';
 import debounce from 'lodash.debounce';
@@ -275,13 +275,7 @@ const ReturnSearchPage = (props) => {
         </Form.Item>
 
         <Form.Item name="readerTypeId" label="Loại Độc Giả" style={props.widthStyle}>
-          <Radio.Group
-            name="readerTypeId"
-            onChange={onChange}
-            options={readerTypes}
-            optionType="button"
-            buttonStyle="solid"
-          />
+          <Radio.Group name="readerTypeId" onChange={onChange} options={readerTypes} optionType="button" buttonStyle="solid" />
         </Form.Item>
 
         <Form.Item style={props.widthStyle} label=" ">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Form, Input, Button, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import icon from '../../assets/icon.jpeg';
@@ -62,13 +62,7 @@ const LoginPage = (props) => {
   return (
     <div id="login-content">
       <img className="logo-login" src={backgroundUrl} style={{ width: '100%', position: 'absolute' }} alt="icon"></img>
-      <Form
-        name="basic"
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        className="login-wrap"
-      >
+      <Form name="basic" initialValues={{ remember: true }} onFinish={onFinish} onFinishFailed={onFinishFailed} className="login-wrap">
         <img className="logo-login" src={icon} alt="icon" />
         <h3 className="logo-name"> ElectronJS - React - Ant </h3>
         <Form.Item name="username" rules={[{ required: true, message: 'Please input your username!' }]}>

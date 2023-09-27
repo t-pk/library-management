@@ -1,11 +1,9 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Select, Table, Form, Tag, InputNumber, Radio } from 'antd';
 import debounce from 'lodash.debounce';
 
 import './ui.scss';
-
-// const tailFormItemLayout = { wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } }, };
 
 const columns = [
   {
@@ -41,7 +39,7 @@ const columns = [
     title: 'Tài Liệu Đặc Biệt',
     dataIndex: 'special',
     align: 'center',
-    render: (text, record) => <Tag color={text ? 'green' : 'orange'}>{text ? 'Yes' : 'No'}</Tag>,
+    render: (text) => <Tag color={text ? 'green' : 'orange'}>{text ? 'Yes' : 'No'}</Tag>,
   },
 ];
 
@@ -107,14 +105,10 @@ const DocumentSearchPage = (props) => {
     setLoading(true);
     let reState = {};
     if (e.target.id === 'documentTypes') {
-      const ids = documentTypes
-        .filter((documentType) => e.target.value.includes(documentType.value))
-        .map((documentType) => documentType.id);
+      const ids = documentTypes.filter((documentType) => e.target.value.includes(documentType.value)).map((documentType) => documentType.id);
       reState = { ...inputState, [e.target.id]: ids };
     } else if (e.target.id === 'publishers') {
-      const ids = publishers
-        .filter((publisher) => e.target.value.includes(publisher.value))
-        .map((publisher) => publisher.id);
+      const ids = publishers.filter((publisher) => e.target.value.includes(publisher.value)).map((publisher) => publisher.id);
       reState = { ...inputState, [e.target.id]: ids };
     } else if (e.target.id === 'authors') {
       const ids = authors.filter((author) => e.target.value.includes(author.value)).map((author) => author.id);
@@ -152,7 +146,7 @@ const DocumentSearchPage = (props) => {
           <Input placeholder="" value={inputState.name} id="name" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item name="special" label={'Tài Liệu Đặc Biệt'} style={{ ...reStyle }}>
+        <Form.Item name="special" label={'Tài Liệu Đặc Biệt'} style={{ ...props.widthStyle }}>
           <Radio.Group name="special" onChange={onChange} buttonStyle="solid">
             <Radio.Button value={true}>Yes</Radio.Button>
             <Radio.Button value={false}>No</Radio.Button>
@@ -191,12 +185,7 @@ const DocumentSearchPage = (props) => {
         </Form.Item>
 
         <Form.Item name="publishYear" label="Năm Xuất Bản" style={props.widthStyle}>
-          <InputNumber
-            id={'publishYear'}
-            onChange={(value) => onChange({ target: { id: 'publishYear', value } })}
-            min={1}
-            style={{ width: '100%' }}
-          />
+          <InputNumber id={'publishYear'} onChange={(value) => onChange({ target: { id: 'publishYear', value } })} min={1} style={{ width: '100%' }} />
         </Form.Item>
 
         <Form.Item style={props.widthStyle} label=" ">

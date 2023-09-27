@@ -1,14 +1,6 @@
 import { Op } from 'sequelize';
 import countBy from 'lodash.countby';
-import {
-  DocumentSchema,
-  unitOfWork,
-  BorrowSchema,
-  BorrowDetailSchema,
-  ReaderSchema,
-  sequelize,
-  ReturnDetailSchema,
-} from '../db';
+import { DocumentSchema, unitOfWork, BorrowSchema, BorrowDetailSchema, ReaderSchema, sequelize, ReturnDetailSchema } from '../db';
 
 interface IObject {
   [key: string]: string | {};
