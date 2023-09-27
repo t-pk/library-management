@@ -60,10 +60,10 @@ const App = () => {
             </Spin>
           }
         > */}
-          <Routes>
-            {...adminRoutes}
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </Routes>
+        <Routes>
+          {...adminRoutes}
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
         {/* </Suspense> */}
       </Router>
     </ConfigProvider>

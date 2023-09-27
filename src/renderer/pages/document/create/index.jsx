@@ -9,9 +9,7 @@ const DocumentCreatePage = (props) => {
   const [documentTypes, setDocumentTypes] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    getInitData();
-  }, []);
+  useEffect(() => getInitData(), []);
 
   const getInitData = () => {
     props.callDatabase({ key: 'publisher-search' });
@@ -44,11 +42,9 @@ const DocumentCreatePage = (props) => {
     props.callDatabase({ key: 'document-create', data });
 
     props.listenOnce('document-create', async (arg) => {
-      if (arg.data) {
-        await delay(1000);
-        setLoading(false);
-        if (arg.data) props.openNotification('success', 'Tạo Thành Công Tài Liệu');
-      }
+      await delay(1000);
+      if (arg.data) props.openNotification('success', 'Tạo Thành Công Tài Liệu');
+      setLoading(false);
     });
   };
 

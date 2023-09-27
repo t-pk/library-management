@@ -55,11 +55,9 @@ const BorrowCreatePage = (props) => {
     props.callDatabase({ key: 'borrow-create', data });
 
     props.listenOnce(async (arg) => {
-      if (arg.data) {
-        await delay(1000);
-        setLoading(false);
-        if (arg.data) props.openNotification('success', 'Tạo thành công Phiếu Mượn.');
-      }
+      await delay(1000);
+      if (arg.data) props.openNotification('success', 'Tạo thành công Phiếu Mượn.');
+      setLoading(false);
     });
   };
 

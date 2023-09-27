@@ -19,65 +19,6 @@ const BorrowSearchPage = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 20; // Number of items per page
 
-  const handleDebounceFn = (reState) => {
-    props.callDatabase({ key: 'borrow-search', data: reState });
-    props.listenOnce((arg) => {
-      setLoading(false);
-      if (arg && arg.data) {
-        setBorrows(arg.data);
-      }
-    });
-  };
-
-  const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
-
-  const groupByBorrow = (borrow, index) => {
-    const reIndex = currentPage >= 2 ? currentPage * pageSize - pageSize + index : index;
-    let boolean = false;
-    if (reIndex === 0) {
-      boolean = true;
-    } else if (borrow.borrowId !== borrows[reIndex - 1].borrowId) {
-      boolean = true;
-    } else {
-      boolean = borrow.countBorrowId - borrow.rest !== borrows[reIndex - 1].countBorrowId - borrows[reIndex - 1].rest;
-      let count = 0;
-      if (reIndex % 10 === 0) {
-        for (let i = 0; i < reIndex; i++) {
-          count += borrows[i].countBorrowId;
-        }
-      }
-    }
-    return {
-      rowSpan: boolean ? borrow.countBorrowId - borrow.rest : 0,
-    };
-  };
-
-  const showDropDrown = (record) => {
-    return borrows.filter((borrow) => borrow.borrowId === record.borrowId).some((borrow) => !borrow.returnDetail);
-  };
-
-  const createReturns = (key, record) => () => {
-    const data = {
-      borrowId: record.borrowId,
-      readerId: record.borrow.reader.id,
-      readerName: record.borrow.reader.fullName,
-      citizenIdentify: record.borrow.reader.citizenIdentify,
-      civilServantId: record.borrow.reader.civilServantId,
-      studentId: record.borrow.reader.studentId,
-      readerTypeId: record.borrow.reader.readerTypeId,
-    };
-    const queryString = objectToQueryString(data);
-    if (key === 1) {
-      return navigate(`/return/create?${queryString}`);
-    }
-    if (key === 2) {
-      return navigate(`/remind/create?${queryString}`);
-    }
-    if (key === 3) {
-      return navigate(`/penalty/create?${queryString}`);
-    }
-  };
-
   const columns = [
     {
       title: 'Mã Phiếu Mượn',
@@ -163,16 +104,16 @@ const BorrowSearchPage = (props) => {
         let items = [];
         if (showCreateReturn) {
           items.push({
-            label: <a onClick={createReturns(1, record)}>Tạo Phiếu Trả</a>,
+            label: <a onClick={createReturn(1, record)}>Tạo Phiếu Trả</a>,
             key: '1',
           });
         }
         items.push({
-          label: <a onClick={createReturns(2, record)}>Tạo Phiếu Nhắc Nhở</a>,
+          label: <a onClick={createReturn(2, record)}>Tạo Phiếu Nhắc Nhở</a>,
           key: '2',
         });
         items.push({
-          label: <a onClick={createReturns(3, record)}>Tạo Phiếu Phạt</a>,
+          label: <a onClick={createReturn(3, record)}>Tạo Phiếu Phạt</a>,
           key: '3',
         });
         return (
@@ -191,6 +132,63 @@ const BorrowSearchPage = (props) => {
       },
     },
   ];
+
+  const groupByBorrow = (borrow, index) => {
+    const reIndex = currentPage >= 2 ? currentPage * pageSize - pageSize + index : index;
+    let boolean = false;
+    if (reIndex === 0) {
+      boolean = true;
+    } else if (borrow.borrowId !== borrows[reIndex - 1].borrowId) {
+      boolean = true;
+    } else {
+      boolean = borrow.countBorrowId - borrow.rest !== borrows[reIndex - 1].countBorrowId - borrows[reIndex - 1].rest;
+      let count = 0;
+      if (reIndex % 10 === 0) {
+        for (let i = 0; i < reIndex; i++) {
+          count += borrows[i].countBorrowId;
+        }
+      }
+    }
+    return {
+      rowSpan: boolean ? borrow.countBorrowId - borrow.rest : 0,
+    };
+  };
+
+  const handleDebounceFn = (reState) => {
+    props.callDatabase({ key: 'borrow-search', data: reState });
+    props.listenOnce((arg) => {
+      setLoading(false);
+      setBorrows(arg.data || []);
+    });
+  };
+
+  const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
+
+  const showDropDrown = (record) => {
+    return borrows.filter((borrow) => borrow.borrowId === record.borrowId).some((borrow) => !borrow.returnDetail);
+  };
+
+  const createReturn = (key, record) => () => {
+    const data = {
+      borrowId: record.borrowId,
+      readerId: record.borrow.reader.id,
+      readerName: record.borrow.reader.fullName,
+      citizenIdentify: record.borrow.reader.citizenIdentify,
+      civilServantId: record.borrow.reader.civilServantId,
+      studentId: record.borrow.reader.studentId,
+      readerTypeId: record.borrow.reader.readerTypeId,
+    };
+    const queryString = objectToQueryString(data);
+    if (key === 1) {
+      return navigate(`/return/create?${queryString}`);
+    }
+    if (key === 2) {
+      return navigate(`/remind/create?${queryString}`);
+    }
+    if (key === 3) {
+      return navigate(`/penalty/create?${queryString}`);
+    }
+  };
 
   useEffect(() => {
     debounceFc(inputState);

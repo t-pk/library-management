@@ -43,12 +43,12 @@ const RemindCreatePage = (props) => {
     props.callDatabase({ key: 'remind-create', data });
     props.listenOnce('remind-create', async (arg) => {
       await delay(1000);
-      setLoading(false);
 
       if (arg.data) {
         form.resetFields();
-        if (arg.data) props.openNotification('success', 'Tạo thành công Phiếu Nhắc Nhở');
+        props.openNotification('success', 'Tạo thành công Phiếu Nhắc Nhở');
       }
+      setLoading(false);
     });
   };
 

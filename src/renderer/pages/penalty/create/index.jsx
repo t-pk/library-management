@@ -42,13 +42,12 @@ const PenaltyCreatePage = (props) => {
     props.callDatabase({ key: 'penalty-create', data });
 
     props.listenOnce('penalty-create', async (arg) => {
+      await delay(1000);
       if (arg.data) {
-        await delay(1000);
         form.resetFields();
         if (arg.data) props.openNotification('success', 'Tạo thành công Phiếu Phạt.');
-      } else {
-        setLoading(false);
       }
+      setLoading(false);
     });
   };
 

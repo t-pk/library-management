@@ -8,11 +8,7 @@ import './ui.scss';
 
 const PenaltySearchPage = (props) => {
   const [form] = Form.useForm();
-  const [inputState, setinputState] = useState({
-    fullName: '',
-    id: 0,
-    studentId: '',
-  });
+  const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
   const [penalties, setPenalties] = useState([]);
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);

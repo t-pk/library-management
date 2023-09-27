@@ -197,7 +197,7 @@ const createWindow = async () => {
   new AppUpdater();
 };
 
-const getUserId = async() => {
+const getUserId = async () => {
   return (mainWindow as BrowserWindow).webContents.executeJavaScript('localStorage.getItem("TOKEN_KEY");', true).then((result) => {
     return JSON.parse(result || `{}`).id || 0;
   });

@@ -28,16 +28,14 @@ const ReaderCreatePage = (props) => {
   };
 
   const onFinish = async (values) => {
-    console.log(values);
     setLoading(true);
     const data = { ...values };
 
     props.callDatabase({ key: 'reader-create', data });
     props.listenOnce('reader-create', async (arg) => {
       await delay(1000);
-      setLoading(false);
-
       if (arg.data) props.openNotification('success', 'Tạo thành công Độc Giả.');
+      setLoading(false);
     });
   };
 

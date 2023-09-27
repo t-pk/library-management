@@ -53,14 +53,13 @@ const ReturnCreatePage = (props) => {
 
     props.listenOnce('return-create', async (arg) => {
       await delay(1000);
-      setLoading(false);
 
       if (arg.data) {
         form.resetFields(['documentIds']);
         getInitData({ borrowId: form.getFieldValue('borrowId') });
-
-        if (arg.data) props.openNotification('success', 'Tạo thành công Phiếu Trả.');
+        props.openNotification('success', 'Tạo thành công Phiếu Trả.');
       }
+      setLoading(false);
     });
   };
 

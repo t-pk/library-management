@@ -14,11 +14,9 @@ const PublisherCreatePage = (props) => {
 
     props.listenOnce('publisher-create', async (arg) => {
       await delay(1000);
-      setLoading(false);
+      if (arg.data) props.openNotification('success', 'Tạo thành công Nhà Xuất Bản');
 
-      if (arg.data) {
-        props.openNotification('success', 'Tạo thành công Nhà Xuất Bản');
-      }
+      setLoading(false);
     });
   };
 
