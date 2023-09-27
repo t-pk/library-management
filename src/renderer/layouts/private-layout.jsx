@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Layout, Menu, Spin, theme, message } from 'antd';
+import { Layout, Menu, Spin, theme, message, notification } from 'antd';
 import { AppstoreOutlined, MailOutlined } from '@ant-design/icons';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import backgroundUrl from '../assets/background.svg';
@@ -11,8 +11,8 @@ const PrivateLayout = ({ element: Component }) => {
   const navigate = useNavigate();
   const [openKeys, setOpenKeys] = useState(['/']);
   const [spinning, setSpinning] = useState(false);
+  const [api, contextHolder] = notification.useNotification();
   const [animate, setAnimate] = useState('/document/search');
-  const [messageApi, contextHolder] = message.useMessage();
   const widthStyle = { minWidth: '32%' };
 
   const formItemLayout = {
@@ -61,8 +61,12 @@ const PrivateLayout = ({ element: Component }) => {
 
   const onOpenChange = (e) => setOpenKeys(e);
 
-  const showMessage = (type, content) => {
-    messageApi.open({ key: '1', type: type, content: content, duration: 5, className: 'custom-class' });
+  const openNotification = (type, description) => {
+    api[type]({
+      message: `Notification ${type}`,
+      description: description,
+      duration: 6,
+    });
   };
 
   /**
@@ -75,14 +79,14 @@ const PrivateLayout = ({ element: Component }) => {
   const listenOn = async (callback) => {
     window.electron.ipcRenderer.on('ipc-database', async (arg) => {
       if (arg && arg.data) await callback(arg);
-      else showMessage('error', arg.error);
+      else openNotification('error', arg.error);
     });
   };
 
   const listenOnce = async (key, callback) => {
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {
       if (arg && arg.key === key) await callback(arg);
-      if (!arg || arg.error) showMessage('error', arg.error);
+      if (!arg || arg.error) openNotification('error', arg.error);
     });
   };
 
@@ -134,6 +138,7 @@ const PrivateLayout = ({ element: Component }) => {
                 listenOn={listenOn}
                 callDatabase={callDatabase}
                 listenOnce={listenOnce}
+                openNotification={openNotification}
               />
             </Content>
           </Spin>

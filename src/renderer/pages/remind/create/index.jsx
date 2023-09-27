@@ -10,7 +10,6 @@ const RemindCreatePage = (props) => {
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
 
-  const [messageApi, contextHolder] = message.useMessage();
   const readerTypeId = Form.useWatch('readerTypeId', form);
   const location = useLocation();
   const key = 'updatable';
@@ -34,21 +33,6 @@ const RemindCreatePage = (props) => {
 
     props.listenOnce('readerType-search', (arg) => {
       setReaderTypes((arg.data || []).map((item) => ({ value: item.id, label: item.name })));
-    });
-  };
-
-  const showMessage = (type, content) => {
-    messageApi.open({
-      key,
-      type: type,
-      content: content,
-      duration: 5,
-      className: 'custom-class',
-      style: {
-        textAlign: 'right',
-        paddingRight: 20,
-        marginTop: '47%',
-      },
     });
   };
 
@@ -79,7 +63,6 @@ const RemindCreatePage = (props) => {
   return (
     <>
       {' '}
-      {contextHolder}
       <Form
         {...props.formItemLayout}
         form={form}

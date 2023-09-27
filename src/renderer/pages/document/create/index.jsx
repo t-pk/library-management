@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { AutoComplete, Button, Checkbox, Form, Input, InputNumber, message } from 'antd';
+import { AutoComplete, Button, Checkbox, Form, Input, InputNumber } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 
 const DocumentCreatePage = (props) => {
@@ -8,7 +8,6 @@ const DocumentCreatePage = (props) => {
   const [authors, setAuthors] = useState([]);
   const [documentTypes, setDocumentTypes] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [messageApi, contextHolder] = message.useMessage();
 
   const key = 'updatable';
 
@@ -27,21 +26,6 @@ const DocumentCreatePage = (props) => {
         if (arg.key === 'author-search') setAuthors(arg.data.map((item) => ({ id: item.id, value: item.name })));
         if (arg.key === 'documentType-search') setDocumentTypes(arg.data.map((item) => ({ id: item.id, value: item.name })));
       }
-    });
-  };
-
-  const showMessage = (type, content) => {
-    messageApi.open({
-      key,
-      type: type,
-      content: content,
-      duration: 5,
-      className: 'custom-class',
-      style: {
-        textAlign: 'right',
-        paddingRight: 20,
-        marginTop: '47%',
-      },
     });
   };
 
@@ -77,7 +61,6 @@ const DocumentCreatePage = (props) => {
   return (
     <>
       {' '}
-      {contextHolder}
       <Form
         {...props.formItemLayout}
         form={form}

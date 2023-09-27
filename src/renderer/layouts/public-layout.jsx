@@ -1,15 +1,41 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
-import { Route, Redirect, Navigate } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import { notification } from 'antd';
 
-const PublicLayout = ({ element: Component }) => <Component />;
+const PublicLayout = ({ element: Component }) => {
+  const [api, contextHolder] = notification.useNotification();
 
-// PrivateRoute.propTypes = {
-//   element: PropTypes.elementType.isRequired,
-//   layout: PropTypes.elementType.isRequired,
-//   exact: PropTypes.bool.isRequired,
-//   path: PropTypes.string.isRequired,
-// };
+  const openNotification = (type, description) => {
+    api[type]({
+      message: `Notification ${type}`,
+      description: description,
+      duration: 6,
+    });
+  };
 
+  /**
+   * @param {*} params {key: string, data: {}}
+   */
+  const callDatabase = (params) => {
+    window.electron.ipcRenderer.sendMessage('ipc-database', params);
+  };
+
+  const listenOn = async (callback) => {
+    window.electron.ipcRenderer.on('ipc-database', async (arg) => {
+      if (arg && arg.data) await callback(arg);
+      if (!arg || arg.error) openNotification('error', arg.error);
+    });
+  };
+
+  const listenOnce = async (key, callback) => {
+    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
+      if (arg && arg.key === key) await callback(arg);
+      if (!arg || arg.error) openNotification('error', arg.error);
+    });
+  };
+  return (
+    <>
+      {contextHolder}
+      <Component listenOn={listenOn} callDatabase={callDatabase} listenOnce={listenOnce} openNotification={openNotification} />
+    </>
+  );
+};
 export default PublicLayout;

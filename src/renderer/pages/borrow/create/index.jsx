@@ -12,7 +12,6 @@ const BorrowCreatePage = (props) => {
   const [readerTypes, setReaderTypes] = useState([]);
   const [documents, setDocuments] = useState([]);
 
-  const [messageApi, contextHolder] = message.useMessage();
   const readerTypeId = Form.useWatch('readerTypeId', form);
   const location = useLocation();
   const key = 'updatable';
@@ -46,21 +45,6 @@ const BorrowCreatePage = (props) => {
             }))
           );
       }
-    });
-  };
-
-  const showMessage = (type, content) => {
-    messageApi.open({
-      key,
-      type: type,
-      content: content,
-      duration: 5,
-      className: 'custom-class',
-      style: {
-        textAlign: 'right',
-        paddingRight: 20,
-        marginTop: '47%',
-      },
     });
   };
 
@@ -107,7 +91,6 @@ const BorrowCreatePage = (props) => {
   return (
     <>
       {' '}
-      {contextHolder}
       <Form
         {...props.formItemLayout}
         form={form}

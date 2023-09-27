@@ -1,14 +1,15 @@
 import { useState } from 'react';
-import { Form, Input, Button, message } from 'antd';
+import { Form, Input, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import icon from '../../assets/icon.jpeg';
 import backgroundUrl from '../../assets/background.svg';
 import './ui.css';
 
-const MESSAGE_LOGIN_FAIL = 'username or password is incorrect. Please try again !';
+const NOTI_LOGIN_FAIL = 'Tên Đăng Nhập hoặc Mật Khẩu không đúng. Vui lòng kiểm tra lại.';
 
 const LoginPage = (props) => {
   const navigate = useNavigate();
+  const [success, setSuccess] = useState('primary');
 
   const sleep = (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -18,44 +19,24 @@ const LoginPage = (props) => {
 
   const onFinishFailed = () => {
     setLoading(false);
-    message.error({
-      content: MESSAGE_LOGIN_FAIL,
-      className: 'custom-class',
-      style: {
-        textAlign: 'right',
-      },
-    });
+    props.openNotification('error', NOTI_LOGIN_FAIL);
   };
 
   const onFinish = async (user) => {
     setLoading(true);
-
+    setSuccess('default');
     props.callDatabase({ key: 'user-login', data: user });
     props.listenOnce('user-login', async (arg) => {
+      await sleep(300);
+      setLoading(false);
       if (arg && arg.data) {
-        setLoading(false);
-        await sleep(1200);
         localStorage.setItem('TOKEN_KEY', JSON.stringify(arg.data));
         navigate('/');
       }
-      if (arg && !arg.data) {
-        setLoading(false);
-        message.error({
-          content: MESSAGE_LOGIN_FAIL,
-          className: 'custom-class',
-          style: {
-            textAlign: 'right',
-          },
-        });
+      if (arg && !arg.error && !arg.data) {
+        props.openNotification('error', NOTI_LOGIN_FAIL);
       }
-      setLoading(false);
-      message.error({
-        content: arg.error,
-        className: 'custom-class',
-        style: {
-          textAlign: 'right',
-        },
-      });
+      setSuccess('primary');
     });
   };
 
@@ -74,7 +55,7 @@ const LoginPage = (props) => {
         </Form.Item>
 
         <Form.Item>
-          <Button className="login-button" type="primary" htmlType="submit" loading={loading}>
+          <Button className="login-button" type={success} htmlType="submit" loading={loading}>
             Submit
           </Button>
         </Form.Item>

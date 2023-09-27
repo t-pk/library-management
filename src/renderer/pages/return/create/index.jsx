@@ -11,7 +11,6 @@ const ReturnCreatePage = (props) => {
   const [readerTypes, setReaderTypes] = useState([]);
   const [borrowedDocuments, setBorrowedDocuments] = useState([]);
 
-  const [messageApi, contextHolder] = message.useMessage();
   const readerTypeId = Form.useWatch('readerTypeId', form);
   const location = useLocation();
   const key = 'updatable';
@@ -48,21 +47,6 @@ const ReturnCreatePage = (props) => {
     });
   };
 
-  const showMessage = (type, content) => {
-    messageApi.open({
-      key,
-      type: type,
-      content: content,
-      duration: 5,
-      className: 'custom-class',
-      style: {
-        textAlign: 'right',
-        paddingRight: 20,
-        marginTop: '47%',
-      },
-    });
-  };
-
   const onFinish = async (values) => {
     setLoading(true);
     showMessage('loading', 'loading...');
@@ -90,7 +74,6 @@ const ReturnCreatePage = (props) => {
   return (
     <>
       {' '}
-      {contextHolder}
       <Form
         {...props.formItemLayout}
         form={form}

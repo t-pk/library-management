@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Checkbox, Form, Input, message } from 'antd';
+import { Button, Checkbox, Form, Input } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { delay } from '../../../utils/index';
 
@@ -8,23 +8,7 @@ const PublisherCreatePage = (props) => {
 
   const [loading, setLoading] = useState(false);
 
-  const [messageApi, contextHolder] = message.useMessage();
   const key = 'updatable';
-
-  const showMessage = (type, content) => {
-    messageApi.open({
-      key,
-      type: type,
-      content: content,
-      duration: 5,
-      className: 'custom-class',
-      style: {
-        textAlign: 'right',
-        paddingRight: 20,
-        marginTop: '47%',
-      },
-    });
-  };
 
   const onFinish = (values) => {
     setLoading(true);
@@ -45,7 +29,6 @@ const PublisherCreatePage = (props) => {
 
   return (
     <>
-      {contextHolder}
       <Form
         {...props.formItemLayout}
         form={form}
