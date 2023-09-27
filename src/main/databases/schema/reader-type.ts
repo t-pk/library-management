@@ -9,6 +9,7 @@ export const IReaderType = {
   name: {
     type: DataTypes.STRING(32),
     allowNull: false,
+    unique: true
   },
   status: {
     type: DataTypes.BOOLEAN,

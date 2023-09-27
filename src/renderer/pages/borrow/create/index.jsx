@@ -2,8 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { Button, Form, Input, Select, Radio } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
-import { delay } from '../../../utils/index';
-import { queryStringToObject, parseDataSelect } from '../../../utils/index';
+import { delay } from '../../../utils/helper';
+import { queryStringToObject, parseDataSelect } from '../../../utils/helper';
 import debounce from 'lodash.debounce';
 
 const BorrowCreatePage = (props) => {

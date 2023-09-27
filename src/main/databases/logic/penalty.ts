@@ -1,6 +1,5 @@
-import countBy from 'lodash.countby';
-import { BorrowSchema, PenaltySchema, ReaderSchema, RemindSchema, ReturnSchema, sequelize, unitOfWork } from '../db';
 import { Op } from 'sequelize';
+import { BorrowSchema, PenaltySchema, ReaderSchema, ReturnSchema, unitOfWork } from '../db';
 
 export const createPenalty = async (request: any) => {
   return unitOfWork((transaction: any) => {
@@ -43,6 +42,5 @@ export const getPenalties = async (request: any) => {
     order: [['id', 'DESC']],
   });
   let penaltiesJSON = penalties.map((penalty) => penalty.toJSON());
-  console.log('penaltiesJSON', penaltiesJSON);
   return penaltiesJSON;
 };

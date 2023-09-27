@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { Button, Form, Input, message, Radio } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
-import { delay } from '../../../utils/index';
-import { queryStringToObject } from '../../../utils/index';
+import { delay } from '../../../utils/helper';
+import { queryStringToObject } from '../../../utils/helper';
 
 const RemindCreatePage = (props) => {
   const [form] = Form.useForm();

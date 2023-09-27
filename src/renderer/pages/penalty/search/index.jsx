@@ -2,9 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { SearchOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { Button, Input, Table, Form, Radio } from 'antd';
 import debounce from 'lodash.debounce';
-import { formatDMY_HMS } from '../../../utils/index';
-
-import './ui.scss';
+import { formatDateTime } from '../../../utils/helper';
 
 const PenaltySearchPage = (props) => {
   const [form] = Form.useForm();
@@ -57,7 +55,7 @@ const PenaltySearchPage = (props) => {
       dataIndex: 'createdAt',
       align: 'center',
       render: (dateTime) => {
-        return formatDMY_HMS(dateTime);
+        return formatDateTime(dateTime);
       },
     },
     {

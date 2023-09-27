@@ -6,7 +6,7 @@ export const IRemind = {
     primaryKey: true,
     autoIncrement: true,
   },
-  borrowId: {
+  returnId: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },

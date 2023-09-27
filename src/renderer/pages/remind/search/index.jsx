@@ -3,8 +3,6 @@ import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Table, Form, Radio } from 'antd';
 import debounce from 'lodash.debounce';
 
-import './ui.scss';
-
 const RemindSearchPage = (props) => {
   const [form] = Form.useForm();
   const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });

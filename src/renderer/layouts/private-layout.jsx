@@ -4,7 +4,7 @@ import { AppstoreOutlined, MailOutlined } from '@ant-design/icons';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import backgroundUrl from '../assets/background.svg';
 const { Header, Content, Sider } = Layout;
-import './css.css';
+import './ui.scss';
 
 const PrivateLayout = ({ element: Component }) => {
   const location = useLocation();
@@ -59,7 +59,10 @@ const PrivateLayout = ({ element: Component }) => {
     getItem('Nhà Xuất Bản', '/publisher', <AppstoreOutlined />, [getItem('Tìm Kiếm', '/publisher/search'), getItem('Thêm Mới', '/publisher/create')]),
   ];
 
-  const onOpenChange = (e) => setOpenKeys(e);
+  const onOpenChange = (e) => {
+    const keys = e.slice(-3);
+    setOpenKeys(keys);
+  };
 
   const openNotification = (type, description) => {
     api[type]({

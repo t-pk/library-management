@@ -1,3 +1,33 @@
+/* CSS file or styled-components */
+.my-animation {
+  /* Define your animation properties here */
+  animation-name: fadeIn;
+  animation-duration: 0.2s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0.8;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.logo-icon {
+  background: #112c5ef2;
+  height: 64px;
+  padding: 2px;
+}
+.search-options:hover {
+  cursor: pointer;
+}
+.ant-input-group-addon:hover {
+  background-color: rgb(223, 223, 223);
+  cursor: pointer;
+}
+
 #login-content {
   display: -webkit-flex;
   height: 80vh;

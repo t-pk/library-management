@@ -3,9 +3,7 @@ import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Space, Dropdown, Table, Form, Tag, Radio } from 'antd';
 import debounce from 'lodash.debounce';
 import { useNavigate } from 'react-router-dom';
-import { objectToQueryString } from '../../../utils/index';
-
-import './ui.scss';
+import { objectToQueryString } from '../../../utils/helper';
 
 const ReaderSearchPage = (props) => {
   const [form] = Form.useForm();

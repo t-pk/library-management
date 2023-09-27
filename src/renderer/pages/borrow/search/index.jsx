@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useCallback, useEffect } from 'react';
 import { Button, Input, Select, Space, Dropdown, Table, Form, Radio } from 'antd';
 import { DownOutlined, SearchOutlined, CheckCircleOutlined } from '@ant-design/icons';
-import { formatDMY_HMS, formatDMY, objectToQueryString, parseDataSelect } from '../../../utils/index';
-
-import './ui.scss';
+import { formatDateTime, formatDateMinutes, objectToQueryString, parseDataSelect } from '../../../utils/helper';
 
 const BorrowSearchPage = (props) => {
   const [form] = Form.useForm();
@@ -18,6 +16,27 @@ const BorrowSearchPage = (props) => {
   const readerTypeId = Form.useWatch('readerTypeId', form);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 20; // Number of items per page
+
+  const groupByBorrow = (borrow, index) => {
+    const reIndex = currentPage >= 2 ? currentPage * pageSize - pageSize + index : index;
+    let boolean = false;
+    if (reIndex === 0) {
+      boolean = true;
+    } else if (borrow.borrowId !== borrows[reIndex - 1].borrowId) {
+      boolean = true;
+    } else {
+      boolean = borrow.countBorrowId - borrow.rest !== borrows[reIndex - 1].countBorrowId - borrows[reIndex - 1].rest;
+      let count = 0;
+      if (reIndex % 10 === 0) {
+        for (let i = 0; i < reIndex; i++) {
+          count += borrows[i].countBorrowId;
+        }
+      }
+    }
+    return {
+      rowSpan: boolean ? borrow.countBorrowId - borrow.rest : 0,
+    };
+  };
 
   const columns = [
     {
@@ -71,7 +90,7 @@ const BorrowSearchPage = (props) => {
       dataIndex: 'createdAt',
       align: 'center',
       render: (dateTime) => {
-        return formatDMY_HMS(dateTime);
+        return formatDateTime(dateTime);
       },
       onCell: groupByBorrow,
     },
@@ -80,7 +99,7 @@ const BorrowSearchPage = (props) => {
       dataIndex: 'createdAt',
       align: 'center',
       render: (dateTime) => {
-        return formatDMY(dateTime);
+        return formatDateMinutes(dateTime);
       },
       onCell: groupByBorrow,
     },
@@ -89,7 +108,7 @@ const BorrowSearchPage = (props) => {
       dataIndex: ['returnDetail', 'createdAt'],
       align: 'center',
       render: (dateTime) => {
-        return dateTime && formatDMY_HMS(dateTime);
+        return dateTime && formatDateTime(dateTime);
       },
     },
     {
@@ -132,27 +151,6 @@ const BorrowSearchPage = (props) => {
       },
     },
   ];
-
-  const groupByBorrow = (borrow, index) => {
-    const reIndex = currentPage >= 2 ? currentPage * pageSize - pageSize + index : index;
-    let boolean = false;
-    if (reIndex === 0) {
-      boolean = true;
-    } else if (borrow.borrowId !== borrows[reIndex - 1].borrowId) {
-      boolean = true;
-    } else {
-      boolean = borrow.countBorrowId - borrow.rest !== borrows[reIndex - 1].countBorrowId - borrows[reIndex - 1].rest;
-      let count = 0;
-      if (reIndex % 10 === 0) {
-        for (let i = 0; i < reIndex; i++) {
-          count += borrows[i].countBorrowId;
-        }
-      }
-    }
-    return {
-      rowSpan: boolean ? borrow.countBorrowId - borrow.rest : 0,
-    };
-  };
 
   const handleDebounceFn = (reState) => {
     props.callDatabase({ key: 'borrow-search', data: reState });

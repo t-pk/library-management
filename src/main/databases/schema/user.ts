@@ -9,6 +9,7 @@ export const IUser = {
   username: {
     type: DataTypes.STRING(32),
     allowNull: false,
+    unique: true
   },
   password: {
     type: DataTypes.STRING(128),
@@ -17,10 +18,12 @@ export const IUser = {
   email: {
     type: DataTypes.STRING(32),
     allowNull: true,
+    unique: true
   },
   phoneNumber: {
     type: DataTypes.STRING(16),
     allowNull: true,
+    unique: true
   },
   status: {
     type: DataTypes.BOOLEAN,

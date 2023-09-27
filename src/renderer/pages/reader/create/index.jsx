@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button, Form, Input, Radio } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
-import { delay } from '../../../utils/index';
+import { delay } from '../../../utils/helper';
 
 const ReaderCreatePage = (props) => {
   const [form] = Form.useForm();

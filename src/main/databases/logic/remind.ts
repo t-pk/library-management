@@ -1,5 +1,4 @@
-import countBy from 'lodash.countby';
-import { BorrowSchema, ReaderSchema, RemindSchema, sequelize, unitOfWork } from '../db';
+import {  ReaderSchema, RemindSchema, ReturnSchema, sequelize, unitOfWork } from '../db';
 import { Op } from 'sequelize';
 
 export const createRemind = async (request: any) => {
@@ -30,7 +29,7 @@ export const getReminds = async (request: any) => {
     where: readerQuery,
     include: [
       {
-        model: BorrowSchema,
+        model: ReturnSchema,
         attributes: [],
         required: true,
         include: [{ model: RemindSchema, attributes: [], required: true }],

@@ -15,7 +15,7 @@ export const queryStringToObject = (queryString) => {
   return queryObject;
 };
 
-export const formatDMY_HMS = (date) => {
+export const formatDateTime = (date) => {
   const day = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
   const year = date.getFullYear();
@@ -26,7 +26,7 @@ export const formatDMY_HMS = (date) => {
   return `${day}/${month}/${year} ${hours}:${minutes}:00`;
 };
 
-export const formatDMY = (date) => {
+export const formatDateMinutes = (date) => {
   const day = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
   const year = date.getFullYear();

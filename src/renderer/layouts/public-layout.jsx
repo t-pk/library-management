@@ -1,4 +1,5 @@
 import { notification } from 'antd';
+import './ui.scss';
 
 const PublicLayout = ({ element: Component }) => {
   const [api, contextHolder] = notification.useNotification();

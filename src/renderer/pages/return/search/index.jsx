@@ -3,9 +3,7 @@ import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Select, Space, Dropdown, Table, Form, Radio } from 'antd';
 import debounce from 'lodash.debounce';
 import { useNavigate } from 'react-router-dom';
-import { formatDMY_HMS, objectToQueryString, parseDataSelect } from '../../../utils/index';
-
-import './ui.scss';
+import { formatDateTime, objectToQueryString, parseDataSelect } from '../../../utils/helper';
 
 const ReturnSearchPage = (props) => {
   const [form] = Form.useForm();
@@ -72,7 +70,7 @@ const ReturnSearchPage = (props) => {
       dataIndex: 'createdAt',
       align: 'center',
       render: (dateTime) => {
-        return dateTime && formatDMY_HMS(dateTime);
+        return dateTime && formatDateTime(dateTime);
       },
     },
     {

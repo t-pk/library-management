@@ -58,7 +58,6 @@ export const PenaltySchema = sequelize.define('penalties', IPenalty, { ...attrib
 // BorrowSchema.belongsTo(DocumentSchema, { foreignKey: { allowNull: false, name: 'documentId' } });
 BorrowSchema.belongsTo(ReaderSchema, { foreignKey: { allowNull: false, name: 'readerId' } });
 BorrowSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
-BorrowSchema.hasOne(RemindSchema);
 BorrowSchema.hasOne(ReturnSchema);
 
 BorrowDetailSchema.belongsTo(BorrowSchema, { foreignKey: { allowNull: false, name: 'borrowId' } });
@@ -81,6 +80,7 @@ ReaderTypeSchema.hasOne(ReaderSchema);
 ReturnSchema.belongsTo(ReaderSchema, { foreignKey: { allowNull: false, name: 'readerId' } });
 ReturnSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
 ReturnSchema.hasOne(PenaltySchema);
+ReturnSchema.hasOne(RemindSchema);
 ReturnSchema.belongsTo(BorrowSchema, { foreignKey: { allowNull: false, name: 'borrowId' } });
 
 ReturnDetailSchema.belongsTo(ReturnSchema, { foreignKey: { allowNull: false, name: 'returnId' } });
@@ -91,7 +91,7 @@ UserSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'created
 UserSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' } });
 
 RemindSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
-RemindSchema.belongsTo(BorrowSchema, { foreignKey: { allowNull: false, name: 'borrowId' } });
+RemindSchema.belongsTo(ReturnSchema, { foreignKey: { allowNull: false, name: 'returnId' } });
 
 PenaltySchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
 PenaltySchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' } });

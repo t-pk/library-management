@@ -3,7 +3,6 @@ import { Form, Input, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import icon from '../../assets/icon.jpeg';
 import backgroundUrl from '../../assets/background.svg';
-import './ui.css';
 
 const NOTI_LOGIN_FAIL = 'Tên Đăng Nhập hoặc Mật Khẩu không đúng. Vui lòng kiểm tra lại.';
 
@@ -45,7 +44,7 @@ const LoginPage = (props) => {
       <img className="logo-login" src={backgroundUrl} style={{ width: '100%', position: 'absolute' }} alt="icon"></img>
       <Form name="basic" initialValues={{ remember: true }} onFinish={onFinish} onFinishFailed={onFinishFailed} className="login-wrap">
         <img className="logo-login" src={icon} alt="icon" />
-        <h3 className="logo-name"> ElectronJS - React - Ant </h3>
+        <h3 className="logo-name"> Library Management </h3>
         <Form.Item name="username" rules={[{ required: true, message: 'Please input your username!' }]}>
           <Input />
         </Form.Item>

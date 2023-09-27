@@ -3,8 +3,6 @@ import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Select, Table, Form, Tag, InputNumber, Radio } from 'antd';
 import debounce from 'lodash.debounce';
 
-import './ui.scss';
-
 const DocumentSearchPage = (props) => {
   const [form] = Form.useForm();
   const [inputState, setinputState] = useState({ name: '', id: '', type: '' });
