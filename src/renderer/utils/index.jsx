@@ -39,8 +39,8 @@ export const delay = (t) => {
 };
 
 export const parseDataSelect = (data) => {
-  return (data|| []).map((item) => ({
+  return (data || []).map((item) => ({
     id: item.id,
     value: `${item.id} - ${item.name}`,
-  }))
-}
+  }));
+};

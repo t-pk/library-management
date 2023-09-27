@@ -31,11 +31,7 @@ const columns = [
 const style = { minWidth: '28%', marginRight: '10px' };
 
 const PublisherSearchPage = (props) => {
-  const [inputState, setinputState] = useState({
-    name: '',
-    id: '',
-    type: '',
-  });
+  const [inputState, setinputState] = useState({ name: '', id: '', type: '' });
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
 

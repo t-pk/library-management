@@ -173,8 +173,7 @@ const ReturnSearchPage = (props) => {
           setReaderTypes(resReaders);
         }
         if (arg.key === 'document-search') {
-          setDocuments(parseDataSelect(arg.data))
-          
+          setDocuments(parseDataSelect(arg.data));
         }
       }
     });

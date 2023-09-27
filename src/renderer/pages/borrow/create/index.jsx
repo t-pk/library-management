@@ -55,7 +55,9 @@ const BorrowCreatePage = (props) => {
   const debounceDocument = async (value) => {
     props.callDatabase({ key: 'document-search', data: { name: value } });
 
-    props.listenOnce((arg) => { setDocuments(parseDataSelect(arg.data)) });
+    props.listenOnce((arg) => {
+      setDocuments(parseDataSelect(arg.data));
+    });
   };
 
   const debounceFc = useCallback(debounce(debounceDocument, 400), []);

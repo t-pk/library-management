@@ -5,56 +5,52 @@ import debounce from 'lodash.debounce';
 
 import './ui.scss';
 
-const columns = [
-  {
-    title: 'Id',
-    dataIndex: 'id',
-    width: '5%',
-    align: 'center',
-  },
-  {
-    title: 'Tên Tài Liệu',
-    dataIndex: 'name',
-    width: '25%',
-  },
-  {
-    title: 'Thể Loại',
-    align: 'center',
-    dataIndex: 'document-type.name',
-  },
-  {
-    title: 'Nhà Xuất Bản',
-    dataIndex: 'publisher.name',
-  },
-  {
-    title: 'Năm Xuất Bản',
-    align: 'center',
-    dataIndex: 'publishYear',
-  },
-  {
-    title: 'Tác Giả',
-    dataIndex: 'author.name',
-  },
-  {
-    title: 'Tài Liệu Đặc Biệt',
-    dataIndex: 'special',
-    align: 'center',
-    render: (text) => <Tag color={text ? 'green' : 'orange'}>{text ? 'Yes' : 'No'}</Tag>,
-  },
-];
-
 const DocumentSearchPage = (props) => {
   const [form] = Form.useForm();
-  const [inputState, setinputState] = useState({
-    name: '',
-    id: '',
-    type: '',
-  });
+  const [inputState, setinputState] = useState({ name: '', id: '', type: '' });
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [publishers, setPublishers] = useState([]);
   const [authors, setAuthors] = useState([]);
   const [documentTypes, setDocumentTypes] = useState([]);
+
+  const columns = [
+    {
+      title: 'Id',
+      dataIndex: 'id',
+      width: '5%',
+      align: 'center',
+    },
+    {
+      title: 'Tên Tài Liệu',
+      dataIndex: 'name',
+      width: '25%',
+    },
+    {
+      title: 'Thể Loại',
+      align: 'center',
+      dataIndex: 'document-type.name',
+    },
+    {
+      title: 'Nhà Xuất Bản',
+      dataIndex: 'publisher.name',
+    },
+    {
+      title: 'Năm Xuất Bản',
+      align: 'center',
+      dataIndex: 'publishYear',
+    },
+    {
+      title: 'Tác Giả',
+      dataIndex: 'author.name',
+    },
+    {
+      title: 'Tài Liệu Đặc Biệt',
+      dataIndex: 'special',
+      align: 'center',
+      render: (text) => <Tag color={text ? 'green' : 'orange'}>{text ? 'Yes' : 'No'}</Tag>,
+    },
+  ];
 
   const handleDebounceFn = (reState) => {
     props.callDatabase({ key: 'document-search', data: reState });
