@@ -114,11 +114,9 @@ ipcMain.on('ipc-database', async (event, arg) => {
       default:
         break;
     }
-    // console.log(result);
     event.reply('ipc-database', { key: arg.key, data: result });
   } catch (error) {
-    console.log('JSON.stringify(error)', error);
-    event.reply('ipc-database', { error: JSON.stringify(error) });
+    event.reply('ipc-database', { key: arg.key, error: JSON.stringify(error) });
   }
 });
 
@@ -199,11 +197,12 @@ const createWindow = async () => {
   new AppUpdater();
 };
 
-export const getUserId = () => {
+const getUserId = async() => {
   return (mainWindow as BrowserWindow).webContents.executeJavaScript('localStorage.getItem("TOKEN_KEY");', true).then((result) => {
     return JSON.parse(result || `{}`).id || 0;
   });
 };
+
 /**
  * Add event listeners...
  */

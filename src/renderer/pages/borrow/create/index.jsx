@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Button, Form, Input, message, Select, Radio } from 'antd';
+import { Button, Form, Input, Select, Radio } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
 import { delay } from '../../../utils/index';
@@ -14,7 +14,6 @@ const BorrowCreatePage = (props) => {
 
   const readerTypeId = Form.useWatch('readerTypeId', form);
   const location = useLocation();
-  const key = 'updatable';
 
   useEffect(() => {
     let readerInfo = queryStringToObject(location.search);
@@ -50,7 +49,6 @@ const BorrowCreatePage = (props) => {
 
   const onFinish = async (values) => {
     setLoading(true);
-    showMessage('loading', 'loading...');
     const data = { ...values };
     const documentIds = values.documentIds.map((document) => +document.split('-')[0].trim());
     data.documentIds = documentIds;
@@ -60,11 +58,7 @@ const BorrowCreatePage = (props) => {
       if (arg.data) {
         await delay(1000);
         setLoading(false);
-        messageApi.destroy(key);
-        if (arg.data) showMessage('success', 'Created Reader.');
-        else showMessage('error', arg.error);
-        await delay(2000);
-        messageApi.destroy(key);
+        if (arg.data) props.openNotification('success', 'Tạo thành công Phiếu Mượn.');
       }
     });
   };

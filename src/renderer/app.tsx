@@ -53,18 +53,18 @@ const App = () => {
       }}
     >
       <Router>
-        <Suspense
+        {/* <Suspense
           fallback={
             <Spin>
               <div className="is-spining-full" />
             </Spin>
           }
-        >
+        > */}
           <Routes>
             {...adminRoutes}
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
-        </Suspense>
+        {/* </Suspense> */}
       </Router>
     </ConfigProvider>
   );

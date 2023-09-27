@@ -9,8 +9,6 @@ const DocumentCreatePage = (props) => {
   const [documentTypes, setDocumentTypes] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const key = 'updatable';
-
   useEffect(() => {
     getInitData();
   }, []);
@@ -49,11 +47,7 @@ const DocumentCreatePage = (props) => {
       if (arg.data) {
         await delay(1000);
         setLoading(false);
-        messageApi.destroy(key);
-        if (arg.data) showMessage('success', 'Created Document');
-        else showMessage('error', arg.error);
-        await delay(2000);
-        messageApi.destroy(key);
+        if (arg.data) props.openNotification('success', 'Tạo Thành Công Tài Liệu');
       }
     });
   };

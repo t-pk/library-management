@@ -5,25 +5,20 @@ import { delay } from '../../../utils/index';
 
 const PublisherCreatePage = (props) => {
   const [form] = Form.useForm();
-
   const [loading, setLoading] = useState(false);
-
-  const key = 'updatable';
 
   const onFinish = (values) => {
     setLoading(true);
-    showMessage('loading', 'loading...');
+
     props.callDatabase({ key: 'publisher-create', data: values });
 
     props.listenOnce('publisher-create', async (arg) => {
       await delay(1000);
       setLoading(false);
-      messageApi.destroy(key);
+
       if (arg.data) {
-        showMessage('success', 'Created Publisher');
-      } else showMessage('error', arg.error);
-      await delay(2000);
-      messageApi.destroy(key);
+        props.openNotification('success', 'Tạo thành công Nhà Xuất Bản');
+      }
     });
   };
 

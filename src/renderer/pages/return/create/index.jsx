@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Form, Input, message, Select, Radio } from 'antd';
+import { Button, Form, Input, Select, Radio } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
 import { delay } from '../../../utils/index';
@@ -13,7 +13,6 @@ const ReturnCreatePage = (props) => {
 
   const readerTypeId = Form.useWatch('readerTypeId', form);
   const location = useLocation();
-  const key = 'updatable';
 
   useEffect(() => {
     let borrowInfo = queryStringToObject(location.search);
@@ -49,7 +48,6 @@ const ReturnCreatePage = (props) => {
 
   const onFinish = async (values) => {
     setLoading(true);
-    showMessage('loading', 'loading...');
     const data = { ...values };
     props.callDatabase({ key: 'return-create', data });
 
@@ -60,13 +58,8 @@ const ReturnCreatePage = (props) => {
       if (arg.data) {
         form.resetFields(['documentIds']);
         getInitData({ borrowId: form.getFieldValue('borrowId') });
-        messageApi.destroy(key);
 
-        if (arg.data) showMessage('success', 'Created Reader.');
-        else showMessage('error', arg.error);
-
-        await delay(2000);
-        messageApi.destroy(key);
+        if (arg.data) props.openNotification('success', 'Tạo thành công Phiếu Trả.');
       }
     });
   };

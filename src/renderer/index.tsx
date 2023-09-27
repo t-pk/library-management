@@ -5,5 +5,3 @@ import './index.css';
 const container = document.getElementById('root')!;
 const root = createRoot(container);
 root.render(<App />);
-
-window.electron.ipcRenderer.sendMessage('ipc-database', ['ping']);

@@ -1,26 +1,21 @@
 import { useState } from 'react';
 import { Button, Checkbox, Form, Input } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
+import {delay} from '../../../utils/index';
 
 const AuthorCreatePage = (props) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const key = 'updatable';
 
   const onFinish = (values) => {
     setLoading(true);
-    showMessage('loading', 'loading...');
+
     props.callDatabase({ key: 'author-create', data: values });
 
-    props.listenOnce('return-search', async (arg) => {
+    props.listenOnce('author-create', async (arg) => {
       await delay(1000);
+      if (arg.data) props.openNotification('success', 'Tạo thành công Tác Giả');
       setLoading(false);
-      messageApi.destroy(key);
-      if (arg.data) {
-        showMessage('success', 'Created Author');
-      } else showMessage('error', arg.error);
-      await delay(2000);
-      messageApi.destroy(key);
     });
   };
 

@@ -39,23 +39,15 @@ const RemindCreatePage = (props) => {
   const onFinish = async (values) => {
     console.log(values);
     setLoading(true);
-    showMessage('loading', 'loading...');
     const data = { ...values };
     props.callDatabase({ key: 'remind-create', data });
-
     props.listenOnce('remind-create', async (arg) => {
       await delay(1000);
       setLoading(false);
 
       if (arg.data) {
         form.resetFields();
-        messageApi.destroy(key);
-
-        if (arg.data) showMessage('success', 'Created Remind.');
-        else showMessage('error', arg.error);
-
-        await delay(2000);
-        messageApi.destroy(key);
+        if (arg.data) props.openNotification('success', 'Tạo thành công Phiếu Nhắc Nhở');
       }
     });
   };

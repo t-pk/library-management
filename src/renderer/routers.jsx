@@ -1,30 +1,28 @@
-import React from 'react';
-
 import PrivateLayout from './layouts/private-layout';
 import PublicLayout from './layouts/public-layout';
 
-const LoginPage = React.lazy(() => import('./pages/login'));
-const DocumentSeachPage = React.lazy(() => import('./pages/document/search'));
-const DocumentCreatePage = React.lazy(() => import('./pages/document/create'));
-const DocumentRequestPage = React.lazy(() => import('./pages/document/request'));
-const ReaderSeachPage = React.lazy(() => import('./pages/reader/search'));
-const ReaderCreatePage = React.lazy(() => import('./pages/reader/create'));
-const AuthorSeachPage = React.lazy(() => import('./pages/author/search'));
-const AuthorCreatePage = React.lazy(() => import('./pages/author/create'));
-const PublisherSeachPage = React.lazy(() => import('./pages/publisher/search'));
-const PublisherCreatePage = React.lazy(() => import('./pages/publisher/create'));
+import LoginPage from './pages/login';
+import DocumentSeachPage from './pages/document/search';
+import DocumentCreatePage from './pages/document/create';
+import DocumentRequestPage from './pages/document/request';
+import ReaderSeachPage from './pages/reader/search';
+import ReaderCreatePage from './pages/reader/create';
+import AuthorSeachPage from './pages/author/search';
+import AuthorCreatePage from './pages/author/create';
+import PublisherSeachPage from './pages/publisher/search';
+import PublisherCreatePage from './pages/publisher/create';
 
-const BorrowSeachPage = React.lazy(() => import('./pages/borrow/search'));
-const BorrowCreatePage = React.lazy(() => import('./pages/borrow/create'));
-const ReturnSeachPage = React.lazy(() => import('./pages/return/search'));
-const ReturnCreatePage = React.lazy(() => import('./pages/return/create'));
+import BorrowSeachPage from './pages/borrow/search';
+import BorrowCreatePage from './pages/borrow/create';
+import ReturnSeachPage from './pages/return/search';
+import ReturnCreatePage from './pages/return/create';
 
-const RemindSeachPage = React.lazy(() => import('./pages/remind/search'));
-const RemindCreatePage = React.lazy(() => import('./pages/remind/create'));
-const PenaltySeachPage = React.lazy(() => import('./pages/penalty/search'));
-const PenaltyCreatePage = React.lazy(() => import('./pages/penalty/create'));
+import RemindSeachPage from './pages/remind/search';
+import RemindCreatePage from './pages/remind/create';
+import PenaltySeachPage from './pages/penalty/search';
+import PenaltyCreatePage from './pages/penalty/create';
 
-const NotFoundPage = React.lazy(() => import('./pages/not-found'));
+import NotFoundPage from './pages/not-found';
 
 const routes = [
   {

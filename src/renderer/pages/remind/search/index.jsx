@@ -12,7 +12,7 @@ const RemindSearchPage = (props) => {
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
   const readerTypeId = Form.useWatch('readerTypeId', form);
-  const [currentPage, setCurrentPage] = React.useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 20; // Number of items per page
 
   const columns = [

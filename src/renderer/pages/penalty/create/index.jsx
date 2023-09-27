@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Form, Input, message, Radio, InputNumber, Checkbox } from 'antd';
+import { Button, Form, Input, Radio, InputNumber, Checkbox } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
 import { delay } from '../../../utils/index';
@@ -12,7 +12,6 @@ const PenaltyCreatePage = (props) => {
 
   const readerTypeId = Form.useWatch('readerTypeId', form);
   const location = useLocation();
-  const key = 'updatable';
 
   useEffect(() => {
     let returnInfo = queryStringToObject(location.search);
@@ -37,9 +36,8 @@ const PenaltyCreatePage = (props) => {
   };
 
   const onFinish = async (values) => {
-    console.log(values);
     setLoading(true);
-    showMessage('loading', 'loading...');
+
     const data = { ...values };
     props.callDatabase({ key: 'penalty-create', data });
 
@@ -47,11 +45,7 @@ const PenaltyCreatePage = (props) => {
       if (arg.data) {
         await delay(1000);
         form.resetFields();
-        messageApi.destroy(key);
-        if (arg.data) showMessage('success', 'Created Penalty.');
-        else showMessage('error', arg.error);
-        await delay(2000);
-        messageApi.destroy(key);
+        if (arg.data) props.openNotification('success', 'Tạo thành công Phiếu Phạt.');
       } else {
         setLoading(false);
       }

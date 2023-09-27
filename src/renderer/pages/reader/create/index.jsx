@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Form, Input, message, Radio } from 'antd';
+import { Button, Form, Input, Radio } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { delay } from '../../../utils/index';
 
@@ -8,7 +8,6 @@ const ReaderCreatePage = (props) => {
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
   const readerTypeId = Form.useWatch('readerTypeId', form);
-  const key = 'updatable';
 
   useEffect(() => {
     getInitData();
@@ -31,21 +30,14 @@ const ReaderCreatePage = (props) => {
   const onFinish = async (values) => {
     console.log(values);
     setLoading(true);
-    showMessage('loading', 'loading...');
     const data = { ...values };
 
     props.callDatabase({ key: 'reader-create', data });
-
     props.listenOnce('reader-create', async (arg) => {
       await delay(1000);
       setLoading(false);
-      if (arg.data) {
-        messageApi.destroy(key);
-        if (arg.data) showMessage('success', 'Created Reader.');
-        else showMessage('error', arg.error);
-        await delay(2000);
-        messageApi.destroy(key);
-      }
+
+      if (arg.data) props.openNotification('success', 'Tạo thành công Độc Giả.');
     });
   };
 
