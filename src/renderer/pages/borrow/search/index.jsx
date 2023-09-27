@@ -7,12 +7,6 @@ import { formatDMY_HMS, formatDMY, objectToQueryString } from '../../../utils/in
 
 import './ui.scss';
 
-const formItemLayout = {
-  labelCol: { xs: { span: 30 }, sm: { span: 30 } },
-  wrapperCol: { xs: { span: 40 }, sm: { span: 23 } },
-};
-const reStyle = { minWidth: '32%' };
-
 const BorrowSearchPage = (props) => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
@@ -296,7 +290,7 @@ const BorrowSearchPage = (props) => {
   return (
     <>
       <Form
-        {...formItemLayout}
+        {...props.formItemLayout}
         form={form}
         layout="vertical"
         name="dynamic_rule"
@@ -304,11 +298,11 @@ const BorrowSearchPage = (props) => {
         scrollToFirstError
         initialValues={{ readerTypeId: undefined }}
       >
-        <Form.Item label="Mã Độc Giả" style={reStyle}>
+        <Form.Item label="Mã Độc Giả" style={props.widthStyle}>
           <Input id="readerId" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item name="documents" label="Tài Liệu" style={reStyle}>
+        <Form.Item name="documents" label="Tài Liệu" style={props.widthStyle}>
           <Select
             onSearch={findDocuments}
             mode="multiple"
@@ -320,19 +314,19 @@ const BorrowSearchPage = (props) => {
           />
         </Form.Item>
 
-        <Form.Item label="Tên Độc Giả" style={reStyle}>
+        <Form.Item label="Tên Độc Giả" style={props.widthStyle}>
           <Input id="fullName" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item name="studentId" label="Mã Sinh Viên" style={reStyle}>
+        <Form.Item name="studentId" label="Mã Sinh Viên" style={props.widthStyle}>
           <Input disabled={readerTypeId && readerTypeId !== 1} id="studentId" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item name="civilServantId" label="Mã Cán Bộ - Nhân Viên" style={reStyle}>
+        <Form.Item name="civilServantId" label="Mã Cán Bộ - Nhân Viên" style={props.widthStyle}>
           <Input disabled={readerTypeId && readerTypeId !== 2} id="civilServantId" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item name="readerTypeId" label="Loại Độc Giả" style={reStyle}>
+        <Form.Item name="readerTypeId" label="Loại Độc Giả" style={props.widthStyle}>
           <Radio.Group
             name="readerTypeId"
             onChange={onChange}
@@ -342,7 +336,7 @@ const BorrowSearchPage = (props) => {
           />
         </Form.Item>
 
-        <Form.Item style={reStyle} label=" ">
+        <Form.Item style={props.widthStyle} label=" ">
           <Button onClick={onClick} type="primary" icon={<SearchOutlined />}>
             Search
           </Button>

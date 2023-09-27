@@ -6,21 +6,13 @@ const reStyle = {
   minWidth: '32%',
 };
 
-const formItemLayout = {
-  labelCol: { xs: { span: 30 }, sm: { span: 30 } },
-  wrapperCol: { xs: { span: 40 }, sm: { span: 23 } },
-};
-const tailFormItemLayout = {
-  wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } },
-};
-
 const DocumentRequestPage = (props) => {
   const [form] = Form.useForm();
   const onFinish = (values) => {};
 
   return (
     <Form
-      {...formItemLayout}
+      {...props.formItemLayout}
       form={form}
       layout="vertical"
       name="register"
@@ -35,7 +27,7 @@ const DocumentRequestPage = (props) => {
       <Form.Item
         name="name"
         label="Tên Tài Liệu"
-        style={reStyle}
+        style={props.widthStyle}
         rules={[{ required: true, message: 'Please input name' }]}
       >
         <Input.TextArea rows={1} showCount maxLength={200} />
@@ -44,13 +36,13 @@ const DocumentRequestPage = (props) => {
       <Form.Item
         name="publisher"
         label="Nhà Xuất Bản"
-        style={reStyle}
+        style={props.widthStyle}
         rules={[{ required: true, message: 'Please select publisher!' }]}
       >
         <Input style={{ width: '100%' }} />
       </Form.Item>
 
-      <Form.Item label=" " {...tailFormItemLayout} style={{ ...reStyle, textAlign: 'center' }}>
+      <Form.Item label=" " {...props.tailFormItemLayout} style={{ ...reStyle, textAlign: 'center' }}>
         <Button style={{ minWidth: '50%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
           {' '}
           Submit{' '}
@@ -60,7 +52,7 @@ const DocumentRequestPage = (props) => {
       <Form.Item
         name="quatity"
         label="Số Lượng"
-        style={reStyle}
+        style={props.widthStyle}
         rules={[
           { required: true, message: 'Please input your quantity!' },
           { type: 'number', min: 999, message: 'min >= 1' },

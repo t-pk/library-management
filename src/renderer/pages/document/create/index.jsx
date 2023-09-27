@@ -2,17 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { AutoComplete, Button, Checkbox, Form, Input, InputNumber, message } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 
-const reStyle = { minWidth: '32%' };
-
-const formItemLayout = {
-  labelCol: { xs: { span: 30 }, sm: { span: 30 } },
-  wrapperCol: { xs: { span: 40 }, sm: { span: 23 } },
-};
-
-const tailFormItemLayout = {
-  wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } },
-};
-
 const DocumentCreatePage = (props) => {
   const [form] = Form.useForm();
   const [publishers, setPublishers] = useState([]);
@@ -91,7 +80,7 @@ const DocumentCreatePage = (props) => {
       {' '}
       {contextHolder}
       <Form
-        {...formItemLayout}
+        {...props.formItemLayout}
         form={form}
         layout="vertical"
         name="dynamic_rule"
@@ -100,14 +89,14 @@ const DocumentCreatePage = (props) => {
         style={{ display: 'flex', flexWrap: 'wrap' }}
         scrollToFirstError
       >
-        <Form.Item name="id" label="Mã Tài Liệu" style={reStyle}>
+        <Form.Item name="id" label="Mã Tài Liệu" style={props.widthStyle}>
           <Input disabled={true} />
         </Form.Item>
 
         <Form.Item
           name="name"
           label="Tên Tài Liệu"
-          style={reStyle}
+          style={props.widthStyle}
           rules={[{ required: true, message: 'Please input name' }]}
         >
           <Input.TextArea rows={1} showCount maxLength={200} />
@@ -116,7 +105,7 @@ const DocumentCreatePage = (props) => {
         <Form.Item
           name="documentType"
           label="Loại Tài Liệu"
-          style={reStyle}
+          style={props.widthStyle}
           rules={[
             { required: true, message: 'Required!' },
             {
@@ -137,7 +126,7 @@ const DocumentCreatePage = (props) => {
         <Form.Item
           name="quantity"
           label="Số Lượng"
-          style={reStyle}
+          style={props.widthStyle}
           rules={[
             { required: true, message: 'Please input your quantity!' },
             {
@@ -154,7 +143,7 @@ const DocumentCreatePage = (props) => {
         <Form.Item
           name="author"
           label="Tác Giả"
-          style={reStyle}
+          style={props.widthStyle}
           rules={[
             { required: true, message: 'Required!' },
             {
@@ -175,7 +164,7 @@ const DocumentCreatePage = (props) => {
         <Form.Item
           name="publisher"
           label="Nhà Xuất Bản"
-          style={reStyle}
+          style={props.widthStyle}
           rules={[
             { required: true, message: 'Required!' },
             {
@@ -197,7 +186,7 @@ const DocumentCreatePage = (props) => {
         <Form.Item
           name="publishYear"
           label="Năm Xuất Bản"
-          style={reStyle}
+          style={props.widthStyle}
           rules={[
             { required: true, message: 'Please input your publish Year!' },
             {
@@ -210,11 +199,17 @@ const DocumentCreatePage = (props) => {
         >
           <InputNumber min={1} style={{ width: '100%' }} />
         </Form.Item>
-        <Form.Item name="special" label={' '} valuePropName="checked" style={{ ...reStyle }} {...tailFormItemLayout}>
+        <Form.Item
+          name="special"
+          label={' '}
+          valuePropName="checked"
+          style={{ ...reStyle }}
+          {...props.tailFormItemLayout}
+        >
           <Checkbox> Là Tài Liệu Đặc Biệt </Checkbox>
         </Form.Item>
 
-        <Form.Item label={' '} {...tailFormItemLayout} style={{ ...reStyle, textAlign: 'center' }}>
+        <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...reStyle, textAlign: 'center' }}>
           <Button
             loading={loading}
             style={{ minWidth: '50%' }}

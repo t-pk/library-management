@@ -3,16 +3,6 @@ import { Button, Checkbox, Form, Input, message } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { delay } from '../../../utils/index';
 
-const reStyle = { minWidth: '32%' };
-
-const formItemLayout = {
-  labelCol: { xs: { span: 30 }, sm: { span: 30 } },
-  wrapperCol: { xs: { span: 40 }, sm: { span: 23 } },
-};
-const tailFormItemLayout = {
-  wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } },
-};
-
 const PublisherCreatePage = (props) => {
   const [form] = Form.useForm();
 
@@ -57,7 +47,7 @@ const PublisherCreatePage = (props) => {
     <>
       {contextHolder}
       <Form
-        {...formItemLayout}
+        {...props.formItemLayout}
         form={form}
         layout="vertical"
         name="register"
@@ -66,20 +56,20 @@ const PublisherCreatePage = (props) => {
         style={{ display: 'flex', flexWrap: 'wrap' }}
         scrollToFirstError
       >
-        <Form.Item name="Id" label="Mã Nhà Xuất Bản" style={reStyle}>
+        <Form.Item name="Id" label="Mã Nhà Xuất Bản" style={props.widthStyle}>
           <Input disabled={true} />
         </Form.Item>
 
         <Form.Item
           name="name"
           label="Tên Nhà Xuất Bản"
-          style={reStyle}
+          style={props.widthStyle}
           rules={[{ required: true, message: 'Please input name!' }]}
         >
           <Input style={{ width: '100%' }} />
         </Form.Item>
 
-        <Form.Item label={' '} {...tailFormItemLayout} style={{ ...reStyle, textAlign: 'center' }}>
+        <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...reStyle, textAlign: 'center' }}>
           <Button
             loading={loading}
             style={{ minWidth: '30%' }}
@@ -96,7 +86,7 @@ const PublisherCreatePage = (props) => {
           </Button>
         </Form.Item>
 
-        <Form.Item name="description" label="Mô Tả" style={reStyle}>
+        <Form.Item name="description" label="Mô Tả" style={props.widthStyle}>
           <Input.TextArea rows={5} showCount maxLength={200} />
         </Form.Item>
 
@@ -105,7 +95,7 @@ const PublisherCreatePage = (props) => {
           name="status"
           valuePropName="checked"
           style={{ ...reStyle }}
-          {...tailFormItemLayout}
+          {...props.tailFormItemLayout}
         >
           <Checkbox> Hoạt Động </Checkbox>
         </Form.Item>

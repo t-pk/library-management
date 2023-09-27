@@ -3,16 +3,6 @@ import { Button, Form, Input, message, Radio } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { delay } from '../../../utils/index';
 
-const reStyle = { minWidth: '32%' };
-
-const formItemLayout = {
-  labelCol: { xs: { span: 30 }, sm: { span: 30 } },
-  wrapperCol: { xs: { span: 40 }, sm: { span: 23 } },
-};
-const tailFormItemLayout = {
-  wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } },
-};
-
 const ReaderCreatePage = (props) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -80,7 +70,7 @@ const ReaderCreatePage = (props) => {
       {' '}
       {contextHolder}
       <Form
-        {...formItemLayout}
+        {...props.formItemLayout}
         form={form}
         layout="vertical"
         name="dynamic_rule"
@@ -89,14 +79,14 @@ const ReaderCreatePage = (props) => {
         style={{ display: 'flex', flexWrap: 'wrap' }}
         scrollToFirstError
       >
-        <Form.Item name="id" label="Mã Độc Giả" style={reStyle}>
+        <Form.Item name="id" label="Mã Độc Giả" style={props.widthStyle}>
           <Input disabled={true} />
         </Form.Item>
 
         <Form.Item
           name="fullName"
           label="Tên Độc Giả"
-          style={reStyle}
+          style={props.widthStyle}
           rules={[{ required: true, message: 'Please input name' }]}
         >
           <Input />
@@ -105,7 +95,7 @@ const ReaderCreatePage = (props) => {
         <Form.Item
           name="readerTypeId"
           label="Loại Độc Giả"
-          style={reStyle}
+          style={props.widthStyle}
           rules={[{ required: true, message: 'Please input civil servant!' }]}
         >
           <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" />
@@ -114,7 +104,7 @@ const ReaderCreatePage = (props) => {
         <Form.Item
           name="studentId"
           label="Mã Sinh Viên"
-          style={reStyle}
+          style={props.widthStyle}
           rules={[
             {
               required: readerTypeId === 1,
@@ -134,7 +124,7 @@ const ReaderCreatePage = (props) => {
         <Form.Item
           name="civilServantId"
           label="Mã Cán Bộ - Nhân Viên"
-          style={reStyle}
+          style={props.widthStyle}
           rules={[
             {
               required: readerTypeId !== 1,
@@ -154,7 +144,7 @@ const ReaderCreatePage = (props) => {
         <Form.Item
           name="citizenIdentify"
           label="Căn Cước Công Dân"
-          style={reStyle}
+          style={props.widthStyle}
           rules={[
             { required: true, message: 'Please input citizen identify!' },
             {
@@ -171,7 +161,7 @@ const ReaderCreatePage = (props) => {
         <Form.Item
           name="phoneNumber"
           label="Số Điện Thoại"
-          style={reStyle}
+          style={props.widthStyle}
           rules={[
             { required: true, message: 'Please input phone number!' },
             {
@@ -185,11 +175,11 @@ const ReaderCreatePage = (props) => {
           <Input />
         </Form.Item>
 
-        <Form.Item name="email" label="Địa Chỉ Email" style={reStyle}>
+        <Form.Item name="email" label="Địa Chỉ Email" style={props.widthStyle}>
           <Input />
         </Form.Item>
 
-        <Form.Item label={' '} {...tailFormItemLayout} style={{ ...reStyle }}>
+        <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...reStyle }}>
           <Button
             loading={loading}
             style={{ minWidth: '96%' }}

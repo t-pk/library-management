@@ -14,6 +14,17 @@ const PrivateLayout = ({ element: Component }) => {
   const location = useLocation();
   const [messageApi, contextHolder] = message.useMessage();
 
+  const formItemLayout = {
+    labelCol: { xs: { span: 30 }, sm: { span: 30 } },
+    wrapperCol: { xs: { span: 40 }, sm: { span: 23 } },
+  };
+
+  const tailFormItemLayout = {
+    wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } },
+  };
+
+  const widthStyle = { minWidth: '32%' };
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -167,7 +178,14 @@ const PrivateLayout = ({ element: Component }) => {
                 background: colorBgContainer,
               }}
             >
-              <Component listenOn={listenOn} callDatabase={callDatabase} listenOnce={listenOnce} />
+              <Component
+                widthStyle={widthStyle}
+                formItemLayout={formItemLayout}
+                tailFormItemLayout={tailFormItemLayout}
+                listenOn={listenOn}
+                callDatabase={callDatabase}
+                listenOnce={listenOnce}
+              />
             </Content>
           </Spin>
         </Layout>

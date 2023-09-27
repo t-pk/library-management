@@ -5,16 +5,6 @@ import { useLocation } from 'react-router-dom';
 import { delay } from '../../../utils/index';
 import { queryStringToObject } from '../../../utils/index';
 
-const reStyle = { minWidth: '32%' };
-
-const formItemLayout = {
-  labelCol: { xs: { span: 30 }, sm: { span: 30 } },
-  wrapperCol: { xs: { span: 40 }, sm: { span: 23 } },
-};
-const tailFormItemLayout = {
-  wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } },
-};
-
 const RemindCreatePage = (props) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -91,7 +81,7 @@ const RemindCreatePage = (props) => {
       {' '}
       {contextHolder}
       <Form
-        {...formItemLayout}
+        {...props.formItemLayout}
         form={form}
         layout="vertical"
         name="dynamic_rule"
@@ -100,18 +90,18 @@ const RemindCreatePage = (props) => {
         style={{ display: 'flex', flexWrap: 'wrap' }}
         scrollToFirstError
       >
-        <Form.Item name="borrowId" label="Mã Phiếu Mượn" style={reStyle}>
+        <Form.Item name="borrowId" label="Mã Phiếu Mượn" style={props.widthStyle}>
           <Input disabled={true} />
         </Form.Item>
 
-        <Form.Item name="readerId" label="Mã Độc Giả" style={reStyle}>
+        <Form.Item name="readerId" label="Mã Độc Giả" style={props.widthStyle}>
           <Input disabled={true} />
         </Form.Item>
 
         <Form.Item
           name="readerName"
           label="Tên Độc Giả"
-          style={reStyle}
+          style={props.widthStyle}
           rules={[{ required: true, message: 'Please input name' }]}
         >
           <Input disabled={true} />
@@ -120,7 +110,7 @@ const RemindCreatePage = (props) => {
         <Form.Item
           name="studentId"
           label="Mã Sinh Viên"
-          style={reStyle}
+          style={props.widthStyle}
           rules={[
             {
               required: readerTypeId === 1,
@@ -140,7 +130,7 @@ const RemindCreatePage = (props) => {
         <Form.Item
           name="civilServantId"
           label="Mã Cán Bộ - Nhân Viên"
-          style={reStyle}
+          style={props.widthStyle}
           rules={[
             {
               required: readerTypeId !== 1,
@@ -160,7 +150,7 @@ const RemindCreatePage = (props) => {
         <Form.Item
           name="citizenIdentify"
           label="Căn Cước Công Dân"
-          style={reStyle}
+          style={props.widthStyle}
           rules={[
             { required: true, message: 'Please input citizen identify!' },
             {
@@ -174,15 +164,15 @@ const RemindCreatePage = (props) => {
           <Input disabled={true} />
         </Form.Item>
 
-        <Form.Item name="readerTypeId" label="Loại Độc Giả" style={reStyle}>
+        <Form.Item name="readerTypeId" label="Loại Độc Giả" style={props.widthStyle}>
           <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" disabled={true} />
         </Form.Item>
 
-        <Form.Item name="description" label="Mô Tả" style={reStyle}>
+        <Form.Item name="description" label="Mô Tả" style={props.widthStyle}>
           <Input.TextArea rows={5} showCount maxLength={200} />
         </Form.Item>
 
-        <Form.Item label={' '} {...tailFormItemLayout} style={{ ...reStyle }}>
+        <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...reStyle }}>
           <Button
             loading={loading}
             style={{ minWidth: '96%' }}

@@ -7,13 +7,6 @@ import { objectToQueryString } from '../../../utils/index';
 
 import './ui.scss';
 
-const formItemLayout = {
-  labelCol: { xs: { span: 30 }, sm: { span: 30 } },
-  wrapperCol: { xs: { span: 40 }, sm: { span: 23 } },
-};
-
-const reStyle = { minWidth: '32%' };
-
 const ReaderSearchPage = (props) => {
   const [form] = Form.useForm();
   const [inputState, setinputState] = useState({ name: '', id: '', type: '' });
@@ -156,7 +149,7 @@ const ReaderSearchPage = (props) => {
   return (
     <>
       <Form
-        {...formItemLayout}
+        {...props.formItemLayout}
         form={form}
         layout="vertical"
         name="dynamic_rule"
@@ -164,35 +157,35 @@ const ReaderSearchPage = (props) => {
         scrollToFirstError
         initialValues={{ readerTypeId: undefined }}
       >
-        <Form.Item label="Mã Độc Giả" style={reStyle}>
+        <Form.Item label="Mã Độc Giả" style={props.widthStyle}>
           <Input id="id" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item label="Tên Độc Giả" style={reStyle}>
+        <Form.Item label="Tên Độc Giả" style={props.widthStyle}>
           <Input id="fullName" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item label="Căn Cước Công Dân" style={reStyle}>
+        <Form.Item label="Căn Cước Công Dân" style={props.widthStyle}>
           <Input id="citizenIdentify" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item name="studentId" label="Mã Sinh Viên" style={reStyle}>
+        <Form.Item name="studentId" label="Mã Sinh Viên" style={props.widthStyle}>
           <Input disabled={readerTypeId && readerTypeId !== 1} id="studentId" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item name="civilServantId" label="Mã Cán Bộ - Nhân Viên" style={reStyle}>
+        <Form.Item name="civilServantId" label="Mã Cán Bộ - Nhân Viên" style={props.widthStyle}>
           <Input disabled={readerTypeId && readerTypeId !== 2} id="civilServantId" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item label="Số Điện Thoại" style={reStyle}>
+        <Form.Item label="Số Điện Thoại" style={props.widthStyle}>
           <Input id="phoneNumber" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item label="Địa Chỉ Email" style={reStyle}>
+        <Form.Item label="Địa Chỉ Email" style={props.widthStyle}>
           <Input id="email" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item name="readerTypeId" label="Loại Độc Giả" style={reStyle}>
+        <Form.Item name="readerTypeId" label="Loại Độc Giả" style={props.widthStyle}>
           <Radio.Group
             name="readerTypeId"
             onChange={onChange}
@@ -202,7 +195,7 @@ const ReaderSearchPage = (props) => {
           />
         </Form.Item>
 
-        <Form.Item style={reStyle} label=" ">
+        <Form.Item style={props.widthStyle} label=" ">
           <Button onClick={onClick} type="primary" icon={<SearchOutlined />}>
             Search
           </Button>

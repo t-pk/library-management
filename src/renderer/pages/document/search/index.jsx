@@ -5,12 +5,7 @@ import debounce from 'lodash.debounce';
 
 import './ui.scss';
 
-const formItemLayout = {
-  labelCol: { xs: { span: 30 }, sm: { span: 30 } },
-  wrapperCol: { xs: { span: 40 }, sm: { span: 23 } },
-};
 // const tailFormItemLayout = { wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } }, };
-const reStyle = { minWidth: '32%' };
 
 const columns = [
   {
@@ -142,7 +137,7 @@ const DocumentSearchPage = (props) => {
   return (
     <>
       <Form
-        {...formItemLayout}
+        {...props.formItemLayout}
         form={form}
         layout="vertical"
         name="dynamic_rule"
@@ -150,10 +145,10 @@ const DocumentSearchPage = (props) => {
         scrollToFirstError
         initialValues={{ special: undefined }}
       >
-        <Form.Item style={reStyle} label="Mã Tài Liệu">
+        <Form.Item style={props.widthStyle} label="Mã Tài Liệu">
           <Input placeholder="" value={inputState.id} id="id" onChange={onChange} maxLength={8} />
         </Form.Item>
-        <Form.Item style={reStyle} label="Tên Tài Liệu">
+        <Form.Item style={props.widthStyle} label="Tên Tài Liệu">
           <Input placeholder="" value={inputState.name} id="name" onChange={onChange} />
         </Form.Item>
 
@@ -165,7 +160,7 @@ const DocumentSearchPage = (props) => {
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item name="documentTypes" label="Loại Tài Liệu" style={reStyle}>
+        <Form.Item name="documentTypes" label="Loại Tài Liệu" style={props.widthStyle}>
           <Select
             mode="tags"
             style={{ width: '100%' }}
@@ -175,7 +170,7 @@ const DocumentSearchPage = (props) => {
           />
         </Form.Item>
 
-        <Form.Item name="publishers" label="Nhà Xuất Bản" style={reStyle}>
+        <Form.Item name="publishers" label="Nhà Xuất Bản" style={props.widthStyle}>
           <Select
             mode="tags"
             style={{ width: '100%' }}
@@ -185,7 +180,7 @@ const DocumentSearchPage = (props) => {
           />
         </Form.Item>
 
-        <Form.Item name="authors" label="Tên Tác Giả" style={reStyle}>
+        <Form.Item name="authors" label="Tên Tác Giả" style={props.widthStyle}>
           <Select
             mode="tags"
             style={{ width: '100%' }}
@@ -195,7 +190,7 @@ const DocumentSearchPage = (props) => {
           />
         </Form.Item>
 
-        <Form.Item name="publishYear" label="Năm Xuất Bản" style={reStyle}>
+        <Form.Item name="publishYear" label="Năm Xuất Bản" style={props.widthStyle}>
           <InputNumber
             id={'publishYear'}
             onChange={(value) => onChange({ target: { id: 'publishYear', value } })}
@@ -204,7 +199,7 @@ const DocumentSearchPage = (props) => {
           />
         </Form.Item>
 
-        <Form.Item style={reStyle} label=" ">
+        <Form.Item style={props.widthStyle} label=" ">
           <Button onClick={onClick} type="primary" icon={<SearchOutlined />}>
             Search
           </Button>
