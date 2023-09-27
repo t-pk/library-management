@@ -37,3 +37,10 @@ export const formatDMY = (date) => {
 export const delay = (t) => {
   return new Promise((resolve) => setTimeout(resolve, t));
 };
+
+export const parseDataSelect = (data) => {
+  return (data|| []).map((item) => ({
+    id: item.id,
+    value: `${item.id} - ${item.name}`,
+  }))
+}

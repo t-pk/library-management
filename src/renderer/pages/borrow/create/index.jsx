@@ -3,7 +3,7 @@ import { Button, Form, Input, Select, Radio } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
 import { delay } from '../../../utils/index';
-import { queryStringToObject } from '../../../utils/index';
+import { queryStringToObject, parseDataSelect } from '../../../utils/index';
 import debounce from 'lodash.debounce';
 
 const BorrowCreatePage = (props) => {
@@ -16,17 +16,14 @@ const BorrowCreatePage = (props) => {
   const location = useLocation();
 
   useEffect(() => {
+    getInitData();
+
     let readerInfo = queryStringToObject(location.search);
     readerInfo.readerTypeId = +readerInfo.readerTypeId;
     form.setFieldsValue(readerInfo);
 
-    getInitData();
-    if (readerTypeId === 1) {
-      form.setFieldsValue({ civilServantId: undefined });
-    }
-    if (readerTypeId === 2) {
-      form.setFieldsValue({ studentId: undefined });
-    }
+    if (readerTypeId === 1) form.setFieldsValue({ civilServantId: undefined });
+    if (readerTypeId === 2) form.setFieldsValue({ studentId: undefined });
   }, [readerTypeId, location]);
 
   const getInitData = () => {
@@ -36,13 +33,7 @@ const BorrowCreatePage = (props) => {
     props.listenOn(async (arg) => {
       if (arg && arg.data) {
         if (arg.key === 'readerType-search') setReaderTypes(arg.data.map((item) => ({ value: item.id, label: item.name })));
-        if (arg.key === 'document-search')
-          setDocuments(
-            arg.data.map((item) => ({
-              id: item.id,
-              value: `${item.id} - ${item.name}`,
-            }))
-          );
+        if (arg.key === 'document-search') setDocuments(parseDataSelect(arg.data));
       }
     });
   };
@@ -64,14 +55,7 @@ const BorrowCreatePage = (props) => {
   const debounceDocument = async (value) => {
     props.callDatabase({ key: 'document-search', data: { name: value } });
 
-    props.listenOnce((arg) => {
-      setDocuments(
-        arg.data.map((item) => ({
-          id: item.id,
-          value: `${item.id} - ${item.name}`,
-        }))
-      );
-    });
+    props.listenOnce((arg) => { setDocuments(parseDataSelect(arg.data)) });
   };
 
   const debounceFc = useCallback(debounce(debounceDocument, 400), []);

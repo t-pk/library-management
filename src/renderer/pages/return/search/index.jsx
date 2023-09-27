@@ -3,7 +3,7 @@ import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Select, Space, Dropdown, Table, Form, Radio } from 'antd';
 import debounce from 'lodash.debounce';
 import { useNavigate } from 'react-router-dom';
-import { formatDMY_HMS, objectToQueryString } from '../../../utils/index';
+import { formatDMY_HMS, objectToQueryString, parseDataSelect } from '../../../utils/index';
 
 import './ui.scss';
 
@@ -173,12 +173,8 @@ const ReturnSearchPage = (props) => {
           setReaderTypes(resReaders);
         }
         if (arg.key === 'document-search') {
-          setDocuments(
-            arg.data.map((item) => ({
-              id: item.id,
-              value: `${item.id} - ${item.name}`,
-            }))
-          );
+          setDocuments(parseDataSelect(arg.data))
+          
         }
       }
     });
@@ -215,13 +211,8 @@ const ReturnSearchPage = (props) => {
 
     props.callDatabase({ key: 'document-search', data });
 
-    props.listenOnce('ipc-database', (arg) => {
-      setDocuments(
-        arg.data.map((item) => ({
-          id: item.id,
-          value: `${item.id} - ${item.name}`,
-        }))
-      );
+    props.listenOnce('document-search', (arg) => {
+      setDocuments(parseDataSelect(arg.data));
     });
   };
 

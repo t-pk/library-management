@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useCallback, useEffect } from 'react';
 import { Button, Input, Select, Space, Dropdown, Table, Form, Radio } from 'antd';
 import { DownOutlined, SearchOutlined, CheckCircleOutlined } from '@ant-design/icons';
-import { formatDMY_HMS, formatDMY, objectToQueryString } from '../../../utils/index';
+import { formatDMY_HMS, formatDMY, objectToQueryString, parseDataSelect } from '../../../utils/index';
 
 import './ui.scss';
 
@@ -220,18 +220,8 @@ const BorrowSearchPage = (props) => {
           resReaders.push({ id: undefined, label: 'Skip' });
           setReaderTypes(resReaders);
         }
-
-        if (arg.key === 'borrow-search') {
-          setBorrows(arg.data);
-        }
-        if (arg.key === 'document-search') {
-          setDocuments(
-            arg.data.map((item) => ({
-              id: item.id,
-              value: `${item.id} - ${item.name}`,
-            }))
-          );
-        }
+        if (arg.key === 'borrow-search') setBorrows(arg.data);
+        if (arg.key === 'document-search') setDocuments(parseDataSelect(arg.data));
       }
     });
   };
