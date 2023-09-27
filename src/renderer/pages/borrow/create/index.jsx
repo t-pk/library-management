@@ -1,16 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import {
-  Button,
-  Form,
-  Input,
-  message,
-  Select,
-  Radio,
-  AutoComplete,
-} from 'antd';
+import { Button, Form, Input, message, Select, Radio } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
-import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { internalCall, delay } from '../../../actions';
+import { useLocation } from 'react-router-dom';
+import { delay } from '../../../utils/index';
 import { queryStringToObject } from '../../../utils/index';
 import debounce from 'lodash.debounce';
 
@@ -20,15 +12,15 @@ const formItemLayout = {
   labelCol: { xs: { span: 30 }, sm: { span: 30 } },
   wrapperCol: { xs: { span: 40 }, sm: { span: 23 } },
 };
+
 const tailFormItemLayout = {
   wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } },
 };
 
-const BorrowCreatePage = () => {
+const BorrowCreatePage = (props) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
-  const [readers, setReaders] = useState([]);
   const [documents, setDocuments] = useState([]);
 
   const [messageApi, contextHolder] = message.useMessage();
@@ -40,7 +32,6 @@ const BorrowCreatePage = () => {
     let readerInfo = queryStringToObject(location.search);
     readerInfo.readerTypeId = +readerInfo.readerTypeId;
     form.setFieldsValue(readerInfo);
-    console.log('readerInfo', readerInfo);
 
     getInitData();
     if (readerTypeId === 1) {
@@ -52,15 +43,13 @@ const BorrowCreatePage = () => {
   }, [readerTypeId, location]);
 
   const getInitData = () => {
-    internalCall({ key: 'readerType-search' });
-    internalCall({ key: 'document-search' });
+    props.callDatabase({ key: 'readerType-search' });
+    props.callDatabase({ key: 'document-search' });
 
-    const getData = async (arg) => {
+    props.listenOn(async (arg) => {
       if (arg && arg.data) {
         if (arg.key === 'readerType-search')
-          setReaderTypes(
-            arg.data.map((item) => ({ value: item.id, label: item.name }))
-          );
+          setReaderTypes(arg.data.map((item) => ({ value: item.id, label: item.name })));
         if (arg.key === 'document-search')
           setDocuments(
             arg.data.map((item) => ({
@@ -69,8 +58,7 @@ const BorrowCreatePage = () => {
             }))
           );
       }
-    };
-    window.electron.ipcRenderer.on('ipc-database', getData);
+    });
   };
 
   const showMessage = (type, content) => {
@@ -88,22 +76,15 @@ const BorrowCreatePage = () => {
     });
   };
 
-  const onChange = (e) => {
-    console.log(e);
-  };
-
   const onFinish = async (values) => {
-    console.log(values);
     setLoading(true);
     showMessage('loading', 'loading...');
     const data = { ...values };
-    const documentIds = values.documentIds.map(
-      (document) => +document.split('-')[0].trim()
-    );
+    const documentIds = values.documentIds.map((document) => +document.split('-')[0].trim());
     data.documentIds = documentIds;
-    internalCall({ key: 'borrow-create', data });
+    props.callDatabase({ key: 'borrow-create', data });
 
-    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
+    props.listenOnce(async (arg) => {
       if (arg.data) {
         await delay(1000);
         setLoading(false);
@@ -116,21 +97,16 @@ const BorrowCreatePage = () => {
     });
   };
 
-  const getReaders = async (value) => {
-    internalCall({ key: 'reader-create', data: { name: value } });
-  };
-
   const debounceDocument = async (value) => {
-    internalCall({ key: 'document-search', data: { name: value } });
+    props.callDatabase({ key: 'document-search', data: { name: value } });
 
-    window.electron.ipcRenderer.once('ipc-database', (arg) => {
+    props.listenOnce((arg) => {
       setDocuments(
         arg.data.map((item) => ({
           id: item.id,
           value: `${item.id} - ${item.name}`,
         }))
       );
-      console.log(documents);
     });
   };
 
@@ -229,12 +205,7 @@ const BorrowCreatePage = () => {
         </Form.Item>
 
         <Form.Item name="readerTypeId" label="Loại Độc Giả" style={reStyle}>
-          <Radio.Group
-            options={readerTypes}
-            optionType="button"
-            buttonStyle="solid"
-            disabled={true}
-          />
+          <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" disabled={true} />
         </Form.Item>
 
         <Form.Item
@@ -244,13 +215,8 @@ const BorrowCreatePage = () => {
           rules={[
             {
               validator: async (_, values = []) => {
-                const doc = values.every((id) =>
-                  documents.map((document) => document.value).includes(id)
-                );
-                if (!doc || !values.length)
-                  return Promise.reject(
-                    new Error('Please select item on List!')
-                  );
+                const doc = values.every((id) => documents.map((document) => document.value).includes(id));
+                if (!doc || !values.length) return Promise.reject(new Error('Please select item on List!'));
               },
             },
           ]}
@@ -261,10 +227,7 @@ const BorrowCreatePage = () => {
             onSearch={findDocuments}
             placeholder=""
             className="custom-autocomplete"
-            filterOption={(inputValue, option) =>
-              option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !==
-              -1
-            }
+            filterOption={(inputValue, option) => option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
           />
         </Form.Item>
 

@@ -1,23 +1,9 @@
 import React, { useState } from 'react';
-import {
-  AutoComplete,
-  Button,
-  Cascader,
-  Checkbox,
-  Col,
-  Form,
-  Input,
-  InputNumber,
-  Row,
-  Select,
-  message,
-} from 'antd';
+import { Button, Checkbox, Form, Input, message } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
-import { internalCall, getUserId, delay } from '../../../actions';
+import { delay } from '../../../utils/index';
 
-const reStyle = {
-  minWidth: '32%',
-};
+const reStyle = { minWidth: '32%' };
 
 const formItemLayout = {
   labelCol: { xs: { span: 30 }, sm: { span: 30 } },
@@ -27,7 +13,7 @@ const tailFormItemLayout = {
   wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } },
 };
 
-const PublisherCreatePage = () => {
+const PublisherCreatePage = (props) => {
   const [form] = Form.useForm();
 
   const [loading, setLoading] = useState(false);
@@ -53,9 +39,9 @@ const PublisherCreatePage = () => {
   const onFinish = (values) => {
     setLoading(true);
     showMessage('loading', 'loading...');
-    internalCall({ key: 'publisher-create', data: values });
+    props.callDatabase({ key: 'publisher-create', data: values });
 
-    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
+    props.listenOnce('publisher-create', async (arg) => {
       await delay(1000);
       setLoading(false);
       messageApi.destroy(key);
@@ -93,11 +79,7 @@ const PublisherCreatePage = () => {
           <Input style={{ width: '100%' }} />
         </Form.Item>
 
-        <Form.Item
-          label={' '}
-          {...tailFormItemLayout}
-          style={{ ...reStyle, textAlign: 'center' }}
-        >
+        <Form.Item label={' '} {...tailFormItemLayout} style={{ ...reStyle, textAlign: 'center' }}>
           <Button
             loading={loading}
             style={{ minWidth: '30%' }}
@@ -108,11 +90,7 @@ const PublisherCreatePage = () => {
             {' '}
             Submit{' '}
           </Button>
-          <Button
-            style={{ minWidth: '30%', marginLeft: 10 }}
-            type="primary"
-            icon={<SaveOutlined />}
-          >
+          <Button style={{ minWidth: '30%', marginLeft: 10 }} type="primary" icon={<SaveOutlined />}>
             {' '}
             Tìm Kiếm Tác Giả{' '}
           </Button>
@@ -135,4 +113,5 @@ const PublisherCreatePage = () => {
     </>
   );
 };
+
 export default PublisherCreatePage;

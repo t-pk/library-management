@@ -1,20 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import {
-  AutoComplete,
-  Button,
-  Cascader,
-  Checkbox,
-  Col,
-  Form,
-  Input,
-  DatePicker,
-  InputNumber,
-  Row,
-  Select,
-  message,
-} from 'antd';
+import { AutoComplete, Button, Checkbox, Form, Input, InputNumber, message } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
-import { internalCall, getUserId, delay } from '../../../actions';
 
 const reStyle = { minWidth: '32%' };
 
@@ -22,11 +8,12 @@ const formItemLayout = {
   labelCol: { xs: { span: 30 }, sm: { span: 30 } },
   wrapperCol: { xs: { span: 40 }, sm: { span: 23 } },
 };
+
 const tailFormItemLayout = {
   wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } },
 };
 
-const DocumentCreatePage = () => {
+const DocumentCreatePage = (props) => {
   const [form] = Form.useForm();
   const [publishers, setPublishers] = useState([]);
   const [authors, setAuthors] = useState([]);
@@ -41,27 +28,18 @@ const DocumentCreatePage = () => {
   }, []);
 
   const getInitData = () => {
-    internalCall({ key: 'publisher-search' });
-    internalCall({ key: 'author-search' });
-    internalCall({ key: 'documentType-search' });
+    props.callDatabase({ key: 'publisher-search' });
+    props.callDatabase({ key: 'author-search' });
+    props.callDatabase({ key: 'documentType-search' });
 
-    const getData = async (arg) => {
+    props.listenOn((arg) => {
       if (arg && arg.data) {
-        if (arg.key === 'publisher-search')
-          setPublishers(
-            arg.data.map((item) => ({ id: item.id, value: item.name }))
-          );
-        if (arg.key === 'author-search')
-          setAuthors(
-            arg.data.map((item) => ({ id: item.id, value: item.name }))
-          );
+        if (arg.key === 'publisher-search') setPublishers(arg.data.map((item) => ({ id: item.id, value: item.name })));
+        if (arg.key === 'author-search') setAuthors(arg.data.map((item) => ({ id: item.id, value: item.name })));
         if (arg.key === 'documentType-search')
-          setDocumentTypes(
-            arg.data.map((item) => ({ id: item.id, value: item.name }))
-          );
+          setDocumentTypes(arg.data.map((item) => ({ id: item.id, value: item.name })));
       }
-    };
-    window.electron.ipcRenderer.on('ipc-database', getData);
+    });
   };
 
   const showMessage = (type, content) => {
@@ -81,14 +59,9 @@ const DocumentCreatePage = () => {
 
   const onFinish = async (values) => {
     setLoading(true);
-    showMessage('loading', 'loading...');
-    const documentType = documentTypes.find(
-      (documentType) => documentType.value === values.documentType
-    );
+    const documentType = documentTypes.find((documentType) => documentType.value === values.documentType);
     const author = authors.find((author) => author.value === values.author);
-    const publisher = publishers.find(
-      (publisher) => publisher.value === values.publisher
-    );
+    const publisher = publishers.find((publisher) => publisher.value === values.publisher);
     const data = {
       name: values.name,
       documentTypeId: documentType.id,
@@ -98,14 +71,14 @@ const DocumentCreatePage = () => {
       publishYear: values.publishYear,
       special: values.special,
     };
-    internalCall({ key: 'document-create', data });
+    props.callDatabase({ key: 'document-create', data });
 
-    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
+    props.listenOnce('document-create', async (arg) => {
       if (arg.data) {
         await delay(1000);
         setLoading(false);
         messageApi.destroy(key);
-        if (arg.data) showMessage('success', 'Created Publisher');
+        if (arg.data) showMessage('success', 'Created Document');
         else showMessage('error', arg.error);
         await delay(2000);
         messageApi.destroy(key);
@@ -148,13 +121,8 @@ const DocumentCreatePage = () => {
             { required: true, message: 'Required!' },
             {
               validator: async (_, name) => {
-                const pub = documentTypes.find(
-                  (publisher) => publisher.value === name
-                );
-                if (!pub || !name)
-                  return Promise.reject(
-                    new Error('Please select item on List!')
-                  );
+                const pub = documentTypes.find((publisher) => publisher.value === name);
+                if (!pub || !name) return Promise.reject(new Error('Please select item on List!'));
               },
             },
           ]}
@@ -162,10 +130,7 @@ const DocumentCreatePage = () => {
           <AutoComplete
             options={documentTypes}
             placeholder=""
-            filterOption={(inputValue, option) =>
-              option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !==
-              -1
-            }
+            filterOption={(inputValue, option) => option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
           />
         </Form.Item>
 
@@ -194,13 +159,8 @@ const DocumentCreatePage = () => {
             { required: true, message: 'Required!' },
             {
               validator: async (_, name) => {
-                const pub = authors.find(
-                  (publisher) => publisher.value === name
-                );
-                if (!pub || !name)
-                  return Promise.reject(
-                    new Error('Please select item on List!')
-                  );
+                const pub = authors.find((publisher) => publisher.value === name);
+                if (!pub || !name) return Promise.reject(new Error('Please select item on List!'));
               },
             },
           ]}
@@ -208,10 +168,7 @@ const DocumentCreatePage = () => {
           <AutoComplete
             options={authors}
             placeholder=""
-            filterOption={(inputValue, option) =>
-              option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !==
-              -1
-            }
+            filterOption={(inputValue, option) => option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
           />
         </Form.Item>
 
@@ -223,13 +180,8 @@ const DocumentCreatePage = () => {
             { required: true, message: 'Required!' },
             {
               validator: async (_, name) => {
-                const pub = publishers.find(
-                  (publisher) => publisher.value === name
-                );
-                if (!pub || !name)
-                  return Promise.reject(
-                    new Error('Please select item on List!')
-                  );
+                const pub = publishers.find((publisher) => publisher.value === name);
+                if (!pub || !name) return Promise.reject(new Error('Please select item on List!'));
               },
             },
           ]}
@@ -238,10 +190,7 @@ const DocumentCreatePage = () => {
             options={publishers}
             placeholder=""
             className="custom-autocomplete"
-            filterOption={(inputValue, option) =>
-              option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !==
-              -1
-            }
+            filterOption={(inputValue, option) => option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
           />
         </Form.Item>
 
@@ -261,21 +210,11 @@ const DocumentCreatePage = () => {
         >
           <InputNumber min={1} style={{ width: '100%' }} />
         </Form.Item>
-        <Form.Item
-          name="special"
-          label={' '}
-          valuePropName="checked"
-          style={{ ...reStyle }}
-          {...tailFormItemLayout}
-        >
+        <Form.Item name="special" label={' '} valuePropName="checked" style={{ ...reStyle }} {...tailFormItemLayout}>
           <Checkbox> Là Tài Liệu Đặc Biệt </Checkbox>
         </Form.Item>
 
-        <Form.Item
-          label={' '}
-          {...tailFormItemLayout}
-          style={{ ...reStyle, textAlign: 'center' }}
-        >
+        <Form.Item label={' '} {...tailFormItemLayout} style={{ ...reStyle, textAlign: 'center' }}>
           <Button
             loading={loading}
             style={{ minWidth: '50%' }}

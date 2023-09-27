@@ -7,7 +7,7 @@ export const IPublisher = {
     autoIncrement: true,
   },
   name: {
-    type: DataTypes.STRING(64),
+    type: DataTypes.STRING(128),
     allowNull: false,
     unique: true,
   },

@@ -1,10 +1,5 @@
 import { Op } from 'sequelize';
-import {
-  BorrowDetailSchema,
-  DocumentSchema,
-  ReturnDetailSchema,
-  ReturnSchema,
-} from '../db';
+import { BorrowDetailSchema, DocumentSchema, ReturnDetailSchema, ReturnSchema } from '../db';
 
 export const getBorrowDetail = async (request: any) => {
   try {
@@ -17,9 +12,7 @@ export const getBorrowDetail = async (request: any) => {
     });
 
     if (returnDocuments && returnDocuments.length > 0) {
-      const returnDocumentsJson = returnDocuments.map(
-        (item: any) => item.borrowDetailId
-      );
+      const returnDocumentsJson = returnDocuments.map((item: any) => item.borrowDetailId);
       query.id = { [Op.notIn]: returnDocumentsJson };
     }
 

@@ -8,9 +8,7 @@ const HeaderPage = () => {
   const [count, setCount] = useState(0);
   const [css, setCss] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [content, setContent] = useState(
-    'please waiting, system is processing...'
-  );
+  const [content, setContent] = useState('please waiting, system is processing...');
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -59,12 +57,7 @@ const HeaderPage = () => {
           </div>
         </a>
       </div>
-      <Modal
-        title="Basic Modal"
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
+      <Modal title="Basic Modal" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <p>Some contents...</p>
         <p>Some contents...</p>
         <p>Some contents...</p>

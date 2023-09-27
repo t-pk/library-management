@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form, Input, message, Radio } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
-import { internalCall, delay } from '../../../actions';
+import { delay } from '../../../utils/index';
 
 const reStyle = { minWidth: '32%' };
 
@@ -13,14 +13,12 @@ const tailFormItemLayout = {
   wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } },
 };
 
-const ReaderCreatePage = () => {
+const ReaderCreatePage = (props) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
-
   const [messageApi, contextHolder] = message.useMessage();
   const readerTypeId = Form.useWatch('readerTypeId', form);
-
   const key = 'updatable';
 
   useEffect(() => {
@@ -34,16 +32,11 @@ const ReaderCreatePage = () => {
   }, [readerTypeId]);
 
   const getInitData = () => {
-    internalCall({ key: 'readerType-search' });
+    props.callDatabase({ key: 'readerType-search' });
 
-    const getData = async (arg) => {
-      if (arg && arg.data) {
-        setReaderTypes(
-          arg.data.map((item) => ({ value: item.id, label: item.name }))
-        );
-      }
-    };
-    window.electron.ipcRenderer.once('ipc-database', getData);
+    props.listenOnce('readerType-search', (arg) => {
+      setReaderTypes((arg.data || []).map((item) => ({ value: item.id, label: item.name })));
+    });
   };
 
   const showMessage = (type, content) => {
@@ -67,12 +60,12 @@ const ReaderCreatePage = () => {
     showMessage('loading', 'loading...');
     const data = { ...values };
 
-    internalCall({ key: 'reader-create', data });
+    props.callDatabase({ key: 'reader-create', data });
 
-    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
+    props.listenOnce('reader-create', async (arg) => {
+      await delay(1000);
+      setLoading(false);
       if (arg.data) {
-        await delay(1000);
-        setLoading(false);
         messageApi.destroy(key);
         if (arg.data) showMessage('success', 'Created Reader.');
         else showMessage('error', arg.error);
@@ -115,11 +108,7 @@ const ReaderCreatePage = () => {
           style={reStyle}
           rules={[{ required: true, message: 'Please input civil servant!' }]}
         >
-          <Radio.Group
-            options={readerTypes}
-            optionType="button"
-            buttonStyle="solid"
-          />
+          <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" />
         </Form.Item>
 
         <Form.Item

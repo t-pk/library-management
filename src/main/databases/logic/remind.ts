@@ -1,11 +1,5 @@
 import countBy from 'lodash.countby';
-import {
-  BorrowSchema,
-  ReaderSchema,
-  RemindSchema,
-  sequelize,
-  unitOfWork,
-} from '../db';
+import { BorrowSchema, ReaderSchema, RemindSchema, sequelize, unitOfWork } from '../db';
 import { Op } from 'sequelize';
 
 export const createRemind = async (request: any) => {
@@ -42,20 +36,9 @@ export const getReminds = async (request: any) => {
         include: [{ model: RemindSchema, attributes: [], required: true }],
       },
     ],
-    attributes: [
-      'id',
-      'fullName',
-      'studentId',
-      'civilServantId',
-      [sequelize.fn('COUNT', sequelize.col('*')), 'total'],
-    ],
+    attributes: ['id', 'fullName', 'studentId', 'civilServantId', [sequelize.fn('COUNT', sequelize.col('*')), 'total']],
     order: [['id', 'DESC']],
-    group: [
-      'readers.id',
-      'readers.full_name',
-      'readers.student_id',
-      'readers.civil_servant_id',
-    ],
+    group: ['readers.id', 'readers.full_name', 'readers.student_id', 'readers.civil_servant_id'],
   });
   let remindJSON = reminds.map((remind) => remind.toJSON());
   return remindJSON;

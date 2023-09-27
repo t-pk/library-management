@@ -1,39 +1,9 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import {
-  SettingOutlined,
-  DownOutlined,
-  CaretDownOutlined,
-  CheckSquareOutlined,
-  CheckOutlined,
-  SearchOutlined,
-  CloseCircleOutlined,
-  CheckCircleOutlined,
-} from '@ant-design/icons';
-import {
-  AutoComplete,
-  Button,
-  Cascader,
-  Input,
-  Select,
-  Space,
-  Row,
-  Dropdown,
-  Checkbox,
-  Table,
-  Form,
-  Tag,
-  InputNumber,
-  Radio,
-} from 'antd';
+import { DownOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, Input, Select, Space, Dropdown, Table, Form, Radio } from 'antd';
 import debounce from 'lodash.debounce';
-import { internalCall } from '../../../../renderer/actions';
-import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import {
-  formatDMY_HMS,
-  formatDMY,
-  objectToQueryString,
-} from '../../../utils/index';
-const { Option } = Select;
+import { useNavigate } from 'react-router-dom';
+import { formatDMY_HMS, objectToQueryString } from '../../../utils/index';
 
 import './ui.scss';
 
@@ -46,11 +16,7 @@ const reStyle = { minWidth: '32%' };
 const ReturnSearchPage = (props) => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const [inputState, setinputState] = useState({
-    fullName: '',
-    id: 0,
-    studentId: '',
-  });
+  const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
   const [returns, setReturns] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -59,49 +25,15 @@ const ReturnSearchPage = (props) => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const pageSize = 20; // Number of items per page
 
-  const handleDebounceFn = (reState) => {
-    props.callDatabase({ key: 'return-search', data: reState });
-    const test = (arg) => {
-      setLoading(false);
-      setReturns(arg.data);
-    };
-    props.listenOnce('return-search', test);
-    // internalCall({ key: 'return-search', data: reState });
-    // window.electron.ipcRenderer.once('ipc-database', async (arg) => {
-    //   setLoading(false);
-    //   if (arg && arg.data) {
-    //     setReturns(arg.data);
-    //   }
-    // });
-  };
-  const createReturns = (record) => () => {
-    console.log('key', record);
-    const data = {
-      returnId: record.returnId,
-      readerId: record.return.reader.id,
-      readerName: record.return.reader.fullName,
-      citizenIdentify: record.return.reader.citizenIdentify,
-      civilServantId: record.return.reader.civilServantId,
-      studentId: record.return.reader.studentId,
-      readerTypeId: record.return.reader.readerTypeId,
-    };
-    const queryString = objectToQueryString(data);
-    return navigate(`/penalty/create?${queryString}`);
-  };
-
-  const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
   const groupByReturns = (iReturn, index) => {
-    const reIndex =
-      currentPage >= 2 ? currentPage * pageSize - pageSize + index : index;
+    const reIndex = currentPage >= 2 ? currentPage * pageSize - pageSize + index : index;
     let boolean = false;
     if (reIndex === 0) {
       boolean = true;
     } else if (iReturn.returnId !== returns[reIndex - 1].returnId) {
       boolean = true;
     } else {
-      boolean =
-        iReturn.countReturnId - iReturn.rest !==
-        returns[reIndex - 1].countReturnId - returns[reIndex - 1].rest;
+      boolean = iReturn.countReturnId - iReturn.rest !== returns[reIndex - 1].countReturnId - returns[reIndex - 1].rest;
       let count = 0;
       if (reIndex % 10 === 0) {
         for (let i = 0; i < reIndex; i++) {
@@ -112,12 +44,6 @@ const ReturnSearchPage = (props) => {
     return {
       rowSpan: boolean ? iReturn.countReturnId - iReturn.rest : 0,
     };
-  };
-
-  const showDropDrown = (record) => {
-    return returns
-      .filter((iReturn) => iReturn.iReturnId === record.iReturnId)
-      .some((iReturn) => !iReturn.returnDetail);
   };
 
   const columns = [
@@ -147,12 +73,6 @@ const ReturnSearchPage = (props) => {
       align: 'center',
       dataIndex: ['borrowDetail', 'document', 'name'],
     },
-    // {
-    //   title: 'Đã Trả',
-    //   dataIndex: 'returnDetail',
-    //   align: 'center',
-    //   render: (isReturn) => isReturn && <CheckCircleOutlined style={{ fontSize: 20, color: 'green' }} />
-    // },
     {
       title: 'Ngày Trả',
       dataIndex: 'createdAt',
@@ -175,15 +95,6 @@ const ReturnSearchPage = (props) => {
       align: 'center',
       onCell: groupByReturns,
     },
-    // {
-    //   title: 'Ngày Mượn',
-    //   dataIndex: 'createdAt',
-    //   align: 'center',
-    //   render: (dateTime) => {
-    //     return formatDMY_HMS(dateTime)
-    //   },
-    //   onCell: groupByReturns
-    // },
     {
       title: 'Action',
       key: 'operation',
@@ -230,12 +141,34 @@ const ReturnSearchPage = (props) => {
     }
   }, [readerTypeId]);
 
-  const getInitData = () => {
-    internalCall({ key: 'readerType-search' });
-    // internalCall({ key: 'iReturn-search' });
-    internalCall({ key: 'document-search' });
+  const handleDebounceFn = (reState) => {
+    props.callDatabase({ key: 'return-search', data: reState });
+    props.listenOnce('return-search', (arg) => {
+      setLoading(false);
+      setReturns(arg.data);
+    });
+  };
+  const createReturns = (record) => () => {
+    const data = {
+      returnId: record.returnId,
+      readerId: record.return.reader.id,
+      readerName: record.return.reader.fullName,
+      citizenIdentify: record.return.reader.citizenIdentify,
+      civilServantId: record.return.reader.civilServantId,
+      studentId: record.return.reader.studentId,
+      readerTypeId: record.return.reader.readerTypeId,
+    };
+    const queryString = objectToQueryString(data);
+    return navigate(`/penalty/create?${queryString}`);
+  };
 
-    const getData = async (arg) => {
+  const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
+
+  const getInitData = () => {
+    props.callDatabase({ key: 'readerType-search' });
+    props.callDatabase({ key: 'document-search' });
+
+    props.listenOn(async (arg) => {
       if (arg && arg.data) {
         if (arg.key === 'readerType-search') {
           const resReaders = arg.data.map((item) => ({
@@ -245,10 +178,6 @@ const ReturnSearchPage = (props) => {
           resReaders.push({ id: undefined, label: 'Skip' });
           setReaderTypes(resReaders);
         }
-
-        // if (arg.key === 'return-search') {
-        //   setReturns(arg.data);
-        // }
         if (arg.key === 'document-search') {
           setDocuments(
             arg.data.map((item) => ({
@@ -258,8 +187,7 @@ const ReturnSearchPage = (props) => {
           );
         }
       }
-    };
-    window.electron.ipcRenderer.on('ipc-database', getData);
+    });
   };
 
   const onChange = (e) => {
@@ -267,9 +195,7 @@ const ReturnSearchPage = (props) => {
     setCurrentPage(1);
     let reState = {};
     if (e.target.id === 'documents') {
-      const documentIds = e.target.value.map((item) =>
-        item.split('-')[0].trim()
-      );
+      const documentIds = e.target.value.map((item) => item.split('-')[0].trim());
       reState = { ...inputState, documentIds: documentIds };
     } else if (e.target.name === 'readerTypeId') {
       reState = { ...inputState, [e.target.name]: e.target.value };
@@ -293,9 +219,9 @@ const ReturnSearchPage = (props) => {
     if (name) data.name = name.trim();
     if (!name && isNaN(id)) data.name = value.trim();
 
-    internalCall({ key: 'document-search', data });
+    props.callDatabase({ key: 'document-search', data });
 
-    window.electron.ipcRenderer.once('ipc-database', (arg) => {
+    props.listenOnce('ipc-database', (arg) => {
       setDocuments(
         arg.data.map((item) => ({
           id: item.id,
@@ -337,13 +263,8 @@ const ReturnSearchPage = (props) => {
             options={documents}
             placeholder=""
             className="custom-autocomplete"
-            onChange={(value) =>
-              onChange({ target: { id: 'documents', value } })
-            }
-            filterOption={(inputValue, option) =>
-              option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !==
-              -1
-            }
+            onChange={(value) => onChange({ target: { id: 'documents', value } })}
+            filterOption={(inputValue, option) => option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
           />
         </Form.Item>
 
@@ -352,23 +273,11 @@ const ReturnSearchPage = (props) => {
         </Form.Item>
 
         <Form.Item name="studentId" label="Mã Sinh Viên" style={reStyle}>
-          <Input
-            disabled={readerTypeId && readerTypeId !== 1}
-            id="studentId"
-            onChange={onChange}
-          />
+          <Input disabled={readerTypeId && readerTypeId !== 1} id="studentId" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item
-          name="civilServantId"
-          label="Mã Cán Bộ - Nhân Viên"
-          style={reStyle}
-        >
-          <Input
-            disabled={readerTypeId && readerTypeId !== 2}
-            id="civilServantId"
-            onChange={onChange}
-          />
+        <Form.Item name="civilServantId" label="Mã Cán Bộ - Nhân Viên" style={reStyle}>
+          <Input disabled={readerTypeId && readerTypeId !== 2} id="civilServantId" onChange={onChange} />
         </Form.Item>
 
         <Form.Item name="readerTypeId" label="Loại Độc Giả" style={reStyle}>
@@ -406,4 +315,5 @@ const ReturnSearchPage = (props) => {
     </>
   );
 };
+
 export default ReturnSearchPage;

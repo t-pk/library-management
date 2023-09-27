@@ -33,3 +33,7 @@ export const formatDMY = (date) => {
 
   return `${day}/${month}/${year}`;
 };
+
+export const delay = (t) => {
+  return new Promise((resolve) => setTimeout(resolve, t));
+};

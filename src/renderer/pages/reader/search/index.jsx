@@ -1,41 +1,20 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import {
-  SettingOutlined,
-  DownOutlined,
-  CaretDownOutlined,
-  SearchOutlined,
-} from '@ant-design/icons';
-import {
-  AutoComplete,
-  Button,
-  Cascader,
-  Input,
-  Select,
-  Space,
-  Row,
-  Dropdown,
-  Checkbox,
-  Table,
-  Form,
-  Tag,
-  InputNumber,
-  Radio,
-} from 'antd';
+import { DownOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, Input, Space, Dropdown, Table, Form, Tag, Radio } from 'antd';
 import debounce from 'lodash.debounce';
-import { internalCall } from '../../../../renderer/actions';
-import { Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { objectToQueryString } from '../../../utils/index';
 
-const { Option } = Select;
 import './ui.scss';
 
 const formItemLayout = {
   labelCol: { xs: { span: 30 }, sm: { span: 30 } },
   wrapperCol: { xs: { span: 40 }, sm: { span: 23 } },
 };
+
 const reStyle = { minWidth: '32%' };
 
-const ReaderSearchPage = () => {
+const ReaderSearchPage = (props) => {
   const [form] = Form.useForm();
   const [inputState, setinputState] = useState({ name: '', id: '', type: '' });
   const [documents, setDocuments] = useState([]);
@@ -45,7 +24,6 @@ const ReaderSearchPage = () => {
   const navigate = useNavigate();
 
   const redirectCreateBorrow = (record) => () => {
-    console.log('record', record);
     const data = {
       readerId: record.id,
       citizenIdentify: record.citizenIdentify,
@@ -71,9 +49,7 @@ const ReaderSearchPage = () => {
     {
       title: 'Loại Độc Giả',
       dataIndex: ['readerType', 'name'],
-      render: (text, record) => (
-        <Tag color={text === 'Sinh Viên' ? 'green' : 'orange'}>{text}</Tag>
-      ),
+      render: (name) => <Tag color={name === 'Sinh Viên' ? 'green' : 'orange'}>{name}</Tag>,
     },
     {
       title: 'Mã Sinh Viên',
@@ -106,10 +82,8 @@ const ReaderSearchPage = () => {
             menu={{
               items: [
                 {
-                  label: (
-                    <a onClick={redirectCreateBorrow(record)}>Tạo Phiếu Mượn</a>
-                  ),
-                  key: '0',
+                  label: <a onClick={redirectCreateBorrow(record)}>Tạo Phiếu Mượn</a>,
+                  key: '1',
                 },
               ],
             }}
@@ -124,15 +98,13 @@ const ReaderSearchPage = () => {
   ];
 
   const handleDebounceFn = (reState) => {
-    internalCall({ key: 'reader-search', data: reState });
-    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
+    props.callDatabase({ key: 'reader-search', data: reState });
+    props.listenOnce('reader-search', (arg) => {
       setLoading(false);
-      if (arg && arg.data) {
-        console.log(arg.data);
-        setDocuments(arg.data);
-      }
+      setDocuments(arg.data || []);
     });
   };
+
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
 
   useEffect(() => {
@@ -151,19 +123,16 @@ const ReaderSearchPage = () => {
   }, [readerTypeId]);
 
   const getInitData = () => {
-    internalCall({ key: 'readerType-search' });
+    props.callDatabase({ key: 'readerType-search' });
 
-    const getData = async (arg) => {
-      if (arg && arg.data) {
-        const resReaders = arg.data.map((item) => ({
-          value: item.id,
-          label: item.name,
-        }));
-        resReaders.push({ id: undefined, label: 'Skip' });
-        setReaderTypes(resReaders);
-      }
-    };
-    window.electron.ipcRenderer.once('ipc-database', getData);
+    props.listenOnce('readerType-search', (arg) => {
+      const resReaders = (arg.data || []).map((item) => ({
+        value: item.id,
+        label: item.name,
+      }));
+      resReaders.push({ id: undefined, label: 'Skip' });
+      setReaderTypes(resReaders);
+    });
   };
 
   const onChange = (e) => {
@@ -182,10 +151,6 @@ const ReaderSearchPage = () => {
   const onClick = () => {
     setLoading(true);
     debounceFc(inputState);
-  };
-
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {},
   };
 
   return (
@@ -212,23 +177,11 @@ const ReaderSearchPage = () => {
         </Form.Item>
 
         <Form.Item name="studentId" label="Mã Sinh Viên" style={reStyle}>
-          <Input
-            disabled={readerTypeId && readerTypeId !== 1}
-            id="studentId"
-            onChange={onChange}
-          />
+          <Input disabled={readerTypeId && readerTypeId !== 1} id="studentId" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item
-          name="civilServantId"
-          label="Mã Cán Bộ - Nhân Viên"
-          style={reStyle}
-        >
-          <Input
-            disabled={readerTypeId && readerTypeId !== 2}
-            id="civilServantId"
-            onChange={onChange}
-          />
+        <Form.Item name="civilServantId" label="Mã Cán Bộ - Nhân Viên" style={reStyle}>
+          <Input disabled={readerTypeId && readerTypeId !== 2} id="civilServantId" onChange={onChange} />
         </Form.Item>
 
         <Form.Item label="Số Điện Thoại" style={reStyle}>
@@ -256,10 +209,6 @@ const ReaderSearchPage = () => {
         </Form.Item>
       </Form>
       <Table
-        rowSelection={{
-          type: 'checkbox',
-          ...rowSelection,
-        }}
         columns={columns}
         dataSource={documents}
         loading={loading}

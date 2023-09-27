@@ -27,6 +27,7 @@ import { getBorrowDetail } from './databases/logic/borrow-detail';
 import { createReturn, getReturns } from './databases/logic/return';
 import { createRemind, getReminds } from './databases/logic/remind';
 import { createPenalty, getPenalties } from './databases/logic/penalty';
+import { getUser } from './databases/logic/user';
 
 sequelize.authenticate();
 sequelize.sync({ force: false }).then((res) => {
@@ -52,25 +53,17 @@ ipcMain.on('ipc-database', async (event, arg) => {
   try {
     let result;
     const data = arg.data || {};
-    await getUserId();
-    console.log('arg', arg);
     if (arg.key.includes('create') || arg.key.includes('update')) {
       const userId = await getUserId();
-
       if (arg.key.includes('create')) {
         data.createdBy = userId;
       }
       data.updatedBy = userId;
     }
-    console.log(arg);
+
     switch (arg.key) {
       case 'user-login':
-        const password = encryptPassword(data.password);
-        result = await UserSchema.findOne({
-          where: { username: data.username, password },
-          raw: true,
-          attributes: ['id', 'username', 'position'],
-        });
+        result = await getUser(data);
         break;
       case 'document-search':
         result = await getDocuments(data);
@@ -146,9 +139,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const isDebug =
-  process.env.NODE_ENV === 'production' ||
-  process.env.NODE_ENV === 'development' ||
-  process.env.DEBUG_PROD === 'true';
+  process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 if (isDebug) {
   require('electron-debug')();
@@ -187,9 +178,7 @@ const createWindow = async () => {
     minWidth: 1377,
     icon: getAssetPath('icon.png'),
     webPreferences: {
-      preload: app.isPackaged
-        ? path.join(__dirname, 'preload.js')
-        : path.join(__dirname, '../../.erb/dll/preload.js'),
+      preload: app.isPackaged ? path.join(__dirname, 'preload.js') : path.join(__dirname, '../../.erb/dll/preload.js'),
     },
   });
 

@@ -1,29 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import {
-  SettingOutlined,
-  DownOutlined,
-  CaretDownOutlined,
-  SearchOutlined,
-} from '@ant-design/icons';
-import {
-  AutoComplete,
-  Button,
-  Cascader,
-  Input,
-  Select,
-  Space,
-  Row,
-  Dropdown,
-  Checkbox,
-  Table,
-  Form,
-  Tag,
-  InputNumber,
-  Radio,
-} from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
+import { Button, Input, Select, Table, Form, Tag, InputNumber, Radio } from 'antd';
 import debounce from 'lodash.debounce';
-import { internalCall } from '../../../../renderer/actions';
-const { Option } = Select;
+
 import './ui.scss';
 
 const formItemLayout = {
@@ -67,13 +46,11 @@ const columns = [
     title: 'Tài Liệu Đặc Biệt',
     dataIndex: 'special',
     align: 'center',
-    render: (text, record) => (
-      <Tag color={text ? 'green' : 'orange'}>{text ? 'Yes' : 'No'}</Tag>
-    ),
+    render: (text, record) => <Tag color={text ? 'green' : 'orange'}>{text ? 'Yes' : 'No'}</Tag>,
   },
 ];
 
-const DocumentSearchPage = () => {
+const DocumentSearchPage = (props) => {
   const [form] = Form.useForm();
   const [inputState, setinputState] = useState({
     name: '',
@@ -87,12 +64,10 @@ const DocumentSearchPage = () => {
   const [documentTypes, setDocumentTypes] = useState([]);
 
   const handleDebounceFn = (reState) => {
-    internalCall({ key: 'document-search', data: reState });
-    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
+    props.callDatabase({ key: 'document-search', data: reState });
+    props.listenOnce('document-search', async (arg) => {
       setLoading(false);
-      if (arg && arg.data) {
-        setDocuments(arg.data);
-      }
+      setDocuments(arg.data || []);
     });
   };
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
@@ -102,11 +77,11 @@ const DocumentSearchPage = () => {
   }, []);
 
   const getInitData = () => {
-    internalCall({ key: 'publisher-search' });
-    internalCall({ key: 'author-search' });
-    internalCall({ key: 'documentType-search' });
+    props.callDatabase({ key: 'publisher-search' });
+    props.callDatabase({ key: 'author-search' });
+    props.callDatabase({ key: 'documentType-search' });
 
-    const getData = async (arg) => {
+    props.listenOn(async (arg) => {
       if (arg && arg.data) {
         if (arg.key === 'publisher-search')
           setPublishers(
@@ -130,8 +105,7 @@ const DocumentSearchPage = () => {
             }))
           );
       }
-    };
-    window.electron.ipcRenderer.on('ipc-database', getData);
+    });
   };
 
   const onChange = (e) => {
@@ -148,9 +122,7 @@ const DocumentSearchPage = () => {
         .map((publisher) => publisher.id);
       reState = { ...inputState, [e.target.id]: ids };
     } else if (e.target.id === 'authors') {
-      const ids = authors
-        .filter((author) => e.target.value.includes(author.value))
-        .map((author) => author.id);
+      const ids = authors.filter((author) => e.target.value.includes(author.value)).map((author) => author.id);
       reState = { ...inputState, [e.target.id]: ids };
     } else if (e.target.name === 'special') {
       reState = { ...inputState, [e.target.name]: e.target.value };
@@ -167,10 +139,6 @@ const DocumentSearchPage = () => {
     debounceFc(inputState);
   };
 
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {},
-  };
-
   return (
     <>
       <Form
@@ -183,28 +151,13 @@ const DocumentSearchPage = () => {
         initialValues={{ special: undefined }}
       >
         <Form.Item style={reStyle} label="Mã Tài Liệu">
-          <Input
-            placeholder=""
-            value={inputState.id}
-            id="id"
-            onChange={onChange}
-            maxLength={8}
-          />
+          <Input placeholder="" value={inputState.id} id="id" onChange={onChange} maxLength={8} />
         </Form.Item>
         <Form.Item style={reStyle} label="Tên Tài Liệu">
-          <Input
-            placeholder=""
-            value={inputState.name}
-            id="name"
-            onChange={onChange}
-          />
+          <Input placeholder="" value={inputState.name} id="name" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item
-          name="special"
-          label={'Tài Liệu Đặc Biệt'}
-          style={{ ...reStyle }}
-        >
+        <Form.Item name="special" label={'Tài Liệu Đặc Biệt'} style={{ ...reStyle }}>
           <Radio.Group name="special" onChange={onChange} buttonStyle="solid">
             <Radio.Button value={true}>Yes</Radio.Button>
             <Radio.Button value={false}>No</Radio.Button>
@@ -216,9 +169,7 @@ const DocumentSearchPage = () => {
           <Select
             mode="tags"
             style={{ width: '100%' }}
-            onChange={(value) =>
-              onChange({ target: { id: 'documentTypes', value } })
-            }
+            onChange={(value) => onChange({ target: { id: 'documentTypes', value } })}
             tokenSeparators={[',']}
             options={documentTypes}
           />
@@ -228,9 +179,7 @@ const DocumentSearchPage = () => {
           <Select
             mode="tags"
             style={{ width: '100%' }}
-            onChange={(value) =>
-              onChange({ target: { id: 'publishers', value } })
-            }
+            onChange={(value) => onChange({ target: { id: 'publishers', value } })}
             tokenSeparators={[',']}
             options={publishers}
           />
@@ -249,9 +198,7 @@ const DocumentSearchPage = () => {
         <Form.Item name="publishYear" label="Năm Xuất Bản" style={reStyle}>
           <InputNumber
             id={'publishYear'}
-            onChange={(value) =>
-              onChange({ target: { id: 'publishYear', value } })
-            }
+            onChange={(value) => onChange({ target: { id: 'publishYear', value } })}
             min={1}
             style={{ width: '100%' }}
           />
@@ -263,17 +210,7 @@ const DocumentSearchPage = () => {
           </Button>
         </Form.Item>
       </Form>
-      <Table
-        rowSelection={{
-          type: 'checkbox',
-          ...rowSelection,
-        }}
-        columns={columns}
-        dataSource={documents}
-        loading={loading}
-        rowKey={'id'}
-        tableLayout={'fixed'}
-      />
+      <Table columns={columns} dataSource={documents} loading={loading} rowKey={'id'} tableLayout={'fixed'} />
     </>
   );
 };

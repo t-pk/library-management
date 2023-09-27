@@ -1,39 +1,9 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import {
-  SettingOutlined,
-  DownOutlined,
-  CaretDownOutlined,
-  CheckSquareOutlined,
-  CheckOutlined,
-  SearchOutlined,
-  CloseCircleOutlined,
-  CheckCircleOutlined,
-} from '@ant-design/icons';
-import {
-  AutoComplete,
-  Button,
-  Cascader,
-  Input,
-  Select,
-  Space,
-  Row,
-  Dropdown,
-  Checkbox,
-  Table,
-  Form,
-  Tag,
-  InputNumber,
-  Radio,
-} from 'antd';
 import debounce from 'lodash.debounce';
-import { internalCall } from '../../../actions';
-import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import {
-  formatDMY_HMS,
-  formatDMY,
-  objectToQueryString,
-} from '../../../utils/index';
-const { Option } = Select;
+import { useNavigate } from 'react-router-dom';
+import React, { useState, useCallback, useEffect } from 'react';
+import { Button, Input, Select, Space, Dropdown, Table, Form, Radio } from 'antd';
+import { DownOutlined, SearchOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { formatDMY_HMS, formatDMY, objectToQueryString } from '../../../utils/index';
 
 import './ui.scss';
 
@@ -43,14 +13,10 @@ const formItemLayout = {
 };
 const reStyle = { minWidth: '32%' };
 
-const BorrowSearchPage = () => {
+const BorrowSearchPage = (props) => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const [inputState, setinputState] = useState({
-    fullName: '',
-    id: 0,
-    studentId: '',
-  });
+  const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
   const [borrows, setBorrows] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -60,28 +26,26 @@ const BorrowSearchPage = () => {
   const pageSize = 20; // Number of items per page
 
   const handleDebounceFn = (reState) => {
-    internalCall({ key: 'borrow-search', data: reState });
-    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
+    props.callDatabase({ key: 'borrow-search', data: reState });
+    props.listenOnce((arg) => {
       setLoading(false);
       if (arg && arg.data) {
-        console.log(arg.data);
         setBorrows(arg.data);
       }
     });
   };
+
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
+
   const groupByBorrow = (borrow, index) => {
-    const reIndex =
-      currentPage >= 2 ? currentPage * pageSize - pageSize + index : index;
+    const reIndex = currentPage >= 2 ? currentPage * pageSize - pageSize + index : index;
     let boolean = false;
     if (reIndex === 0) {
       boolean = true;
     } else if (borrow.borrowId !== borrows[reIndex - 1].borrowId) {
       boolean = true;
     } else {
-      boolean =
-        borrow.countBorrowId - borrow.rest !==
-        borrows[reIndex - 1].countBorrowId - borrows[reIndex - 1].rest;
+      boolean = borrow.countBorrowId - borrow.rest !== borrows[reIndex - 1].countBorrowId - borrows[reIndex - 1].rest;
       let count = 0;
       if (reIndex % 10 === 0) {
         for (let i = 0; i < reIndex; i++) {
@@ -93,13 +57,12 @@ const BorrowSearchPage = () => {
       rowSpan: boolean ? borrow.countBorrowId - borrow.rest : 0,
     };
   };
+
   const showDropDrown = (record) => {
-    return borrows
-      .filter((borrow) => borrow.borrowId === record.borrowId)
-      .some((borrow) => !borrow.returnDetail);
+    return borrows.filter((borrow) => borrow.borrowId === record.borrowId).some((borrow) => !borrow.returnDetail);
   };
+
   const createReturns = (key, record) => () => {
-    console.log('key', key);
     const data = {
       borrowId: record.borrowId,
       readerId: record.borrow.reader.id,
@@ -152,10 +115,7 @@ const BorrowSearchPage = () => {
       title: 'Đã Trả',
       dataIndex: 'returnDetail',
       align: 'center',
-      render: (isReturn) =>
-        isReturn && (
-          <CheckCircleOutlined style={{ fontSize: 20, color: 'green' }} />
-        ),
+      render: (isReturn) => isReturn && <CheckCircleOutlined style={{ fontSize: 20, color: 'green' }} />,
     },
     {
       title: 'Mã Sinh Viên',
@@ -254,11 +214,11 @@ const BorrowSearchPage = () => {
   }, [readerTypeId]);
 
   const getInitData = () => {
-    internalCall({ key: 'readerType-search' });
-    internalCall({ key: 'borrow-search' });
-    internalCall({ key: 'document-search' });
+    props.callDatabase({ key: 'readerType-search' });
+    props.callDatabase({ key: 'borrow-search' });
+    props.callDatabase({ key: 'document-search' });
 
-    const getData = async (arg) => {
+    props.listenOn(async (arg) => {
       if (arg && arg.data) {
         if (arg.key === 'readerType-search') {
           const resReaders = arg.data.map((item) => ({
@@ -281,17 +241,14 @@ const BorrowSearchPage = () => {
           );
         }
       }
-    };
-    window.electron.ipcRenderer.on('ipc-database', getData);
+    });
   };
 
   const onChange = (e) => {
     setLoading(true);
     let reState = {};
     if (e.target.id === 'documents') {
-      const documentIds = e.target.value.map((item) =>
-        item.split('-')[0].trim()
-      );
+      const documentIds = e.target.value.map((item) => item.split('-')[0].trim());
       reState = { ...inputState, documentIds: documentIds };
     } else if (e.target.name === 'readerTypeId') {
       reState = { ...inputState, [e.target.name]: e.target.value };
@@ -315,9 +272,8 @@ const BorrowSearchPage = () => {
     if (name) data.name = name.trim();
     if (!name && isNaN(id)) data.name = value.trim();
 
-    internalCall({ key: 'document-search', data });
-
-    window.electron.ipcRenderer.once('ipc-database', (arg) => {
+    props.callDatabase({ key: 'document-search', data });
+    props.listenOnce('document-search', (arg) => {
       setDocuments(
         arg.data.map((item) => ({
           id: item.id,
@@ -359,13 +315,8 @@ const BorrowSearchPage = () => {
             options={documents}
             placeholder=""
             className="custom-autocomplete"
-            onChange={(value) =>
-              onChange({ target: { id: 'documents', value } })
-            }
-            filterOption={(inputValue, option) =>
-              option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !==
-              -1
-            }
+            onChange={(value) => onChange({ target: { id: 'documents', value } })}
+            filterOption={(inputValue, option) => option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
           />
         </Form.Item>
 
@@ -374,23 +325,11 @@ const BorrowSearchPage = () => {
         </Form.Item>
 
         <Form.Item name="studentId" label="Mã Sinh Viên" style={reStyle}>
-          <Input
-            disabled={readerTypeId && readerTypeId !== 1}
-            id="studentId"
-            onChange={onChange}
-          />
+          <Input disabled={readerTypeId && readerTypeId !== 1} id="studentId" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item
-          name="civilServantId"
-          label="Mã Cán Bộ - Nhân Viên"
-          style={reStyle}
-        >
-          <Input
-            disabled={readerTypeId && readerTypeId !== 2}
-            id="civilServantId"
-            onChange={onChange}
-          />
+        <Form.Item name="civilServantId" label="Mã Cán Bộ - Nhân Viên" style={reStyle}>
+          <Input disabled={readerTypeId && readerTypeId !== 2} id="civilServantId" onChange={onChange} />
         </Form.Item>
 
         <Form.Item name="readerTypeId" label="Loại Độc Giả" style={reStyle}>
@@ -409,6 +348,7 @@ const BorrowSearchPage = () => {
           </Button>
         </Form.Item>
       </Form>
+
       <Table
         columns={columns}
         dataSource={borrows}

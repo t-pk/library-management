@@ -1,18 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import {
-  Button,
-  Form,
-  Input,
-  message,
-  Select,
-  Radio,
-  AutoComplete,
-  InputNumber,
-  Checkbox,
-} from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Button, Form, Input, message, Radio, InputNumber, Checkbox } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
-import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { internalCall, delay } from '../../../actions';
+import { useLocation } from 'react-router-dom';
+import { delay } from '../../../utils/index';
 import { queryStringToObject } from '../../../utils/index';
 
 const reStyle = { minWidth: '32%' };
@@ -25,7 +15,7 @@ const tailFormItemLayout = {
   wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } },
 };
 
-const PenaltyCreatePage = () => {
+const PenaltyCreatePage = (props) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
@@ -50,17 +40,11 @@ const PenaltyCreatePage = () => {
   }, [readerTypeId, location]);
 
   const getInitData = () => {
-    internalCall({ key: 'readerType-search' });
+    props.callDatabase({ key: 'readerType-search' });
 
-    const getData = async (arg) => {
-      if (arg && arg.data) {
-        if (arg.key === 'readerType-search')
-          setReaderTypes(
-            arg.data.map((item) => ({ value: item.id, label: item.name }))
-          );
-      }
-    };
-    window.electron.ipcRenderer.once('ipc-database', getData);
+    props.listenOnce('readerType-search', (arg) => {
+      setReaderTypes(arg.data.map((item) => ({ value: item.id, label: item.name })));
+    });
   };
 
   const showMessage = (type, content) => {
@@ -83,18 +67,19 @@ const PenaltyCreatePage = () => {
     setLoading(true);
     showMessage('loading', 'loading...');
     const data = { ...values };
-    internalCall({ key: 'penalty-create', data });
+    props.callDatabase({ key: 'penalty-create', data });
 
-    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
+    props.listenOnce('penalty-create', async (arg) => {
       if (arg.data) {
         await delay(1000);
         form.resetFields();
-        setLoading(false);
         messageApi.destroy(key);
         if (arg.data) showMessage('success', 'Created Penalty.');
         else showMessage('error', arg.error);
         await delay(2000);
         messageApi.destroy(key);
+      } else {
+        setLoading(false);
       }
     });
   };
@@ -188,12 +173,7 @@ const PenaltyCreatePage = () => {
         </Form.Item>
 
         <Form.Item name="readerTypeId" label="Loại Độc Giả" style={reStyle}>
-          <Radio.Group
-            options={readerTypes}
-            optionType="button"
-            buttonStyle="solid"
-            disabled={true}
-          />
+          <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" disabled={true} />
         </Form.Item>
 
         <Form.Item
@@ -213,19 +193,11 @@ const PenaltyCreatePage = () => {
           <InputNumber
             min={1}
             style={{ width: '100%' }}
-            formatter={(value) =>
-              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-            }
+            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
           />
         </Form.Item>
 
-        <Form.Item
-          name="compensation"
-          label=" "
-          valuePropName="checked"
-          style={{ ...reStyle }}
-          {...tailFormItemLayout}
-        >
+        <Form.Item name="compensation" label=" " valuePropName="checked" style={{ ...reStyle }} {...tailFormItemLayout}>
           <Checkbox> Đã Đóng Phạt </Checkbox>
         </Form.Item>
 

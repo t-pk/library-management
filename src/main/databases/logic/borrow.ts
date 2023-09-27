@@ -24,12 +24,10 @@ export const getBorrows = async (request: any) => {
       borrowDetailQuery.documentId = { [Op.in]: request.documentIds };
     }
     if (request.id) borrowQuery.id = request.id;
-    if (request.fullName)
-      readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
+    if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
     if (request.studentId) readerQuery.studentId = request.studentId;
     if (request.readerTypeId) readerQuery.readerTypeId = request.readerTypeId;
-    if (request.civilServantId)
-      readerQuery.civilServantId = request.civilServantId;
+    if (request.civilServantId) readerQuery.civilServantId = request.civilServantId;
     if (request.readerId) readerQuery.id = request.readerId;
 
     const borrows = await BorrowDetailSchema.findAll({

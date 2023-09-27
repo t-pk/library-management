@@ -74,8 +74,7 @@ instanceNext.interceptors.response.use(
 
     // call api without token
     if (error.response && error.response.status === 403) {
-      window.location.href =
-        process.env.REACT_APP_REDIRECT_AUTH_URL || LOGIN_URL;
+      window.location.href = process.env.REACT_APP_REDIRECT_AUTH_URL || LOGIN_URL;
     }
 
     if (error.response) return Promise.reject(error.response);

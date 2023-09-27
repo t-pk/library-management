@@ -1,13 +1,6 @@
 import { Op } from 'sequelize';
 import countBy from 'lodash.countby';
-import {
-  BorrowDetailSchema,
-  DocumentSchema,
-  ReaderSchema,
-  ReturnDetailSchema,
-  ReturnSchema,
-  unitOfWork,
-} from '../db';
+import { BorrowDetailSchema, DocumentSchema, ReaderSchema, ReturnDetailSchema, ReturnSchema, unitOfWork } from '../db';
 
 interface IObject {
   [key: string]: string | {};
@@ -56,12 +49,10 @@ export const getReturns = async (request: any) => {
       borrowDetail.documentId = { [Op.in]: request.documentIds };
     }
     if (request.id) returnQuery.id = request.id;
-    if (request.fullName)
-      readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
+    if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
     if (request.studentId) readerQuery.studentId = request.studentId;
     if (request.readerTypeId) readerQuery.readerTypeId = request.readerTypeId;
-    if (request.civilServantId)
-      readerQuery.civilServantId = request.civilServantId;
+    if (request.civilServantId) readerQuery.civilServantId = request.civilServantId;
 
     if (request.readerId) readerQuery.id = request.readerId;
 
@@ -95,10 +86,7 @@ export const getReturns = async (request: any) => {
 
     let returnJSON = returnDetails.map((iReturn) => iReturn.toJSON());
 
-    const returnObj: { [key in string]: number } = countBy(
-      returnDetails,
-      'returnId'
-    );
+    const returnObj: { [key in string]: number } = countBy(returnDetails, 'returnId');
     let resultObj: { [key in string]: number } = {};
 
     const limit = 20;

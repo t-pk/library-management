@@ -1,11 +1,5 @@
 import { Op } from 'sequelize';
-import {
-  AuthorSchema,
-  DocumentSchema,
-  PublisherSchema,
-  unitOfWork,
-  DocumentTypeSchema,
-} from '../db';
+import { AuthorSchema, DocumentSchema, PublisherSchema, unitOfWork, DocumentTypeSchema } from '../db';
 
 export const getDocuments = async (request: any) => {
   try {
@@ -20,8 +14,7 @@ export const getDocuments = async (request: any) => {
 
     if (request.publishYear) query.publishYear = request.publishYear;
 
-    if (request.special || request.special === false)
-      query.special = request.special;
+    if (request.special || request.special === false) query.special = request.special;
 
     if (request.documentTypes && request.documentTypes.length > 0) {
       query.documentTypeId = { [Op.in]: request.documentTypes };

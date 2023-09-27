@@ -1,18 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import {
-  Button,
-  Form,
-  Input,
-  message,
-  Select,
-  Radio,
-  AutoComplete,
-} from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Button, Form, Input, message, Select, Radio } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
-import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { internalCall, delay } from '../../../actions';
+import { useLocation } from 'react-router-dom';
+import { delay } from '../../../utils/index';
 import { queryStringToObject } from '../../../utils/index';
-import debounce from 'lodash.debounce';
 
 const reStyle = { minWidth: '32%' };
 
@@ -24,7 +15,7 @@ const tailFormItemLayout = {
   wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } },
 };
 
-const ReturnCreatePage = () => {
+const ReturnCreatePage = (props) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
@@ -39,7 +30,6 @@ const ReturnCreatePage = () => {
     let borrowInfo = queryStringToObject(location.search);
     borrowInfo.readerTypeId = +borrowInfo.readerTypeId;
     form.setFieldsValue(borrowInfo);
-    console.log('borrowInfo', borrowInfo);
 
     getInitData(borrowInfo);
     if (readerTypeId === 1) {
@@ -51,28 +41,22 @@ const ReturnCreatePage = () => {
   }, [readerTypeId, location]);
 
   const getInitData = (borrowInfo) => {
-    internalCall({ key: 'readerType-search' });
+    props.callDatabase({ key: 'readerType-search' });
 
     if (borrowInfo && borrowInfo.borrowId) {
       const requestBorrowDetail = { borrowId: borrowInfo.borrowId };
-      internalCall({ key: 'borrowDetail-search', data: requestBorrowDetail });
+      props.callDatabase({ key: 'borrowDetail-search', data: requestBorrowDetail });
     }
-
-    const getData = async (arg) => {
+    props.listenOn((arg) => {
       if (arg && arg.data) {
         if (arg.key === 'readerType-search')
-          setReaderTypes(
-            arg.data.map((item) => ({ value: item.id, label: item.name }))
-          );
+          setReaderTypes(arg.data.map((item) => ({ value: item.id, label: item.name })));
         if (arg.key === 'borrowDetail-search') {
           console.log('arg', arg);
-          setBorrowedDocuments(
-            arg.data.map((item) => ({ value: item.id, label: item.name }))
-          );
+          setBorrowedDocuments(arg.data.map((item) => ({ value: item.id, label: item.name })));
         }
       }
-    };
-    window.electron.ipcRenderer.on('ipc-database', getData);
+    });
   };
 
   const showMessage = (type, content) => {
@@ -91,21 +75,23 @@ const ReturnCreatePage = () => {
   };
 
   const onFinish = async (values) => {
-    console.log(values);
     setLoading(true);
     showMessage('loading', 'loading...');
     const data = { ...values };
-    internalCall({ key: 'return-create', data });
+    props.callDatabase({ key: 'return-create', data });
 
-    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
+    props.listenOnce('return-create', async (arg) => {
+      await delay(1000);
+      setLoading(false);
+
       if (arg.data) {
-        await delay(1000);
         form.resetFields(['documentIds']);
         getInitData({ borrowId: form.getFieldValue('borrowId') });
-        setLoading(false);
         messageApi.destroy(key);
+
         if (arg.data) showMessage('success', 'Created Reader.');
         else showMessage('error', arg.error);
+
         await delay(2000);
         messageApi.destroy(key);
       }
@@ -201,12 +187,7 @@ const ReturnCreatePage = () => {
         </Form.Item>
 
         <Form.Item name="readerTypeId" label="Loại Độc Giả" style={reStyle}>
-          <Radio.Group
-            options={readerTypes}
-            optionType="button"
-            buttonStyle="solid"
-            disabled={true}
-          />
+          <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" disabled={true} />
         </Form.Item>
 
         <Form.Item
@@ -216,15 +197,8 @@ const ReturnCreatePage = () => {
           rules={[
             {
               validator: async (_, values = []) => {
-                const doc = values.every((id) =>
-                  borrowedDocuments
-                    .map((document) => document.value)
-                    .includes(id)
-                );
-                if (!doc || !values.length)
-                  return Promise.reject(
-                    new Error('Please select item on List!')
-                  );
+                const doc = values.every((id) => borrowedDocuments.map((document) => document.value).includes(id));
+                if (!doc || !values.length) return Promise.reject(new Error('Please select item on List!'));
               },
             },
           ]}
@@ -235,10 +209,7 @@ const ReturnCreatePage = () => {
             // onSearch={findDocuments}
             placeholder=""
             className="custom-autocomplete"
-            filterOption={(inputValue, option) =>
-              option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !==
-              -1
-            }
+            filterOption={(inputValue, option) => option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
           />
         </Form.Item>
 

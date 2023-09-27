@@ -1,26 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import {
-  SettingOutlined,
-  DownOutlined,
-  CaretDownOutlined,
-  SearchOutlined,
-} from '@ant-design/icons';
-import {
-  Button,
-  Cascader,
-  Input,
-  Select,
-  Space,
-  Row,
-  Dropdown,
-  Checkbox,
-  Table,
-  Form,
-  Tag,
-} from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
+import { Button, Input, Table, Form, Tag } from 'antd';
 import debounce from 'lodash.debounce';
-import { internalCall } from '../../../../renderer/actions';
-const { Option } = Select;
 import './ui.scss';
 
 const columns = [
@@ -38,9 +19,7 @@ const columns = [
     title: 'Status',
     dataIndex: 'status',
     key: 'status',
-    render: (text, record) => (
-      <Tag color={text ? 'green' : 'red'}>{text ? 'Active' : 'Deactived'}</Tag>
-    ),
+    render: (text) => <Tag color={text ? 'green' : 'red'}>{text ? 'Active' : 'Deactived'}</Tag>,
   },
   {
     title: 'Description',
@@ -51,7 +30,7 @@ const columns = [
 
 const style = { minWidth: '28%', marginRight: '10px' };
 
-const PublisherSearchPage = () => {
+const PublisherSearchPage = (props) => {
   const [inputState, setinputState] = useState({
     name: '',
     id: '',
@@ -64,15 +43,15 @@ const PublisherSearchPage = () => {
     debounceFc(inputState);
   }, []);
   const handleDebounceFn = (reState) => {
-    internalCall({ key: 'publisher-search', data: reState });
-    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
+    props.callDatabase({ key: 'publisher-search', data: reState });
+    props.listenOnce('publisher-search', (arg) => {
       setLoading(false);
       if (arg && arg.data) {
-        console.log(arg.data);
         setDocuments(arg.data);
       }
     });
   };
+
   const debounceFc = useCallback(debounce(handleDebounceFn, 300), []);
 
   const onChange = (e) => {
@@ -87,33 +66,14 @@ const PublisherSearchPage = () => {
     debounceFc(inputState);
   };
 
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-    },
-  };
-
   return (
     <>
       <Form style={{ display: 'flex' }} layout="vertical">
         <Form.Item style={style} label="Mã Nhà Xuất Bản">
-          <Input
-            placeholder=""
-            value={inputState.id}
-            style={style}
-            id="id"
-            onChange={onChange}
-            maxLength={8}
-          />
+          <Input placeholder="" value={inputState.id} style={style} id="id" onChange={onChange} maxLength={8} />
         </Form.Item>
         <Form.Item style={style} label="Tên Nhà Xuât Bản">
-          <Input
-            placeholder=""
-            value={inputState.name}
-            style={style}
-            id="name"
-            onChange={onChange}
-          />
+          <Input placeholder="" value={inputState.name} style={style} id="name" onChange={onChange} />
         </Form.Item>
         <Form.Item style={style} label=" ">
           <Button onClick={onClick} type="primary" icon={<SearchOutlined />}>
@@ -121,17 +81,7 @@ const PublisherSearchPage = () => {
           </Button>
         </Form.Item>
       </Form>
-      <Table
-        rowSelection={{
-          type: 'checkbox',
-          ...rowSelection,
-        }}
-        columns={columns}
-        dataSource={documents}
-        loading={loading}
-        rowKey={'id'}
-        tableLayout={'fixed'}
-      />
+      <Table columns={columns} dataSource={documents} loading={loading} rowKey={'id'} tableLayout={'fixed'} />
     </>
   );
 };

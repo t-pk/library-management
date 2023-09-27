@@ -14,14 +14,11 @@ import { IReaderType } from './schema/reader-type';
 import { IRemind } from './schema/remind';
 import { IPenalty } from './schema/penalty';
 
-export const sequelize = new Sequelize.Sequelize(
-  'postgres://postgres:123456@localhost:5433/library',
-  {
-    dialectModule: pg,
-    logging: true,
-    pool: { max: 5, min: 0, idle: 10000 },
-  }
-);
+export const sequelize = new Sequelize.Sequelize('postgres://postgres:123456@localhost:5433/library', {
+  dialectModule: pg,
+  logging: true,
+  pool: { max: 5, min: 0, idle: 10000 },
+});
 
 const attributeCommon = {
   paranoid: false,
@@ -38,21 +35,17 @@ export const BorrowSchema = sequelize.define('borrows', IBorrow, {
   tableName: 'borrows',
 });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const BorrowDetailSchema = sequelize.define(
-  'borrowDetails',
-  IBorrowDetail,
-  { ...attributeCommon, updatedAt: false, tableName: 'borrow_details' }
-);
+export const BorrowDetailSchema = sequelize.define('borrowDetails', IBorrowDetail, {
+  ...attributeCommon,
+  updatedAt: false,
+  tableName: 'borrow_details',
+});
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const DocumentSchema = sequelize.define(
-  'documents',
-  IDocument,
-  attributeCommon
-);
+export const DocumentSchema = sequelize.define('documents', IDocument, attributeCommon);
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const ReaderSchema = sequelize.define('readers', IReader, {
   ...attributeCommon,
-  tableName: 'reader',
+  tableName: 'readers',
 });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const ReturnSchema = sequelize.define('returns', IReturn, {
@@ -61,31 +54,22 @@ export const ReturnSchema = sequelize.define('returns', IReturn, {
   tableName: 'returns',
 });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const ReturnDetailSchema = sequelize.define(
-  'returnDetails',
-  IReturnDetail,
-  { ...attributeCommon, updatedAt: false, tableName: 'return_details' }
-);
+export const ReturnDetailSchema = sequelize.define('returnDetails', IReturnDetail, {
+  ...attributeCommon,
+  updatedAt: false,
+  tableName: 'return_details',
+});
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const UserSchema = sequelize.define('users', IUser, attributeCommon);
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const AuthorSchema = sequelize.define(
-  'authors',
-  IAuthor,
-  attributeCommon
-);
+export const AuthorSchema = sequelize.define('authors', IAuthor, attributeCommon);
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const PublisherSchema = sequelize.define(
-  'publishers',
-  IPublisher,
-  attributeCommon
-);
+export const PublisherSchema = sequelize.define('publishers', IPublisher, attributeCommon);
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const DocumentTypeSchema = sequelize.define(
-  'documentTypes',
-  IDocumentType,
-  { ...attributeCommon, tableName: 'document_types' }
-);
+export const DocumentTypeSchema = sequelize.define('documentTypes', IDocumentType, {
+  ...attributeCommon,
+  tableName: 'document_types',
+});
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const ReaderTypeSchema = sequelize.define('readerTypes', IReaderType, {
   ...attributeCommon,

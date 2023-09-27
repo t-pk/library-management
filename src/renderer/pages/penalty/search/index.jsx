@@ -1,39 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import {
-  SettingOutlined,
-  DownOutlined,
-  CaretDownOutlined,
-  CheckSquareOutlined,
-  CheckOutlined,
-  SearchOutlined,
-  CloseCircleOutlined,
-  CheckCircleOutlined,
-} from '@ant-design/icons';
-import {
-  AutoComplete,
-  Button,
-  Cascader,
-  Input,
-  Select,
-  Space,
-  Row,
-  Dropdown,
-  Checkbox,
-  Table,
-  Form,
-  Tag,
-  InputNumber,
-  Radio,
-} from 'antd';
+import { SearchOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { Button, Input, Table, Form, Radio } from 'antd';
 import debounce from 'lodash.debounce';
-import { internalCall } from '../../../../renderer/actions';
-import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import {
-  formatDMY_HMS,
-  formatDMY,
-  objectToQueryString,
-} from '../../../utils/index';
-const { Option } = Select;
+import { formatDMY_HMS } from '../../../utils/index';
 
 import './ui.scss';
 
@@ -45,7 +14,6 @@ const reStyle = { minWidth: '32%' };
 
 const PenaltySearchPage = (props) => {
   const [form] = Form.useForm();
-  const navigate = useNavigate();
   const [inputState, setinputState] = useState({
     fullName: '',
     id: 0,
@@ -57,17 +25,6 @@ const PenaltySearchPage = (props) => {
   const readerTypeId = Form.useWatch('readerTypeId', form);
   const [currentPage, setCurrentPage] = React.useState(1);
   const pageSize = 20; // Number of items per page
-
-  const handleDebounceFn = (reState) => {
-    props.callDatabase({ key: 'penalty-search', data: reState });
-    props.listenOnce('penalty-search', (arg) => {
-      console.log('penarg', arg);
-      setLoading(false);
-      setPenalties(arg.data || []);
-    });
-  };
-
-  const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
 
   const columns = [
     {
@@ -92,16 +49,12 @@ const PenaltySearchPage = (props) => {
       title: 'Số  Tiền Phạt',
       dataIndex: 'totalAmount',
       align: 'center',
-      render: (value) =>
-        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' vnđ',
+      render: (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' vnđ',
     },
     {
       title: 'Đã Đóng Phạt',
       dataIndex: 'compensation',
-      render: (compensation) =>
-        compensation && (
-          <CheckCircleOutlined style={{ fontSize: 20, color: 'green' }} />
-        ),
+      render: (compensation) => compensation && <CheckCircleOutlined style={{ fontSize: 20, color: 'green' }} />,
       align: 'center',
     },
     {
@@ -146,22 +99,27 @@ const PenaltySearchPage = (props) => {
     }
   }, [readerTypeId]);
 
-  const getInitData = () => {
-    internalCall({ key: 'readerType-search' });
+  const handleDebounceFn = (reState) => {
+    props.callDatabase({ key: 'penalty-search', data: reState });
+    props.listenOnce('penalty-search', (arg) => {
+      setLoading(false);
+      setPenalties(arg.data || []);
+    });
+  };
 
-    const getData = async (arg) => {
-      if (arg && arg.data) {
-        if (arg.key === 'readerType-search') {
-          const resReaders = arg.data.map((item) => ({
-            value: item.id,
-            label: item.name,
-          }));
-          resReaders.push({ id: undefined, label: 'Skip' });
-          setReaderTypes(resReaders);
-        }
-      }
-    };
-    window.electron.ipcRenderer.on('ipc-database', getData);
+  const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
+
+  const getInitData = () => {
+    props.callDatabase({ key: 'readerType-search' });
+
+    props.listenOnce('readerType-search', (arg) => {
+      const resReaders = (arg.data || []).map((item) => ({
+        value: item.id,
+        label: item.name,
+      }));
+      resReaders.push({ id: undefined, label: 'Skip' });
+      setReaderTypes(resReaders);
+    });
   };
 
   const onChange = (e) => {
@@ -181,26 +139,6 @@ const PenaltySearchPage = (props) => {
   const onClick = () => {
     setLoading(true);
     debounceFc(inputState);
-  };
-
-  const debouncePenalty = async (value) => {
-    const [id, name] = value.split('-');
-    let data = {};
-    if (id && !isNaN(id)) data.id = id.trim();
-    if (name) data.name = name.trim();
-    if (!name && isNaN(id)) data.name = value.trim();
-
-    internalCall({ key: 'penalty-search', data });
-
-    window.electron.ipcRenderer.once('ipc-database', (arg) => {
-      setPenalties(arg.data);
-    });
-  };
-
-  const documentFc = useCallback(debounce(debouncePenalty, 400), []);
-
-  const findpenalties = (value) => {
-    documentFc(value);
   };
 
   const handlePageChange = (page, pageSize) => {
@@ -227,23 +165,11 @@ const PenaltySearchPage = (props) => {
         </Form.Item>
 
         <Form.Item name="studentId" label="Mã Sinh Viên" style={reStyle}>
-          <Input
-            disabled={readerTypeId && readerTypeId !== 1}
-            id="studentId"
-            onChange={onChange}
-          />
+          <Input disabled={readerTypeId && readerTypeId !== 1} id="studentId" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item
-          name="civilServantId"
-          label="Mã Cán Bộ - Nhân Viên"
-          style={reStyle}
-        >
-          <Input
-            disabled={readerTypeId && readerTypeId !== 2}
-            id="civilServantId"
-            onChange={onChange}
-          />
+        <Form.Item name="civilServantId" label="Mã Cán Bộ - Nhân Viên" style={reStyle}>
+          <Input disabled={readerTypeId && readerTypeId !== 2} id="civilServantId" onChange={onChange} />
         </Form.Item>
 
         <Form.Item name="readerTypeId" label="Loại Độc Giả" style={reStyle}>

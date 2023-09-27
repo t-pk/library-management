@@ -1,15 +1,13 @@
-import { Form, Input, Button, message } from 'antd';
 import React, { useState } from 'react';
-import { useNavigate, Redirect } from 'react-router-dom';
-import { internalCall } from 'renderer/actions';
+import { Form, Input, Button, message } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import icon from '../../assets/icon.jpeg';
 import backgroundUrl from '../../assets/background.svg';
 import './ui.css';
 
-const MESSAGE_LOGIN_FAIL =
-  'username or password is incorrect. Please try again !';
+const MESSAGE_LOGIN_FAIL = 'username or password is incorrect. Please try again !';
 
-const LoginPage = () => {
+const LoginPage = (props) => {
   const navigate = useNavigate();
 
   const sleep = (ms) => {
@@ -32,13 +30,23 @@ const LoginPage = () => {
   const onFinish = async (user) => {
     setLoading(true);
 
-    internalCall({ key: 'user-login', data: user });
-    window.electron.ipcRenderer.once('ipc-database', async (arg) => {
+    props.callDatabase({ key: 'user-login', data: user });
+    props.listenOnce('user-login', async (arg) => {
       if (arg && arg.data) {
         setLoading(false);
         await sleep(1200);
         localStorage.setItem('TOKEN_KEY', JSON.stringify(arg.data));
         navigate('/');
+      }
+      if (arg && !arg.data) {
+        setLoading(false);
+        message.error({
+          content: MESSAGE_LOGIN_FAIL,
+          className: 'custom-class',
+          style: {
+            textAlign: 'right',
+          },
+        });
       }
       setLoading(false);
       message.error({
@@ -53,12 +61,7 @@ const LoginPage = () => {
 
   return (
     <div id="login-content">
-      <img
-        className="logo-login"
-        src={backgroundUrl}
-        style={{ width: '100%', position: 'absolute' }}
-        alt="icon"
-      ></img>
+      <img className="logo-login" src={backgroundUrl} style={{ width: '100%', position: 'absolute' }} alt="icon"></img>
       <Form
         name="basic"
         initialValues={{ remember: true }}
@@ -68,27 +71,16 @@ const LoginPage = () => {
       >
         <img className="logo-login" src={icon} alt="icon" />
         <h3 className="logo-name"> ElectronJS - React - Ant </h3>
-        <Form.Item
-          name="username"
-          rules={[{ required: true, message: 'Please input your username!' }]}
-        >
+        <Form.Item name="username" rules={[{ required: true, message: 'Please input your username!' }]}>
           <Input />
         </Form.Item>
 
-        <Form.Item
-          name="password"
-          rules={[{ required: true, message: 'Please input your password!' }]}
-        >
+        <Form.Item name="password" rules={[{ required: true, message: 'Please input your password!' }]}>
           <Input.Password autoComplete="false" />
         </Form.Item>
 
         <Form.Item>
-          <Button
-            className="login-button"
-            type="primary"
-            htmlType="submit"
-            loading={loading}
-          >
+          <Button className="login-button" type="primary" htmlType="submit" loading={loading}>
             Submit
           </Button>
         </Form.Item>

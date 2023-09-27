@@ -1,18 +1,6 @@
 import React, { useState } from 'react';
-import {
-  AutoComplete,
-  Button,
-  Cascader,
-  Checkbox,
-  Col,
-  Form,
-  Input,
-  InputNumber,
-  Row,
-  Select,
-} from 'antd';
+import { Button, Form, Input, InputNumber } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
-const { Option } = Select;
 
 const reStyle = {
   minWidth: '32%',
@@ -26,7 +14,7 @@ const tailFormItemLayout = {
   wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } },
 };
 
-const DocumentRequestPage = () => {
+const DocumentRequestPage = (props) => {
   const [form] = Form.useForm();
   const onFinish = (values) => {};
 
@@ -62,17 +50,8 @@ const DocumentRequestPage = () => {
         <Input style={{ width: '100%' }} />
       </Form.Item>
 
-      <Form.Item
-        label=" "
-        {...tailFormItemLayout}
-        style={{ ...reStyle, textAlign: 'center' }}
-      >
-        <Button
-          style={{ minWidth: '50%' }}
-          type="primary"
-          htmlType="submit"
-          icon={<SaveOutlined />}
-        >
+      <Form.Item label=" " {...tailFormItemLayout} style={{ ...reStyle, textAlign: 'center' }}>
+        <Button style={{ minWidth: '50%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
           {' '}
           Submit{' '}
         </Button>

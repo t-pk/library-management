@@ -1,13 +1,5 @@
 import countBy from 'lodash.countby';
-import {
-  BorrowSchema,
-  PenaltySchema,
-  ReaderSchema,
-  RemindSchema,
-  ReturnSchema,
-  sequelize,
-  unitOfWork,
-} from '../db';
+import { BorrowSchema, PenaltySchema, ReaderSchema, RemindSchema, ReturnSchema, sequelize, unitOfWork } from '../db';
 import { Op } from 'sequelize';
 
 export const createPenalty = async (request: any) => {
@@ -43,9 +35,7 @@ export const getPenalties = async (request: any) => {
           {
             model: BorrowSchema,
             required: true,
-            include: [
-              { model: ReaderSchema, required: true, where: readerQuery },
-            ],
+            include: [{ model: ReaderSchema, required: true, where: readerQuery }],
           },
         ],
       },

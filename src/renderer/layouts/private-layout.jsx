@@ -3,7 +3,6 @@ import { Button, Layout, Menu, Space, Spin, theme, message } from 'antd';
 import { AppstoreOutlined, MailOutlined } from '@ant-design/icons';
 
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { internalCall } from '../actions';
 import backgroundUrl from '../assets/background.svg';
 const { Header, Content, Sider } = Layout;
 import './css.css';
@@ -18,9 +17,7 @@ const PrivateLayout = ({ element: Component }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setAnimate(
-      location.pathname === '/' ? '/document/search' : location.pathname
-    );
+    setAnimate(location.pathname === '/' ? '/document/search' : location.pathname);
     console.log('location.pathname', location.pathname);
     const keyPath = '/' + location.pathname.split('/')[1];
     const keyAdmin = openKeys.find((key) => key === keyPath);
@@ -110,12 +107,12 @@ const PrivateLayout = ({ element: Component }) => {
    * @param {*} params {key: string, data: {}}
    */
   const callDatabase = (params) => {
-    internalCall(params);
+    window.electron.ipcRenderer.sendMessage('ipc-database', params);
   };
 
-  const listenOn = async (key, callback) => {
+  const listenOn = async (callback) => {
     window.electron.ipcRenderer.on('ipc-database', async (arg) => {
-      if (arg && arg.key === key) await callback(arg);
+      if (arg && arg.data) await callback(arg);
       else {
         showMessage('error', arg.error);
       }
@@ -124,26 +121,18 @@ const PrivateLayout = ({ element: Component }) => {
 
   const listenOnce = async (key, callback) => {
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {
-      console.log('window.electron.ipcRenderer', arg);
+      if (arg && arg.key === key) await callback(arg);
       if (!arg || arg.error) showMessage('error', arg.error);
-      await callback(arg);
     });
   };
 
   return localStorage.getItem('TOKEN_KEY') ? (
     <>
-      <img
-        className="logo-login"
-        src={backgroundUrl}
-        style={{ width: '100%', position: 'absolute' }}
-        alt="icon"
-      ></img>
+      <img className="logo-login" src={backgroundUrl} style={{ width: '100%', position: 'absolute' }} alt="icon"></img>
       <Layout>
         <Sider breakpoint="lg" collapsedWidth="0">
           <div className="logo-icon">
-            <h4 style={{ textAlign: 'center', color: 'white' }}>
-              Library Management
-            </h4>
+            <h4 style={{ textAlign: 'center', color: 'white' }}>Library Management</h4>
           </div>
           <Menu
             theme="dark"
@@ -168,12 +157,7 @@ const PrivateLayout = ({ element: Component }) => {
             }}
           />
 
-          <Spin
-            spinning={spinning}
-            wrapperClassName={`${
-              animate == location.pathname ? 'my-animation' : ''
-            }`}
-          >
+          <Spin spinning={spinning} wrapperClassName={`${animate == location.pathname ? 'my-animation' : ''}`}>
             {contextHolder}
             <Content
               style={{
@@ -183,11 +167,7 @@ const PrivateLayout = ({ element: Component }) => {
                 background: colorBgContainer,
               }}
             >
-              <Component
-                listenOn={listenOn}
-                callDatabase={callDatabase}
-                listenOnce={listenOnce}
-              />
+              <Component listenOn={listenOn} callDatabase={callDatabase} listenOnce={listenOnce} />
             </Content>
           </Spin>
         </Layout>

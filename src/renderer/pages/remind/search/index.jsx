@@ -1,39 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import {
-  SettingOutlined,
-  DownOutlined,
-  CaretDownOutlined,
-  CheckSquareOutlined,
-  CheckOutlined,
-  SearchOutlined,
-  CloseCircleOutlined,
-  CheckCircleOutlined,
-} from '@ant-design/icons';
-import {
-  AutoComplete,
-  Button,
-  Cascader,
-  Input,
-  Select,
-  Space,
-  Row,
-  Dropdown,
-  Checkbox,
-  Table,
-  Form,
-  Tag,
-  InputNumber,
-  Radio,
-} from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
+import { Button, Input, Table, Form, Radio } from 'antd';
 import debounce from 'lodash.debounce';
-import { internalCall } from '../../../../renderer/actions';
-import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import {
-  formatDMY_HMS,
-  formatDMY,
-  objectToQueryString,
-} from '../../../utils/index';
-const { Option } = Select;
 
 import './ui.scss';
 
@@ -45,28 +13,13 @@ const reStyle = { minWidth: '32%' };
 
 const RemindSearchPage = (props) => {
   const [form] = Form.useForm();
-  const navigate = useNavigate();
-  const [inputState, setinputState] = useState({
-    fullName: '',
-    id: 0,
-    studentId: '',
-  });
+  const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
   const [reminds, setReminds] = useState([]);
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
   const readerTypeId = Form.useWatch('readerTypeId', form);
   const [currentPage, setCurrentPage] = React.useState(1);
   const pageSize = 20; // Number of items per page
-
-  const handleDebounceFn = (reState) => {
-    props.callDatabase({ key: 'remind-search', data: reState });
-    props.listenOnce('remind-search', (arg) => {
-      setLoading(false);
-      setReminds(arg.data || []);
-    });
-  };
-
-  const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
 
   const columns = [
     {
@@ -85,9 +38,6 @@ const RemindSearchPage = (props) => {
       title: 'Số Lần Nhắc Nhở',
       dataIndex: 'total',
       align: 'center',
-      // render: (dateTime) => {
-      //   return dateTime && formatDMY_HMS(dateTime)
-      // },
     },
     {
       title: 'Mã Sinh Viên',
@@ -118,11 +68,21 @@ const RemindSearchPage = (props) => {
     }
   }, [readerTypeId]);
 
-  const getInitData = () => {
-    internalCall({ key: 'readerType-search' });
-    internalCall({ key: 'remind-search' });
+  const handleDebounceFn = (reState) => {
+    props.callDatabase({ key: 'remind-search', data: reState });
+    props.listenOnce('remind-search', (arg) => {
+      setLoading(false);
+      setReminds(arg.data || []);
+    });
+  };
 
-    const getData = async (arg) => {
+  const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
+
+  const getInitData = () => {
+    props.callDatabase({ key: 'readerType-search' });
+    props.callDatabase({ key: 'remind-search' });
+
+    props.listenOn(async (arg) => {
       if (arg && arg.data) {
         if (arg.key === 'readerType-search') {
           const resReaders = arg.data.map((item) => ({
@@ -133,8 +93,7 @@ const RemindSearchPage = (props) => {
           setReaderTypes(resReaders);
         }
       }
-    };
-    window.electron.ipcRenderer.on('ipc-database', getData);
+    });
   };
 
   const onChange = (e) => {
@@ -154,31 +113,6 @@ const RemindSearchPage = (props) => {
   const onClick = () => {
     setLoading(true);
     debounceFc(inputState);
-  };
-
-  const debounceRemind = async (value) => {
-    const [id, name] = value.split('-');
-    let data = {};
-    if (id && !isNaN(id)) data.id = id.trim();
-    if (name) data.name = name.trim();
-    if (!name && isNaN(id)) data.name = value.trim();
-
-    internalCall({ key: 'remind-search', data });
-
-    window.electron.ipcRenderer.once('ipc-database', (arg) => {
-      setReminds(
-        arg.data.map((item) => ({
-          id: item.id,
-          value: `${item.id} - ${item.name}`,
-        }))
-      );
-    });
-  };
-
-  const documentFc = useCallback(debounce(debounceRemind, 400), []);
-
-  const findreminds = (value) => {
-    documentFc(value);
   };
 
   const handlePageChange = (page, pageSize) => {
@@ -205,23 +139,11 @@ const RemindSearchPage = (props) => {
         </Form.Item>
 
         <Form.Item name="studentId" label="Mã Sinh Viên" style={reStyle}>
-          <Input
-            disabled={readerTypeId && readerTypeId !== 1}
-            id="studentId"
-            onChange={onChange}
-          />
+          <Input disabled={readerTypeId && readerTypeId !== 1} id="studentId" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item
-          name="civilServantId"
-          label="Mã Cán Bộ - Nhân Viên"
-          style={reStyle}
-        >
-          <Input
-            disabled={readerTypeId && readerTypeId !== 2}
-            id="civilServantId"
-            onChange={onChange}
-          />
+        <Form.Item name="civilServantId" label="Mã Cán Bộ - Nhân Viên" style={reStyle}>
+          <Input disabled={readerTypeId && readerTypeId !== 2} id="civilServantId" onChange={onChange} />
         </Form.Item>
 
         <Form.Item name="readerTypeId" label="Loại Độc Giả" style={reStyle}>
