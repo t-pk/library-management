@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Button, Form, Input, Radio } from 'antd';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { SaveOutlined } from '@ant-design/icons';
-import { delay, queryStringToObject } from '../../../utils/helper';
+import { delay, queryStringToObject, objectToQueryString } from '../../../utils/helper';
 import { Reader, ReaderType } from 'renderer/constants';
 
 const ReaderCreatePage = (props) => {
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
   const readerTypeId = Form.useWatch('readerTypeId', form);
+  const [reader, setReader] = useState({});
 
   useEffect(() => {
     let borrowInfo = queryStringToObject(location.search);
@@ -45,9 +47,23 @@ const ReaderCreatePage = (props) => {
     props.callDatabase({ key: Reader.create, data });
     props.listenOnce(Reader.create, async (arg) => {
       await delay(300);
-      if (arg.data) props.openNotification('success', 'Tạo - Cập Nhật thành công Độc Giả.');
+      if (arg.data) {
+        console.log(arg);
+        props.openNotification('success', 'Tạo - Cập Nhật thành công Độc Giả.');
+        form.resetFields();
+        setReader(arg.data);
+      }
       setLoading(false);
     });
+  };
+
+  const linkToReaderSearch = () => {
+    const data = {
+      readerId: reader.id,
+      directFrom: Reader.create,
+    };
+    const queryString = objectToQueryString(data);
+    return navigate(`/reader/search?${queryString}`);
   };
 
   return (
@@ -154,9 +170,19 @@ const ReaderCreatePage = (props) => {
         </Form.Item>
 
         <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...props.widthStyle }}>
-          <Button loading={loading} style={{ minWidth: '96%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
+          <Button disabled={Object.keys(reader).length} loading={loading} style={{ minWidth: '47%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
             {' '}
             Submit{' '}
+          </Button>
+          <Button
+            type="primary"
+            disabled={!Object.keys(reader).length}
+            style={{ minWidth: '47%', marginLeft: 10 }}
+            onClick={linkToReaderSearch}
+            icon={<SaveOutlined />}
+          >
+            {' '}
+            Xem Kết Quả{' '}
           </Button>
         </Form.Item>
       </Form>

@@ -55,14 +55,12 @@ const routes = [
   },
   {
     path: '/reader/search',
-    exact: true,
     layout: PrivateLayout,
     main: ReaderSeachPage,
     isPrivate: true,
   },
   {
     path: '/reader/create',
-    exact: true,
     layout: PrivateLayout,
     main: ReaderCreatePage,
     isPrivate: true,

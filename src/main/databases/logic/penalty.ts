@@ -9,21 +9,15 @@ export const createPenalty = async (request: any) => {
 
 export const getPenalties = async (request: any) => {
   let readerQuery: any = {};
-  if (request.readerId) {
-    readerQuery.id = request.readerId;
-  }
-  if (request.fullName) {
-    readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
-  }
-  if (request.studentId) {
-    readerQuery.studentId = request.studentId;
-  }
-  if (request.readerTypeId) {
-    readerQuery.readerTypeId = request.readerTypeId;
-  }
-  if (request.civilServantId) {
-    readerQuery.civilServantId = request.civilServantId;
-  }
+  if (request.readerId) readerQuery.id = request.readerId;
+
+  if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
+
+  if (request.studentId) readerQuery.studentId = request.studentId;
+
+  if (request.readerTypeId) readerQuery.readerTypeId = request.readerTypeId;
+
+  if (request.civilServantId) readerQuery.civilServantId = request.civilServantId;
 
   const penalties = await PenaltySchema.findAll({
     include: [

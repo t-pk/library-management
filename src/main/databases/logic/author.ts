@@ -9,12 +9,10 @@ export const createAuthor = async (request: any) => {
 
 export const getAuthors = async (request: any) => {
   let query: any = {};
-  if (request.id) {
-    query.id = request.id;
-  }
-  if (request.name) {
-    query.name = { [Op.iLike]: '%' + request.name + '%' };
-  }
+  if (request.id) query.id = request.id;
+
+  if (request.name) query.name = { [Op.iLike]: '%' + request.name + '%' };
+
   return AuthorSchema.findAll({
     where: query,
     raw: true,

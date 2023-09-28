@@ -9,21 +9,15 @@ export const createRemind = async (request: any) => {
 
 export const getReminds = async (request: any) => {
   let readerQuery: any = {};
-  if (request.readerId) {
-    readerQuery.id = request.readerId;
-  }
-  if (request.fullName) {
-    readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
-  }
-  if (request.studentId) {
-    readerQuery.studentId = request.studentId;
-  }
-  if (request.readerTypeId) {
-    readerQuery.readerTypeId = request.readerTypeId;
-  }
-  if (request.civilServantId) {
-    readerQuery.civilServantId = request.civilServantId;
-  }
+  if (request.readerId) readerQuery.id = request.readerId;
+
+  if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
+
+  if (request.studentId) readerQuery.studentId = request.studentId;
+
+  if (request.readerTypeId) readerQuery.readerTypeId = request.readerTypeId;
+
+  if (request.civilServantId) readerQuery.civilServantId = request.civilServantId;
 
   const reminds = await ReaderSchema.findAll({
     where: readerQuery,

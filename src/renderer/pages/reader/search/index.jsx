@@ -2,18 +2,19 @@ import { useState, useCallback, useEffect } from 'react';
 import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Space, Dropdown, Table, Form, Tag, Radio } from 'antd';
 import debounce from 'lodash.debounce';
-import { useNavigate } from 'react-router-dom';
-import { objectToQueryString } from '../../../utils/helper';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { objectToQueryString, queryStringToObject } from '../../../utils/helper';
 import { Borrow, Reader, ReaderType } from 'renderer/constants';
 
 const ReaderSearchPage = (props) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [form] = Form.useForm();
   const [inputState, setinputState] = useState({ name: '', id: '', type: '' });
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
   const readerTypeId = Form.useWatch('readerTypeId', form);
-  const navigate = useNavigate();
 
   const redirectCreateBorrow = (record) => () => {
     const data = {
@@ -120,7 +121,14 @@ const ReaderSearchPage = (props) => {
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
 
   useEffect(() => {
-    debounceFc(inputState);
+    let query = inputState;
+    let readerInfo = queryStringToObject(location.search);
+    if (readerInfo && Object.keys(readerInfo).length) {
+      query.id = +readerInfo.readerId;
+      form.setFieldValue('id', readerInfo.readerId);
+    }
+    debounceFc(query);
+
     getInitData();
     if (readerTypeId === 1) {
       form.setFieldsValue({ civilServantId: undefined });
@@ -176,7 +184,7 @@ const ReaderSearchPage = (props) => {
         scrollToFirstError
         initialValues={{ readerTypeId: undefined }}
       >
-        <Form.Item label="Mã Độc Giả" style={props.widthStyle}>
+        <Form.Item name="id" label="Mã Độc Giả" style={props.widthStyle}>
           <Input id="id" onChange={onChange} />
         </Form.Item>
 
