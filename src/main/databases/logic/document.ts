@@ -38,7 +38,12 @@ export const getDocuments = async (request: any) => {
 };
 
 export const createDocument = async (request: any) => {
-  return unitOfWork((transaction: any) => {
-    return DocumentSchema.create(request, { transaction, returning: true });
+  return unitOfWork(async (transaction: any) => {
+    if (request.id) {
+      await DocumentSchema.update(request, { where: { id: request.id },transaction, returning: true });
+      return request;
+    }
+    const document = await DocumentSchema.create(request, { transaction, returning: true, raw: true });
+    return document.dataValues;
   });
 };

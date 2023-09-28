@@ -4,10 +4,11 @@ import { Button, Input, Select, Table, Form, Tag, InputNumber, Radio, Space, Dro
 import debounce from 'lodash.debounce';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Author, Document, DocumentType, Publisher } from 'renderer/constants';
-import {objectToQueryString} from '../../../utils/helper';
+import { objectToQueryString, queryStringToObject } from '../../../utils/helper';
 
 const DocumentSearchPage = (props) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [form] = Form.useForm();
   const [inputState, setinputState] = useState({ name: '', id: '', type: '' });
   const [documents, setDocuments] = useState([]);
@@ -46,11 +47,11 @@ const DocumentSearchPage = (props) => {
     {
       title: 'Thể Loại',
       align: 'center',
-      dataIndex: ['documentType','name'],
+      dataIndex: ['documentType', 'name'],
     },
     {
       title: 'Nhà Xuất Bản',
-      dataIndex: ['publisher','name'],
+      dataIndex: ['publisher', 'name'],
     },
     {
       title: 'Năm Xuất Bản',
@@ -59,7 +60,7 @@ const DocumentSearchPage = (props) => {
     },
     {
       title: 'Tác Giả',
-      dataIndex: ['author','name'],
+      dataIndex: ['author', 'name'],
     },
     {
       title: 'Tài Liệu Đặc Biệt',
@@ -103,7 +104,15 @@ const DocumentSearchPage = (props) => {
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
 
   useEffect(() => {
-    getInitData(), debounceFc(inputState);
+    let documentQuery = { ...inputState };
+    let documentInfo = queryStringToObject(location.search);
+    
+    if (documentInfo && Object.keys(documentInfo).length) {
+      documentQuery.id = +documentInfo.id;
+      form.setFieldValue('id', documentInfo.id);
+    }
+
+    getInitData(), debounceFc(documentQuery);
   }, []);
 
   const getInitData = () => {
@@ -176,7 +185,7 @@ const DocumentSearchPage = (props) => {
         scrollToFirstError
         initialValues={{ special: undefined }}
       >
-        <Form.Item style={props.widthStyle} label="Mã Tài Liệu">
+        <Form.Item style={props.widthStyle} name="id" label="Mã Tài Liệu">
           <Input placeholder="" value={inputState.id} id="id" onChange={onChange} maxLength={8} />
         </Form.Item>
         <Form.Item style={props.widthStyle} label="Tên Tài Liệu">

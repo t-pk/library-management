@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react';
 import { AutoComplete, Button, Checkbox, Form, Input, InputNumber } from 'antd';
-import { SaveOutlined } from '@ant-design/icons';
-import { useLocation } from 'react-router-dom';
-import { delay, queryStringToObject } from '../../../utils/helper';
+import { SaveOutlined, EyeOutlined } from '@ant-design/icons';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { delay, queryStringToObject, objectToQueryString } from '../../../utils/helper';
 import { Author, Document, DocumentType, Publisher } from 'renderer/constants';
 
 const DocumentCreatePage = (props) => {
-  const [form] = Form.useForm();
   const location = useLocation();
+  const navigate = useNavigate();
+  const [form] = Form.useForm();
   const [publishers, setPublishers] = useState([]);
   const [authors, setAuthors] = useState([]);
   const [documentTypes, setDocumentTypes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [document, setDocument] = useState({}); 
 
   useEffect(() => {
     getInitData();
@@ -58,9 +60,22 @@ const DocumentCreatePage = (props) => {
 
     props.listenOnce(Document.create, async (arg) => {
       await delay(300);
-      if (arg.data) props.openNotification('success', 'Tạo Thành Công Tài Liệu');
+      if (arg.data) {
+        setDocument(arg.data);
+        props.openNotification('success', 'Thêm - Cập Nhật thành công Tài Liệu');
+        form.resetFields();
+      }
       setLoading(false);
     });
+  };
+
+  const linkToDocumentSearch = () => {
+    const data = {
+      id: document.id,
+      directFrom: Document.create,
+    };
+    const queryString = objectToQueryString(data);
+    return navigate(`/document/search?${queryString}`);
   };
 
   return (
@@ -185,11 +200,21 @@ const DocumentCreatePage = (props) => {
           <Checkbox> Là Tài Liệu Đặc Biệt </Checkbox>
         </Form.Item>
 
-        <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...props.widthStyle, textAlign: 'center' }}>
-          <Button loading={loading} style={{ minWidth: '50%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
+        <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...props.widthStyle }}>
+          <Button  disabled={Object.keys(document).length} loading={loading} style={{ minWidth: '47%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
             {' '}
             Submit{' '}
           </Button>
+          <Button
+              type="primary"
+              disabled={!Object.keys(document).length}
+              style={{ minWidth: '47%', marginLeft: 10 }}
+              onClick={linkToDocumentSearch}
+              icon={<EyeOutlined />}
+            >
+              {' '}
+              Xem {' '}
+            </Button>
         </Form.Item>
       </Form>
     </>
