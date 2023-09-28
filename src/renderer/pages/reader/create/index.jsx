@@ -48,7 +48,6 @@ const ReaderCreatePage = (props) => {
     props.listenOnce(Reader.create, async (arg) => {
       await delay(300);
       if (arg.data) {
-        console.log(arg);
         props.openNotification('success', 'Tạo - Cập Nhật thành công Độc Giả.');
         form.resetFields();
         setReader(arg.data);

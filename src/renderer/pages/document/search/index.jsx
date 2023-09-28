@@ -1,10 +1,13 @@
 import { useState, useCallback, useEffect } from 'react';
-import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Select, Table, Form, Tag, InputNumber, Radio } from 'antd';
+import { SearchOutlined, DownOutlined } from '@ant-design/icons';
+import { Button, Input, Select, Table, Form, Tag, InputNumber, Radio, Space, Dropdown } from 'antd';
 import debounce from 'lodash.debounce';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Author, Document, DocumentType, Publisher } from 'renderer/constants';
+import {objectToQueryString} from '../../../utils/helper';
 
 const DocumentSearchPage = (props) => {
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [inputState, setinputState] = useState({ name: '', id: '', type: '' });
   const [documents, setDocuments] = useState([]);
@@ -12,6 +15,21 @@ const DocumentSearchPage = (props) => {
   const [publishers, setPublishers] = useState([]);
   const [authors, setAuthors] = useState([]);
   const [documentTypes, setDocumentTypes] = useState([]);
+
+  const redirectCreate = (record) => () => {
+    const data = {
+      id: record.id,
+      name: record.name,
+      documentType: record.documentType.name,
+      quantity: record.quantity,
+      author: record.author.name,
+      publisher: record.publisher.name,
+      publishYear: record.publishYear,
+      special: record.special
+    };
+    const queryString = objectToQueryString(data);
+    return navigate(`/document/create?${queryString}`);
+  };
 
   const columns = [
     {
@@ -28,11 +46,11 @@ const DocumentSearchPage = (props) => {
     {
       title: 'Thể Loại',
       align: 'center',
-      dataIndex: 'documentType.name',
+      dataIndex: ['documentType','name'],
     },
     {
       title: 'Nhà Xuất Bản',
-      dataIndex: 'publisher.name',
+      dataIndex: ['publisher','name'],
     },
     {
       title: 'Năm Xuất Bản',
@@ -41,13 +59,37 @@ const DocumentSearchPage = (props) => {
     },
     {
       title: 'Tác Giả',
-      dataIndex: 'author.name',
+      dataIndex: ['author','name'],
     },
     {
       title: 'Tài Liệu Đặc Biệt',
       dataIndex: 'special',
       align: 'center',
       render: (text) => <Tag color={text ? 'green' : 'orange'}>{text ? 'Yes' : 'No'}</Tag>,
+    },
+    {
+      title: 'Action',
+      key: 'operation',
+      fixed: 'right',
+      width: 150,
+      render: (_, record) => (
+        <Space size="middle">
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  label: <a onClick={redirectCreate(record)}>Chỉnh sửa</a>,
+                  key: '1',
+                },
+              ],
+            }}
+          >
+            <a>
+              More Action <DownOutlined />
+            </a>
+          </Dropdown>
+        </Space>
+      ),
     },
   ];
 

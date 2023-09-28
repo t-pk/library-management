@@ -26,14 +26,14 @@ export const getDocuments = async (request: any) => {
       query.authorId = { [Op.in]: request.authors };
     }
 
-    return await DocumentSchema.findAll({
+    const result = await DocumentSchema.findAll({
       where: query,
       include: [AuthorSchema, PublisherSchema, DocumentTypeSchema],
-      raw: true,
       limit: 50,
     });
+    return result.map((document) => document.toJSON());
   } catch (error) {
-    console.log('getDocuments', error);
+    throw error;
   }
 };
 

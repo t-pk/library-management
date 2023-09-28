@@ -1,17 +1,30 @@
 import { useState, useEffect } from 'react';
 import { AutoComplete, Button, Checkbox, Form, Input, InputNumber } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
-import { delay } from '../../../utils/helper';
+import { useLocation } from 'react-router-dom';
+import { delay, queryStringToObject } from '../../../utils/helper';
 import { Author, Document, DocumentType, Publisher } from 'renderer/constants';
 
 const DocumentCreatePage = (props) => {
   const [form] = Form.useForm();
+  const location = useLocation();
   const [publishers, setPublishers] = useState([]);
   const [authors, setAuthors] = useState([]);
   const [documentTypes, setDocumentTypes] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => getInitData(), []);
+  useEffect(() => {
+    getInitData();
+    let documentInfo = queryStringToObject(location.search);
+    if (documentInfo && Object.keys(documentInfo).length) {
+      documentInfo.id = +documentInfo.id;
+      documentInfo.quantity = +documentInfo.quantity;
+      documentInfo.publishYear = +documentInfo.publishYear;
+      documentInfo.special = documentInfo.special === 'true';
+      form.setFieldsValue(documentInfo);
+      location.search = {};
+    }
+    }, []);
 
   const getInitData = () => {
     props.callDatabase({ key: Publisher.search });
