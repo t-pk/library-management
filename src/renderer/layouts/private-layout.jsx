@@ -23,6 +23,7 @@ const PrivateLayout = ({ element: Component }) => {
   const tailFormItemLayout = { wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } } };
 
   useEffect(() => {
+    console.log('asdsa', location);
     setAnimate(location.pathname === '/' ? '/document/search' : location.pathname);
 
     const keyPath = '/' + location.pathname.split('/')[1];

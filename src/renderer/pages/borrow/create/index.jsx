@@ -171,6 +171,10 @@ const BorrowCreatePage = (props) => {
             <Input disabled={true} />
           </Form.Item>
 
+          <Form.Item name="readerTypeId" label="Loại Độc Giả" style={props.widthStyle}>
+            <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" disabled={true} />
+          </Form.Item>
+
           <Form.Item
             name="documentIds"
             label="Tài Liệu Cần Mượn"
@@ -192,10 +196,6 @@ const BorrowCreatePage = (props) => {
               className="custom-autocomplete"
               filterOption={(inputValue, option) => option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
             />
-          </Form.Item>
-
-          <Form.Item name="readerTypeId" label="Loại Độc Giả" style={props.widthStyle}>
-            <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" disabled={true} />
           </Form.Item>
 
           <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...props.widthStyle }}>

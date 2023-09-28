@@ -22,7 +22,7 @@ import RemindCreatePage from './pages/remind/create';
 import PenaltySeachPage from './pages/penalty/search';
 import PenaltyCreatePage from './pages/penalty/create';
 
-import NotFoundPage from './pages/not-found';
+import NotFoundPage from './pages/not_found';
 
 const routes = [
   {
