@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Button, Form, Input, Select, Radio, Alert, Space } from 'antd';
 import { SaveOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { delay } from '../../../utils/helper';
+import { delay, objectToQueryString } from '../../../utils/helper';
 import { queryStringToObject, parseDataSelect } from '../../../utils/helper';
 import debounce from 'lodash.debounce';
 import { Borrow, Document, ReaderType } from 'renderer/constants';
@@ -14,6 +14,7 @@ const BorrowCreatePage = (props) => {
   const [readerTypes, setReaderTypes] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [hiddenForm, setHiddenForm] = useState(false);
+  const [borrow, setBorrow] = useState({});
 
   const readerTypeId = Form.useWatch('readerTypeId', form);
   const location = useLocation();
@@ -50,8 +51,14 @@ const BorrowCreatePage = (props) => {
     props.callDatabase({ key: Borrow.create, data });
 
     props.listenOnce(Borrow.create, async (arg) => {
-      await delay(500);
-      if (arg.data) props.openNotification('success', 'Tạo thành công Phiếu Mượn.');
+      await delay(300);
+      if (arg.data) {
+        form.resetFields();
+        console.log(arg.data);
+        props.openNotification('success', 'Tạo thành công Phiếu Mượn.');
+        setBorrow(arg.data);
+      }
+
       setLoading(false);
     });
   };
@@ -68,6 +75,15 @@ const BorrowCreatePage = (props) => {
 
   const findDocuments = (value) => {
     debounceFc(value);
+  };
+
+  const linkToBorrowSearch = () => {
+    const data = {
+      borrowId: borrow.id,
+      directFrom: Borrow.create,
+    };
+    const queryString = objectToQueryString(data);
+    return navigate(`/borrow/search?${queryString}`);
   };
 
   return (
@@ -90,10 +106,6 @@ const BorrowCreatePage = (props) => {
           style={{ display: 'flex', flexWrap: 'wrap' }}
           scrollToFirstError
         >
-          <Form.Item name="id" label="Mã Phiếu Mượn" style={props.widthStyle}>
-            <Input disabled={true} />
-          </Form.Item>
-
           <Form.Item name="readerId" label="Mã Độc Giả" style={props.widthStyle}>
             <Input disabled={true} />
           </Form.Item>
@@ -159,10 +171,6 @@ const BorrowCreatePage = (props) => {
             <Input disabled={true} />
           </Form.Item>
 
-          <Form.Item name="readerTypeId" label="Loại Độc Giả" style={props.widthStyle}>
-            <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" disabled={true} />
-          </Form.Item>
-
           <Form.Item
             name="documentIds"
             label="Tài Liệu Cần Mượn"
@@ -186,10 +194,31 @@ const BorrowCreatePage = (props) => {
             />
           </Form.Item>
 
+          <Form.Item name="readerTypeId" label="Loại Độc Giả" style={props.widthStyle}>
+            <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" disabled={true} />
+          </Form.Item>
+
           <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...props.widthStyle }}>
-            <Button loading={loading} style={{ minWidth: '96%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
+            <Button
+              disabled={Object.keys(borrow).length}
+              loading={loading}
+              style={{ minWidth: '47%' }}
+              type="primary"
+              htmlType="submit"
+              icon={<SaveOutlined />}
+            >
               {' '}
               Submit{' '}
+            </Button>
+            <Button
+              type="primary"
+              disabled={!Object.keys(borrow).length}
+              style={{ minWidth: '47%', marginLeft: 10 }}
+              onClick={linkToBorrowSearch}
+              icon={<SaveOutlined />}
+            >
+              {' '}
+              Xem Kết Quả{' '}
             </Button>
           </Form.Item>
         </Form>

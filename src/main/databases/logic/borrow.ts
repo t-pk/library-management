@@ -9,6 +9,7 @@ interface IObject {
 }
 
 export const getBorrows = async (request: any) => {
+  console.log(request);
   try {
     let readerQuery: IObject = {};
     let borrowQuery: IObject = {};
@@ -17,7 +18,7 @@ export const getBorrows = async (request: any) => {
     if (request.documentIds && request.documentIds.length) {
       borrowDetailQuery.documentId = { [Op.in]: request.documentIds };
     }
-    if (request.id) borrowQuery.id = request.id;
+    if (request.borrowId) borrowQuery.id = request.borrowId;
     if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
     if (request.studentId) readerQuery.studentId = request.studentId;
     if (request.readerTypeId) readerQuery.readerTypeId = request.readerTypeId;
@@ -117,7 +118,7 @@ export const createBorrow = async (request: any) => {
       };
       return brrowerDetail;
     });
-    console.log(borrowDetails);
-    return BorrowDetailSchema.bulkCreate(borrowDetails, { transaction });
+    await BorrowDetailSchema.bulkCreate(borrowDetails, { transaction, returning: true });
+    return borrowRes.dataValues;
   });
 };

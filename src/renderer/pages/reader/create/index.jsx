@@ -1,16 +1,26 @@
 import { useState, useEffect } from 'react';
 import { Button, Form, Input, Radio } from 'antd';
+import { useLocation } from 'react-router-dom';
 import { SaveOutlined } from '@ant-design/icons';
-import { delay } from '../../../utils/helper';
-import { ReaderType } from 'renderer/constants';
+import { delay, queryStringToObject } from '../../../utils/helper';
+import { Reader, ReaderType } from 'renderer/constants';
 
 const ReaderCreatePage = (props) => {
   const [form] = Form.useForm();
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
   const readerTypeId = Form.useWatch('readerTypeId', form);
 
   useEffect(() => {
+    let borrowInfo = queryStringToObject(location.search);
+    if (borrowInfo && Object.keys(borrowInfo).length) {
+      borrowInfo.id = +borrowInfo.id;
+      borrowInfo.readerTypeId = +borrowInfo.readerTypeId;
+      form.setFieldsValue(borrowInfo);
+      location.search = {};
+    }
+
     getInitData();
     if (readerTypeId === 1) {
       form.setFieldsValue({ civilServantId: undefined });
@@ -32,10 +42,10 @@ const ReaderCreatePage = (props) => {
     setLoading(true);
     const data = { ...values };
 
-    props.callDatabase({ key: ReaderType.create, data });
-    props.listenOnce(ReaderType.create, async (arg) => {
-      await delay(500);
-      if (arg.data) props.openNotification('success', 'Tạo thành công Độc Giả.');
+    props.callDatabase({ key: Reader.create, data });
+    props.listenOnce(Reader.create, async (arg) => {
+      await delay(300);
+      if (arg.data) props.openNotification('success', 'Tạo - Cập Nhật thành công Độc Giả.');
       setLoading(false);
     });
   };

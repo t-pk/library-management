@@ -4,7 +4,7 @@ import { Button, Input, Space, Dropdown, Table, Form, Tag, Radio } from 'antd';
 import debounce from 'lodash.debounce';
 import { useNavigate } from 'react-router-dom';
 import { objectToQueryString } from '../../../utils/helper';
-import { Reader, ReaderType } from 'renderer/constants';
+import { Borrow, Reader, ReaderType } from 'renderer/constants';
 
 const ReaderSearchPage = (props) => {
   const [form] = Form.useForm();
@@ -26,6 +26,22 @@ const ReaderSearchPage = (props) => {
     };
     const queryString = objectToQueryString(data);
     return navigate(`/borrow/create?${queryString}`);
+  };
+
+  const editReader = (record) => () => {
+    const data = {
+      id: record.id,
+      citizenIdentify: record.citizenIdentify,
+      fullName: record.fullName,
+      readerTypeId: record.readerTypeId,
+      studentId: record.studentId || '',
+      civilServantId: record.civilServantId || '',
+      phoneNumber: record.phoneNumber || '',
+      email: record.email || '',
+      directFrom: Borrow.search,
+    };
+    const queryString = objectToQueryString(data);
+    return navigate(`/reader/create?${queryString}`);
   };
 
   const columns = [
@@ -74,8 +90,12 @@ const ReaderSearchPage = (props) => {
             menu={{
               items: [
                 {
-                  label: <a onClick={redirectCreateBorrow(record)}>Tạo Phiếu Mượn</a>,
+                  label: <a onClick={editReader(record)}>Chỉnh sửa</a>,
                   key: '1',
+                },
+                {
+                  label: <a onClick={redirectCreateBorrow(record)}>Tạo Phiếu Mượn</a>,
+                  key: '2',
                 },
               ],
             }}

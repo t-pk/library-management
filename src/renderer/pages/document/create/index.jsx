@@ -44,7 +44,7 @@ const DocumentCreatePage = (props) => {
     props.callDatabase({ key: Document.create, data });
 
     props.listenOnce(Document.create, async (arg) => {
-      await delay(500);
+      await delay(300);
       if (arg.data) props.openNotification('success', 'Tạo Thành Công Tài Liệu');
       setLoading(false);
     });

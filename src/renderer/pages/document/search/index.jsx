@@ -28,7 +28,7 @@ const DocumentSearchPage = (props) => {
     {
       title: 'Thể Loại',
       align: 'center',
-      dataIndex: 'document-type.name',
+      dataIndex: 'documentType.name',
     },
     {
       title: 'Nhà Xuất Bản',

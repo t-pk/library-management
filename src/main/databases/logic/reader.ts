@@ -3,6 +3,7 @@ import { Op } from 'sequelize';
 
 export const createReader = async (request: any) => {
   return unitOfWork((transaction: any) => {
+    if (request.id) return ReaderSchema.update(request, { where: { id: request.id } });
     return ReaderSchema.create(request, { transaction });
   });
 };

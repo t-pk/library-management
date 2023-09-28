@@ -28,7 +28,6 @@ let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on('ipc-database', async (event, arg) => {
   try {
-    let result;
     const data = arg.data || {};
     if (arg.key.includes('create') || arg.key.includes('update')) {
       const userId = await getUserId();
@@ -38,8 +37,7 @@ ipcMain.on('ipc-database', async (event, arg) => {
       data.updatedBy = userId;
     }
 
-    handleData(arg, data, result);
-
+    const result = await handleData(arg, data);
     event.reply('ipc-database', { key: arg.key, data: result });
   } catch (error) {
     event.reply('ipc-database', { key: arg.key, error: JSON.stringify(error) });

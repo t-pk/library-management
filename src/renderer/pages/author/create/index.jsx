@@ -14,7 +14,7 @@ const AuthorCreatePage = (props) => {
     props.callDatabase({ key: Author.create, data: values });
 
     props.listenOnce(Author.create, async (arg) => {
-      await delay(500);
+      await delay(300);
       if (arg.data) props.openNotification('success', 'Tạo thành công Tác Giả');
       setLoading(false);
     });

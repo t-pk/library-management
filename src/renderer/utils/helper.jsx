@@ -33,10 +33,9 @@ export const formatDateTime = (date) => {
 };
 
 export const formatDmy = (date) => {
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-  const year = date.getFullYear();
-
+  const day = String(new Date(date).getDate()).padStart(2, '0');
+  const month = String(new Date(date).getMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const year = new Date(date).getFullYear();
   return `${day}/${month}/${year}`;
 };
 

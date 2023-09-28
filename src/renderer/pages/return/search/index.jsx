@@ -98,8 +98,12 @@ const ReturnSearchPage = (props) => {
       render: (_, record) => {
         let items = [
           {
-            label: <a onClick={createReturns(record)}>Tạo Phiếu Phạt</a>,
+            label: <a onClick={createReturns(1, record)}>Tạo Phiếu Nhắc Nhở</a>,
             key: '1',
+          },
+          {
+            label: <a onClick={createReturns(2, record)}>Tạo Phiếu Phạt</a>,
+            key: '2',
           },
         ];
         return (
@@ -141,7 +145,8 @@ const ReturnSearchPage = (props) => {
       setReturns(arg.data);
     });
   };
-  const createReturns = (record) => () => {
+  const createReturns = (key, record) => () => {
+    console.log(record);
     const data = {
       returnId: record.returnId,
       readerId: record.return.reader.id,
@@ -152,7 +157,9 @@ const ReturnSearchPage = (props) => {
       readerTypeId: record.return.reader.readerTypeId,
     };
     const queryString = objectToQueryString(data);
-    return navigate(`/penalty/create?${queryString}`);
+    if (key === 1) return navigate(`/remind/create?${queryString}`);
+
+    if (key === 2) return navigate(`/penalty/create?${queryString}`);
   };
 
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);

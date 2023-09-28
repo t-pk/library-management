@@ -14,7 +14,7 @@ const PublisherCreatePage = (props) => {
     props.callDatabase({ key: Publisher.create, data: values });
 
     props.listenOnce(Publisher.create, async (arg) => {
-      await delay(500);
+      await delay(300);
       if (arg.data) props.openNotification('success', 'Tạo thành công Nhà Xuất Bản');
 
       setLoading(false);

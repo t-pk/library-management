@@ -1,4 +1,4 @@
-import { ReaderSchema, RemindSchema, ReturnSchema, sequelize, unitOfWork } from '../db';
+import { BorrowSchema, ReaderSchema, RemindSchema, ReturnSchema, sequelize, unitOfWork } from '../db';
 import { Op } from 'sequelize';
 
 export const createRemind = async (request: any) => {
@@ -29,10 +29,10 @@ export const getReminds = async (request: any) => {
     where: readerQuery,
     include: [
       {
-        model: ReturnSchema,
+        model: BorrowSchema,
         attributes: [],
         required: true,
-        include: [{ model: RemindSchema, attributes: [], required: true }],
+        include: [{ model: ReturnSchema, attributes: [], required: true, include: [{ model: RemindSchema, attributes: [], required: true }] }],
       },
     ],
     attributes: ['id', 'fullName', 'studentId', 'civilServantId', [sequelize.fn('COUNT', sequelize.col('*')), 'total']],
