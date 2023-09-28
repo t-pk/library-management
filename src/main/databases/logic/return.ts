@@ -32,7 +32,7 @@ export const createReturn = async (request: any) => {
       returnId: returnData[0].id,
       createdBy: request.createdBy,
     }));
-     await ReturnDetailSchema.bulkCreate(retrurnDetails, {
+    await ReturnDetailSchema.bulkCreate(retrurnDetails, {
       transaction,
       returning: true,
     });

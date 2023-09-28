@@ -200,7 +200,6 @@ const PenaltyCreatePage = (props) => {
           <Form.Item name="compensation" label=" " valuePropName="checked" style={{ ...props.widthStyle }} {...props.tailFormItemLayout}>
             <Checkbox> Đã Đóng Phạt </Checkbox>
           </Form.Item>
-
         </Form>
       )}
     </>

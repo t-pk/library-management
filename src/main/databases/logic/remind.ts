@@ -2,13 +2,20 @@ import { BorrowSchema, ReaderSchema, RemindSchema, ReturnSchema, sequelize, unit
 import { Op } from 'sequelize';
 
 export const createRemind = async (request: any) => {
-  return unitOfWork((transaction: any) => {
-    return RemindSchema.create(request, { transaction });
+  return unitOfWork(async (transaction: any) => {
+    if (request.id) {
+      await RemindSchema.update(request, { where: { id: request.id }, transaction, returning: true });
+      return request;
+    }
+    const document = await RemindSchema.create(request, { transaction, returning: true, raw: true });
+    return document.dataValues;
   });
 };
 
 export const getReminds = async (request: any) => {
   let readerQuery: any = {};
+  let remindQuery: any = {};
+
   if (request.readerId) readerQuery.id = request.readerId;
 
   if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };

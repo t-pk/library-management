@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Button, Form, Input, message, Radio, Space, Alert } from 'antd';
-import { SaveOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Radio, Space, Alert } from 'antd';
+import { SaveOutlined, ArrowLeftOutlined, EyeOutlined } from '@ant-design/icons';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { delay } from '../../../utils/helper';
-import { queryStringToObject } from '../../../utils/helper';
+import { queryStringToObject, objectToQueryString } from '../../../utils/helper';
 import { ReaderType, Remind } from 'renderer/constants';
 
 const RemindCreatePage = (props) => {
@@ -12,6 +12,7 @@ const RemindCreatePage = (props) => {
   const [loading, setLoading] = useState(false);
   const [readerTypes, setReaderTypes] = useState([]);
   const [hiddenForm, setHiddenForm] = useState(false);
+  const [remind, setRemind] = useState({});
 
   const readerTypeId = Form.useWatch('readerTypeId', form);
   const location = useLocation();
@@ -50,9 +51,25 @@ const RemindCreatePage = (props) => {
       if (arg.data) {
         form.resetFields();
         props.openNotification('success', 'Tạo thành công Phiếu Nhắc Nhở');
+        setRemind(arg.data);
       }
       setLoading(false);
     });
+  };
+
+  const linkToRemindSearch = () => {
+    const data = {
+      directFrom: Remind.create,
+      citizenIdentify: remind.citizenIdentify || '',
+      readerTypeId: remind.readerTypeId || '',
+      civilServantId: remind.civilServantId || '',
+      fullName: remind.readerName || '',
+      studentId: remind.studentId || '',
+      readerId: remind.readerId,
+    };
+
+    const queryString = objectToQueryString(data);
+    return navigate(`/remind/search?${queryString}`);
   };
 
   return (
@@ -153,9 +170,26 @@ const RemindCreatePage = (props) => {
           </Form.Item>
 
           <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...props.widthStyle }}>
-            <Button loading={loading} style={{ minWidth: '96%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
+            <Button
+              disabled={Object.keys(remind).length}
+              loading={loading}
+              style={{ minWidth: '47%' }}
+              type="primary"
+              htmlType="submit"
+              icon={<SaveOutlined />}
+            >
               {' '}
               Submit{' '}
+            </Button>
+            <Button
+              type="primary"
+              disabled={!Object.keys(remind).length}
+              style={{ minWidth: '47%', marginLeft: 10 }}
+              onClick={linkToRemindSearch}
+              icon={<EyeOutlined />}
+            >
+              {' '}
+              Xem Kết Quả{' '}
             </Button>
           </Form.Item>
         </Form>

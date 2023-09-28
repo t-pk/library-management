@@ -190,20 +190,27 @@ const ReturnCreatePage = (props) => {
           </Form.Item>
 
           <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...props.widthStyle }}>
-            <Button  disabled={Object.keys(iReturn).length} loading={loading} style={{ minWidth: '47%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
+            <Button
+              disabled={Object.keys(iReturn).length}
+              loading={loading}
+              style={{ minWidth: '47%' }}
+              type="primary"
+              htmlType="submit"
+              icon={<SaveOutlined />}
+            >
               {' '}
               Submit{' '}
             </Button>
-             <Button
-            type="primary"
-            disabled={!Object.keys(iReturn).length}
-            style={{ minWidth: '47%', marginLeft: 10 }}
-            onClick={linkToReturnSearch}
-            icon={<EyeOutlined />}
-          >
-            {' '}
-            Xem{' '}
-          </Button>
+            <Button
+              type="primary"
+              disabled={!Object.keys(iReturn).length}
+              style={{ minWidth: '47%', marginLeft: 10 }}
+              onClick={linkToReturnSearch}
+              icon={<EyeOutlined />}
+            >
+              {' '}
+              Xem{' '}
+            </Button>
           </Form.Item>
         </Form>
       )}
