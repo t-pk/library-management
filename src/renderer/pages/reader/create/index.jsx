@@ -13,10 +13,12 @@ const ReaderCreatePage = (props) => {
   const [readerTypes, setReaderTypes] = useState([]);
   const readerTypeId = Form.useWatch('readerTypeId', form);
   const [reader, setReader] = useState({});
+  const [disableUpdate, setDisableUpdate] = useState(false);
 
   useEffect(() => {
     let borrowInfo = queryStringToObject(location.search);
     if (borrowInfo && Object.keys(borrowInfo).length) {
+      setDisableUpdate(true);
       borrowInfo.id = +borrowInfo.id;
       borrowInfo.readerTypeId = +borrowInfo.readerTypeId;
       form.setFieldsValue(borrowInfo);
@@ -87,7 +89,7 @@ const ReaderCreatePage = (props) => {
         </Form.Item>
 
         <Form.Item name="readerTypeId" label="Loại Độc Giả" style={props.widthStyle} rules={[{ required: true, message: 'Please input civil servant!' }]}>
-          <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" />
+          <Radio.Group disabled={disableUpdate} options={readerTypes} optionType="button" buttonStyle="solid" />
         </Form.Item>
 
         <Form.Item

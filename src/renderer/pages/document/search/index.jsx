@@ -26,7 +26,7 @@ const DocumentSearchPage = (props) => {
       author: record.author.name,
       publisher: record.publisher.name,
       publishYear: record.publishYear,
-      special: record.special
+      special: record.special,
     };
     const queryString = objectToQueryString(data);
     return navigate(`/document/create?${queryString}`);
@@ -106,7 +106,7 @@ const DocumentSearchPage = (props) => {
   useEffect(() => {
     let documentQuery = { ...inputState };
     let documentInfo = queryStringToObject(location.search);
-    
+
     if (documentInfo && Object.keys(documentInfo).length) {
       documentQuery.id = +documentInfo.id;
       form.setFieldValue('id', documentInfo.id);

@@ -8,7 +8,7 @@ interface IObject {
 
 export const createReturn = async (request: any) => {
   return unitOfWork(async (transaction: any) => {
-    const returnData: any = await ReturnSchema.findOrCreate({
+    let returnData: any = await ReturnSchema.findOrCreate({
       where: {
         borrowId: request.borrowId,
         createdBy: 2,
@@ -32,10 +32,11 @@ export const createReturn = async (request: any) => {
       returnId: returnData[0].id,
       createdBy: request.createdBy,
     }));
-    return await ReturnDetailSchema.bulkCreate(retrurnDetails, {
+     await ReturnDetailSchema.bulkCreate(retrurnDetails, {
       transaction,
       returning: true,
     });
+    return returnData[0].dataValues || returnData[0];
   });
 };
 
@@ -66,6 +67,7 @@ export const getReturns = async (request: any) => {
               where: readerQuery,
             },
           ],
+          where: returnQuery,
           required: true,
         },
         {

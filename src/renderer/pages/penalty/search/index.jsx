@@ -2,10 +2,12 @@ import { useState, useCallback, useEffect } from 'react';
 import { SearchOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { Button, Input, Table, Form, Radio } from 'antd';
 import debounce from 'lodash.debounce';
-import { formatDateTime } from '../../../utils/helper';
+import { formatDateTime, queryStringToObject } from '../../../utils/helper';
 import { Penalty, ReaderType } from 'renderer/constants';
+import { useLocation } from 'react-router-dom';
 
 const PenaltySearchPage = (props) => {
+  const location = useLocation();
   const [form] = Form.useForm();
   const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
   const [penalties, setPenalties] = useState([]);
@@ -74,7 +76,15 @@ const PenaltySearchPage = (props) => {
   ];
 
   useEffect(() => {
-    debounceFc(inputState);
+    let penaltyQuery = { ...inputState };
+    let penaltyInfo = queryStringToObject(location.search);
+
+    if (penaltyInfo && Object.keys(penaltyInfo).length) {
+      penaltyQuery.id = +penaltyInfo.id;
+      form.setFieldValue('id', penaltyInfo.id);
+    }
+
+    debounceFc(penaltyQuery);
     getInitData();
     if (readerTypeId === 1) {
       form.setFieldsValue({ civilServantId: undefined });
@@ -145,6 +155,10 @@ const PenaltySearchPage = (props) => {
         scrollToFirstError
         initialValues={{ readerTypeId: undefined }}
       >
+        <Form.Item name="id" label="Mã Phiếu Phạt" style={props.widthStyle}>
+          <Input id="id" onChange={onChange} />
+        </Form.Item>
+
         <Form.Item label="Mã Độc Giả" style={props.widthStyle}>
           <Input id="readerId" onChange={onChange} />
         </Form.Item>

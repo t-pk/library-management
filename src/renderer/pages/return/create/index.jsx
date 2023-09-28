@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Button, Form, Input, Select, Radio, Alert, Space } from 'antd';
-import { SaveOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { SaveOutlined, ArrowLeftOutlined, EyeOutlined } from '@ant-design/icons';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { delay } from '../../../utils/helper';
-import { queryStringToObject } from '../../../utils/helper';
-import { BorrowDetail, ReaderType } from 'renderer/constants';
+import { delay, objectToQueryString, queryStringToObject } from '../../../utils/helper';
+import { BorrowDetail, ReaderType, Return } from 'renderer/constants';
 
 const ReturnCreatePage = (props) => {
   const navigate = useNavigate();
@@ -13,7 +12,7 @@ const ReturnCreatePage = (props) => {
   const [readerTypes, setReaderTypes] = useState([]);
   const [borrowedDocuments, setBorrowedDocuments] = useState([]);
   const [hiddenForm, setHiddenForm] = useState(false);
-
+  const [iReturn, setIReturn] = useState({});
   const readerTypeId = Form.useWatch('readerTypeId', form);
   const location = useLocation();
 
@@ -59,9 +58,19 @@ const ReturnCreatePage = (props) => {
         form.resetFields(['documentIds']);
         getInitData({ borrowId: form.getFieldValue('borrowId') });
         props.openNotification('success', 'Tạo thành công Phiếu Trả.');
+        setIReturn(arg.data);
       }
       setLoading(false);
     });
+  };
+
+  const linkToReturnSearch = () => {
+    const data = {
+      id: iReturn.id,
+      directFrom: Return.create,
+    };
+    const queryString = objectToQueryString(data);
+    return navigate(`/return/search?${queryString}`);
   };
 
   return (
@@ -181,10 +190,20 @@ const ReturnCreatePage = (props) => {
           </Form.Item>
 
           <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...props.widthStyle }}>
-            <Button loading={loading} style={{ minWidth: '96%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
+            <Button  disabled={Object.keys(iReturn).length} loading={loading} style={{ minWidth: '47%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
               {' '}
               Submit{' '}
             </Button>
+             <Button
+            type="primary"
+            disabled={!Object.keys(iReturn).length}
+            style={{ minWidth: '47%', marginLeft: 10 }}
+            onClick={linkToReturnSearch}
+            icon={<EyeOutlined />}
+          >
+            {' '}
+            Xem{' '}
+          </Button>
           </Form.Item>
         </Form>
       )}

@@ -13,7 +13,7 @@ const DocumentCreatePage = (props) => {
   const [authors, setAuthors] = useState([]);
   const [documentTypes, setDocumentTypes] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [document, setDocument] = useState({}); 
+  const [document, setDocument] = useState({});
 
   useEffect(() => {
     getInitData();
@@ -26,7 +26,7 @@ const DocumentCreatePage = (props) => {
       form.setFieldsValue(documentInfo);
       location.search = {};
     }
-    }, []);
+  }, []);
 
   const getInitData = () => {
     props.callDatabase({ key: Publisher.search });
@@ -201,20 +201,27 @@ const DocumentCreatePage = (props) => {
         </Form.Item>
 
         <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...props.widthStyle }}>
-          <Button  disabled={Object.keys(document).length} loading={loading} style={{ minWidth: '47%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
+          <Button
+            disabled={Object.keys(document).length}
+            loading={loading}
+            style={{ minWidth: '47%' }}
+            type="primary"
+            htmlType="submit"
+            icon={<SaveOutlined />}
+          >
             {' '}
             Submit{' '}
           </Button>
           <Button
-              type="primary"
-              disabled={!Object.keys(document).length}
-              style={{ minWidth: '47%', marginLeft: 10 }}
-              onClick={linkToDocumentSearch}
-              icon={<EyeOutlined />}
-            >
-              {' '}
-              Xem {' '}
-            </Button>
+            type="primary"
+            disabled={!Object.keys(document).length}
+            style={{ minWidth: '47%', marginLeft: 10 }}
+            onClick={linkToDocumentSearch}
+            icon={<EyeOutlined />}
+          >
+            {' '}
+            Xem{' '}
+          </Button>
         </Form.Item>
       </Form>
     </>

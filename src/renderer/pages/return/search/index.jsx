@@ -2,13 +2,14 @@ import { useState, useCallback, useEffect } from 'react';
 import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Select, Space, Dropdown, Table, Form, Radio } from 'antd';
 import debounce from 'lodash.debounce';
-import { useNavigate } from 'react-router-dom';
-import { formatDateTime, objectToQueryString, parseDataSelect } from '../../../utils/helper';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { formatDateTime, objectToQueryString, parseDataSelect, queryStringToObject } from '../../../utils/helper';
 import { Return, ReaderType, Document } from 'renderer/constants';
 
 const ReturnSearchPage = (props) => {
-  const [form] = Form.useForm();
+  const location = useLocation();
   const navigate = useNavigate();
+  const [form] = Form.useForm();
   const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
   const [returns, setReturns] = useState([]);
   const [documents, setDocuments] = useState([]);
@@ -124,7 +125,13 @@ const ReturnSearchPage = (props) => {
   ];
 
   useEffect(() => {
-    debounceFc(inputState);
+    let returnQuery = { ...inputState };
+    let returnInfo = queryStringToObject(location.search);
+    if (returnInfo && Object.keys(returnInfo).length) {
+      returnQuery.id = +returnInfo.id;
+      form.setFieldValue('id', returnInfo.id);
+    }
+    debounceFc(returnQuery);
     getInitData();
     if (readerTypeId === 1) {
       form.setFieldsValue({ civilServantId: undefined });
@@ -242,6 +249,9 @@ const ReturnSearchPage = (props) => {
         scrollToFirstError
         initialValues={{ readerTypeId: undefined }}
       >
+        <Form.Item name="id" label="Mã Phiếu Trả" style={props.widthStyle}>
+          <Input id="id" onChange={onChange} />
+        </Form.Item>
         <Form.Item label="Mã Độc Giả" style={props.widthStyle}>
           <Input id="readerId" onChange={onChange} />
         </Form.Item>

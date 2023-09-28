@@ -2,13 +2,21 @@ import { Op } from 'sequelize';
 import { BorrowSchema, PenaltySchema, ReaderSchema, ReturnSchema, unitOfWork } from '../db';
 
 export const createPenalty = async (request: any) => {
-  return unitOfWork((transaction: any) => {
-    return PenaltySchema.create(request, { transaction });
+  return unitOfWork(async (transaction: any) => {
+    if (request.id) {
+      await PenaltySchema.update(request, { where: { id: request.id }, returning: true });
+      return request;
+    }
+    const penalty = await PenaltySchema.create(request, { transaction, returning: true, raw: true });
+    return penalty.dataValues;
   });
 };
 
 export const getPenalties = async (request: any) => {
   let readerQuery: any = {};
+  let penaltyQuery: any = {};
+  if (request.id) penaltyQuery.id = request.id;
+
   if (request.readerId) readerQuery.id = request.readerId;
 
   if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
@@ -20,6 +28,7 @@ export const getPenalties = async (request: any) => {
   if (request.civilServantId) readerQuery.civilServantId = request.civilServantId;
 
   const penalties = await PenaltySchema.findAll({
+    where: penaltyQuery,
     include: [
       {
         model: ReturnSchema,
