@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useCallback, useEffect } from 'react';
 import { Button, Input, Select, Space, Dropdown, Table, Form, Radio } from 'antd';
 import { DownOutlined, SearchOutlined, CheckCircleOutlined } from '@ant-design/icons';
-import { formatDateTime, formatDateMinutes, objectToQueryString, parseDataSelect } from '../../../utils/helper';
+import { formatDateTime, formatDmy, objectToQueryString, parseDataSelect } from '../../../utils/helper';
 
 const BorrowSearchPage = (props) => {
   const [form] = Form.useForm();
@@ -66,6 +66,23 @@ const BorrowSearchPage = (props) => {
       dataIndex: ['document', 'name'],
     },
     {
+      title: 'Ngày Mượn',
+      dataIndex: 'createdAt',
+      align: 'center',
+      render: (dateTime) => {
+        return formatDateTime(dateTime);
+      },
+      onCell: groupByBorrow,
+    },
+    {
+      title: 'Hạn Trả',
+      dataIndex: 'durationTime',
+      align: 'center',
+      render: (dateTime) => {
+        return dateTime;
+      },
+    },
+    {
       title: 'Đã Trả',
       dataIndex: 'returnDetail',
       align: 'center',
@@ -85,32 +102,7 @@ const BorrowSearchPage = (props) => {
       align: 'center',
       onCell: groupByBorrow,
     },
-    {
-      title: 'Ngày Mượn',
-      dataIndex: 'createdAt',
-      align: 'center',
-      render: (dateTime) => {
-        return formatDateTime(dateTime);
-      },
-      onCell: groupByBorrow,
-    },
-    {
-      title: 'Hạn Trả',
-      dataIndex: 'createdAt',
-      align: 'center',
-      render: (dateTime) => {
-        return formatDateMinutes(dateTime);
-      },
-      onCell: groupByBorrow,
-    },
-    {
-      title: 'Ngày Trả',
-      dataIndex: ['returnDetail', 'createdAt'],
-      align: 'center',
-      render: (dateTime) => {
-        return dateTime && formatDateTime(dateTime);
-      },
-    },
+
     {
       title: 'Action',
       key: 'operation',

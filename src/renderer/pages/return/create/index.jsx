@@ -4,6 +4,7 @@ import { SaveOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
 import { delay } from '../../../utils/helper';
 import { queryStringToObject } from '../../../utils/helper';
+import { BorrowDetail, ReaderType } from 'renderer/constants';
 
 const ReturnCreatePage = (props) => {
   const [form] = Form.useForm();
@@ -29,19 +30,16 @@ const ReturnCreatePage = (props) => {
   }, [readerTypeId, location]);
 
   const getInitData = (borrowInfo) => {
-    props.callDatabase({ key: 'readerType-search' });
+    props.callDatabase({ key: ReaderType.search });
 
     if (borrowInfo && borrowInfo.borrowId) {
       const requestBorrowDetail = { borrowId: borrowInfo.borrowId };
-      props.callDatabase({ key: 'borrowDetail-search', data: requestBorrowDetail });
+      props.callDatabase({ key: BorrowDetail.search, data: requestBorrowDetail });
     }
     props.listenOn((arg) => {
       if (arg && arg.data) {
-        if (arg.key === 'readerType-search') setReaderTypes(arg.data.map((item) => ({ value: item.id, label: item.name })));
-        if (arg.key === 'borrowDetail-search') {
-          console.log('arg', arg);
-          setBorrowedDocuments(arg.data.map((item) => ({ value: item.id, label: item.name })));
-        }
+        if (arg.key === ReaderType.search) setReaderTypes(arg.data.map((item) => ({ value: item.id, label: item.name })));
+        if (arg.key === BorrowDetail.search) setBorrowedDocuments(arg.data.map((item) => ({ value: item.id, label: item.name })));
       }
     });
   };
@@ -52,7 +50,7 @@ const ReturnCreatePage = (props) => {
     props.callDatabase({ key: 'return-create', data });
 
     props.listenOnce('return-create', async (arg) => {
-      await delay(1000);
+      await delay(500);
 
       if (arg.data) {
         form.resetFields(['documentIds']);

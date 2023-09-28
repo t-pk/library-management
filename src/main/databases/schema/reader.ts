@@ -25,17 +25,17 @@ export const IReader = {
   studentId: {
     type: DataTypes.STRING(16),
     allowNull: true,
-    unique: true
+    unique: true,
   },
   civilServantId: {
     type: DataTypes.STRING(16),
     allowNull: true,
-    unique: true
+    unique: true,
   },
   citizenIdentify: {
     type: DataTypes.STRING(16),
     allowNull: true,
-    unique: true
+    unique: true,
   },
   status: {
     type: DataTypes.BOOLEAN,

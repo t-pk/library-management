@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button, Checkbox, Form, Input } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { delay } from '../../../utils/helper';
+import { Publisher } from 'renderer/constants';
 
 const PublisherCreatePage = (props) => {
   const [form] = Form.useForm();
@@ -10,10 +11,10 @@ const PublisherCreatePage = (props) => {
   const onFinish = (values) => {
     setLoading(true);
 
-    props.callDatabase({ key: 'publisher-create', data: values });
+    props.callDatabase({ key: Publisher.create, data: values });
 
-    props.listenOnce('publisher-create', async (arg) => {
-      await delay(1000);
+    props.listenOnce(Publisher.create, async (arg) => {
+      await delay(500);
       if (arg.data) props.openNotification('success', 'Tạo thành công Nhà Xuất Bản');
 
       setLoading(false);

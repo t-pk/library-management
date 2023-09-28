@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Table, Form, Tag } from 'antd';
 import debounce from 'lodash.debounce';
+import { Author } from 'renderer/constants';
 
 const columns = [
   {
@@ -39,8 +40,8 @@ const AuthorSearchPage = (props) => {
   }, []);
 
   const handleDebounceFn = (reState) => {
-    props.callDatabase({ key: 'author-search', data: reState });
-    props.listenOnce('author-search', async (arg) => {
+    props.callDatabase({ key: Author.search, data: reState });
+    props.listenOnce(Author.search, async (arg) => {
       setLoading(false);
       if (arg && arg.data) {
         setAuthors(arg.data);

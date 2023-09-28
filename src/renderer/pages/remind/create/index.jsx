@@ -4,6 +4,7 @@ import { SaveOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
 import { delay } from '../../../utils/helper';
 import { queryStringToObject } from '../../../utils/helper';
+import { Reader, Remind } from 'renderer/constants';
 
 const RemindCreatePage = (props) => {
   const [form] = Form.useForm();
@@ -29,9 +30,9 @@ const RemindCreatePage = (props) => {
   }, [readerTypeId, location]);
 
   const getInitData = () => {
-    props.callDatabase({ key: 'readerType-search' });
+    props.callDatabase({ key: Reader.search });
 
-    props.listenOnce('readerType-search', (arg) => {
+    props.listenOnce(Reader.search, (arg) => {
       setReaderTypes((arg.data || []).map((item) => ({ value: item.id, label: item.name })));
     });
   };
@@ -40,9 +41,9 @@ const RemindCreatePage = (props) => {
     console.log(values);
     setLoading(true);
     const data = { ...values };
-    props.callDatabase({ key: 'remind-create', data });
-    props.listenOnce('remind-create', async (arg) => {
-      await delay(1000);
+    props.callDatabase({ key: Remind.create, data });
+    props.listenOnce(Remind.create, async (arg) => {
+      await delay(500);
 
       if (arg.data) {
         form.resetFields();

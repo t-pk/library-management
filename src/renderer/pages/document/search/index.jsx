@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Select, Table, Form, Tag, InputNumber, Radio } from 'antd';
 import debounce from 'lodash.debounce';
+import { Author, Document, DocumentType, Publisher } from 'renderer/constants';
 
 const DocumentSearchPage = (props) => {
   const [form] = Form.useForm();
@@ -51,8 +52,8 @@ const DocumentSearchPage = (props) => {
   ];
 
   const handleDebounceFn = (reState) => {
-    props.callDatabase({ key: 'document-search', data: reState });
-    props.listenOnce('document-search', async (arg) => {
+    props.callDatabase({ key: Document.search, data: reState });
+    props.listenOnce(Document.search, async (arg) => {
       setLoading(false);
       setDocuments(arg.data || []);
     });
@@ -64,27 +65,27 @@ const DocumentSearchPage = (props) => {
   }, []);
 
   const getInitData = () => {
-    props.callDatabase({ key: 'publisher-search' });
-    props.callDatabase({ key: 'author-search' });
-    props.callDatabase({ key: 'documentType-search' });
+    props.callDatabase({ key: Publisher.search });
+    props.callDatabase({ key: Author.search });
+    props.callDatabase({ key: DocumentType.search });
 
     props.listenOn(async (arg) => {
       if (arg && arg.data) {
-        if (arg.key === 'publisher-search')
+        if (arg.key === Publisher.search)
           setPublishers(
             arg.data.map((item) => ({
               id: item.id,
               value: `${item.id} - ${item.name}`,
             }))
           );
-        if (arg.key === 'author-search')
+        if (arg.key === Author.search)
           setAuthors(
             arg.data.map((item) => ({
               id: item.id,
               value: `${item.id} - ${item.name}`,
             }))
           );
-        if (arg.key === 'documentType-search')
+        if (arg.key === DocumentType.search)
           setDocumentTypes(
             arg.data.map((item) => ({
               id: item.id,

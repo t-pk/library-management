@@ -13,6 +13,20 @@ import { IDocumentType } from './schema/document-type';
 import { IReaderType } from './schema/reader-type';
 import { IRemind } from './schema/remind';
 import { IPenalty } from './schema/penalty';
+import { Author, Borrow, BorrowDetail, DocumentType, Penalty, Publisher, Reader, ReaderType, Remind, Return, User } from 'renderer/constants';
+import { getUser } from './logic/user';
+import { createDocument, getDocuments } from './logic/document';
+import { createAuthor, getAuthors } from './logic/author';
+import { Document } from '../../renderer/constants';
+import { createPublisher, getPublishers } from './logic/publisher';
+import { getDocumentTypes } from './logic/document-type';
+import { getReaderTypes } from './logic/reader-type';
+import { createReader, getReaders } from './logic/reader';
+import { createBorrow, getBorrows } from './logic/borrow';
+import { getBorrowDetail } from './logic/borrow-detail';
+import { createReturn, getReturns } from './logic/return';
+import { createRemind, getReminds } from './logic/remind';
+import { createPenalty, getPenalties } from './logic/penalty';
 
 export const sequelize = new Sequelize.Sequelize('postgres://postgres:123456@localhost:5433/library', {
   dialectModule: pg,
@@ -96,6 +110,73 @@ RemindSchema.belongsTo(ReturnSchema, { foreignKey: { allowNull: false, name: 're
 PenaltySchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
 PenaltySchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' } });
 PenaltySchema.belongsTo(ReturnSchema, { foreignKey: { allowNull: false, name: 'returnId' } });
+
+export const handleData = async (arg: any, data: any, result: any) => {
+  switch (arg.key) {
+    case User.login:
+      result = await getUser(data);
+      break;
+    case Document.search:
+      result = await getDocuments(data);
+      break;
+    case Document.create:
+      result = await createDocument(data);
+      break;
+    case Author.create:
+      result = await createAuthor(data);
+      break;
+    case Author.search:
+      result = await getAuthors(data);
+      break;
+    case Publisher.create:
+      result = await createPublisher(data);
+      break;
+    case Publisher.search:
+      result = await getPublishers(data);
+      break;
+    case DocumentType.search:
+      result = await getDocumentTypes(data);
+      break;
+    case ReaderType.search:
+      result = await getReaderTypes(data);
+      break;
+    case Reader.create:
+      result = await createReader(data);
+      break;
+    case Reader.search:
+      result = await getReaders(data);
+      break;
+    case Borrow.create:
+      result = await createBorrow(data);
+      break;
+    case Borrow.search:
+      result = await getBorrows(data);
+      break;
+    case BorrowDetail.search:
+      result = await getBorrowDetail(data);
+      break;
+    case Return.create:
+      result = await createReturn(data);
+      break;
+    case Return.search:
+      result = await getReturns(data);
+      break;
+    case Remind.create:
+      result = await createRemind(data);
+      break;
+    case Remind.search:
+      result = await getReminds(data);
+      break;
+    case Penalty.create:
+      result = await createPenalty(data);
+      break;
+    case Penalty.search:
+      result = await getPenalties(data);
+      break;
+    default:
+      break;
+  }
+};
 
 export const unitOfWork = (callback: any) => {
   const isolationLevel = Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE;

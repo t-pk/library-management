@@ -3,7 +3,7 @@ import { Form, Input, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import icon from '../../assets/icon.jpeg';
 import backgroundUrl from '../../assets/background.svg';
-
+import { TOKEN_KEY, User } from '../../constants';
 const NOTI_LOGIN_FAIL = 'Tên Đăng Nhập hoặc Mật Khẩu không đúng. Vui lòng kiểm tra lại.';
 
 const LoginPage = (props) => {
@@ -24,12 +24,12 @@ const LoginPage = (props) => {
   const onFinish = async (user) => {
     setLoading(true);
     setSuccess('default');
-    props.callDatabase({ key: 'user-login', data: user });
-    props.listenOnce('user-login', async (arg) => {
+    props.callDatabase({ key: User.login, data: user });
+    props.listenOnce(User.login, async (arg) => {
       await sleep(300);
       setLoading(false);
       if (arg && arg.data) {
-        localStorage.setItem('TOKEN_KEY', JSON.stringify(arg.data));
+        localStorage.setItem(TOKEN_KEY, JSON.stringify(arg.data));
         navigate('/');
       }
       if (arg && !arg.error && !arg.data) {

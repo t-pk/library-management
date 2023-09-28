@@ -4,6 +4,7 @@ import { SaveOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
 import { delay } from '../../../utils/helper';
 import { queryStringToObject } from '../../../utils/helper';
+import { Penalty, ReaderType } from 'renderer/constants';
 
 const PenaltyCreatePage = (props) => {
   const [form] = Form.useForm();
@@ -28,9 +29,9 @@ const PenaltyCreatePage = (props) => {
   }, [readerTypeId, location]);
 
   const getInitData = () => {
-    props.callDatabase({ key: 'readerType-search' });
+    props.callDatabase({ key: ReaderType.search });
 
-    props.listenOnce('readerType-search', (arg) => {
+    props.listenOnce(ReaderType.search, (arg) => {
       setReaderTypes(arg.data.map((item) => ({ value: item.id, label: item.name })));
     });
   };
@@ -39,10 +40,10 @@ const PenaltyCreatePage = (props) => {
     setLoading(true);
 
     const data = { ...values };
-    props.callDatabase({ key: 'penalty-create', data });
+    props.callDatabase({ key: Penalty.create, data });
 
-    props.listenOnce('penalty-create', async (arg) => {
-      await delay(1000);
+    props.listenOnce(Penalty.create, async (arg) => {
+      await delay(500);
       if (arg.data) {
         form.resetFields();
         if (arg.data) props.openNotification('success', 'Tạo thành công Phiếu Phạt.');

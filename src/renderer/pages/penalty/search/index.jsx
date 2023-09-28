@@ -3,6 +3,7 @@ import { SearchOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { Button, Input, Table, Form, Radio } from 'antd';
 import debounce from 'lodash.debounce';
 import { formatDateTime } from '../../../utils/helper';
+import { Penalty, ReaderType } from 'renderer/constants';
 
 const PenaltySearchPage = (props) => {
   const [form] = Form.useForm();
@@ -88,8 +89,8 @@ const PenaltySearchPage = (props) => {
   }, [readerTypeId]);
 
   const handleDebounceFn = (reState) => {
-    props.callDatabase({ key: 'penalty-search', data: reState });
-    props.listenOnce('penalty-search', (arg) => {
+    props.callDatabase({ key: Penalty.search, data: reState });
+    props.listenOnce(Penalty.search, (arg) => {
       setLoading(false);
       setPenalties(arg.data || []);
     });
@@ -98,9 +99,9 @@ const PenaltySearchPage = (props) => {
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
 
   const getInitData = () => {
-    props.callDatabase({ key: 'readerType-search' });
+    props.callDatabase({ key: ReaderType.search });
 
-    props.listenOnce('readerType-search', (arg) => {
+    props.listenOnce(ReaderType.search, (arg) => {
       const resReaders = (arg.data || []).map((item) => ({
         value: item.id,
         label: item.name,

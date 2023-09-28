@@ -1,4 +1,4 @@
-import {  ReaderSchema, RemindSchema, ReturnSchema, sequelize, unitOfWork } from '../db';
+import { ReaderSchema, RemindSchema, ReturnSchema, sequelize, unitOfWork } from '../db';
 import { Op } from 'sequelize';
 
 export const createRemind = async (request: any) => {

@@ -1,6 +1,8 @@
 import { Op } from 'sequelize';
 import countBy from 'lodash.countby';
-import { DocumentSchema, unitOfWork, BorrowSchema, BorrowDetailSchema, ReaderSchema, sequelize, ReturnDetailSchema } from '../db';
+import { DocumentSchema, unitOfWork, BorrowSchema, BorrowDetailSchema, ReaderSchema, ReturnDetailSchema } from '../db';
+import { normalDocumentPeriod, specialDocumentPeriod } from '../../../renderer/constants/const';
+import { formatYmd, addDays } from '../../../renderer/utils/helper';
 
 interface IObject {
   [key: string]: string | {};
@@ -101,13 +103,21 @@ export const createBorrow = async (request: any) => {
       raw: true,
       returning: true,
     });
+    const documents = await DocumentSchema.findAll({ where: { id: { [Op.in]: request.documentIds } }, raw: true });
 
-    const borrowDetail = request.documentIds.map((documentId: any) => ({
-      borrowId: borrowRes.dataValues.id,
-      documentId: +documentId,
-      quantity: 1,
-      createdBy: request.createdBy,
-    }));
-    return BorrowDetailSchema.bulkCreate(borrowDetail, { transaction });
+    const borrowDetails = documents.map((document: any) => {
+      let durationTime: any = new Date();
+      durationTime = addDays(durationTime, document.special ? specialDocumentPeriod : normalDocumentPeriod);
+      const brrowerDetail = {
+        borrowId: borrowRes.dataValues.id,
+        documentId: +document.id,
+        quantity: 1,
+        createdBy: request.createdBy,
+        durationTime: formatYmd(durationTime),
+      };
+      return brrowerDetail;
+    });
+    console.log(borrowDetails);
+    return BorrowDetailSchema.bulkCreate(borrowDetails, { transaction });
   });
 };

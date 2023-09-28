@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Table, Form, Radio } from 'antd';
 import debounce from 'lodash.debounce';
+import { ReaderType, Remind } from 'renderer/constants';
 
 const RemindSearchPage = (props) => {
   const [form] = Form.useForm();
@@ -61,8 +62,8 @@ const RemindSearchPage = (props) => {
   }, [readerTypeId]);
 
   const handleDebounceFn = (reState) => {
-    props.callDatabase({ key: 'remind-search', data: reState });
-    props.listenOnce('remind-search', (arg) => {
+    props.callDatabase({ key: Remind.search, data: reState });
+    props.listenOnce(Remind.search, (arg) => {
       setLoading(false);
       setReminds(arg.data || []);
     });
@@ -71,12 +72,12 @@ const RemindSearchPage = (props) => {
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
 
   const getInitData = () => {
-    props.callDatabase({ key: 'readerType-search' });
-    props.callDatabase({ key: 'remind-search' });
+    props.callDatabase({ key: ReaderType.search });
+    props.callDatabase({ key: Remind.search });
 
     props.listenOn(async (arg) => {
       if (arg && arg.data) {
-        if (arg.key === 'readerType-search') {
+        if (arg.key === ReaderType.search) {
           const resReaders = arg.data.map((item) => ({
             value: item.id,
             label: item.name,

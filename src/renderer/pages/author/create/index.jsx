@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button, Checkbox, Form, Input } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { delay } from '../../../utils/helper';
+import { Author } from 'renderer/constants';
 
 const AuthorCreatePage = (props) => {
   const [form] = Form.useForm();
@@ -10,10 +11,10 @@ const AuthorCreatePage = (props) => {
   const onFinish = (values) => {
     setLoading(true);
 
-    props.callDatabase({ key: 'author-create', data: values });
+    props.callDatabase({ key: Author.create, data: values });
 
-    props.listenOnce('author-create', async (arg) => {
-      await delay(1000);
+    props.listenOnce(Author.create, async (arg) => {
+      await delay(500);
       if (arg.data) props.openNotification('success', 'Tạo thành công Tác Giả');
       setLoading(false);
     });

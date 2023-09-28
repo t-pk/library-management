@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { AutoComplete, Button, Checkbox, Form, Input, InputNumber } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
+import { delay } from '../../../utils/helper';
+import { Author, Document, DocumentType, Publisher } from 'renderer/constants';
 
 const DocumentCreatePage = (props) => {
   const [form] = Form.useForm();
@@ -12,15 +14,15 @@ const DocumentCreatePage = (props) => {
   useEffect(() => getInitData(), []);
 
   const getInitData = () => {
-    props.callDatabase({ key: 'publisher-search' });
-    props.callDatabase({ key: 'author-search' });
-    props.callDatabase({ key: 'documentType-search' });
+    props.callDatabase({ key: Publisher.search });
+    props.callDatabase({ key: Author.search });
+    props.callDatabase({ key: DocumentType.search });
 
     props.listenOn((arg) => {
       if (arg && arg.data) {
-        if (arg.key === 'publisher-search') setPublishers(arg.data.map((item) => ({ id: item.id, value: item.name })));
-        if (arg.key === 'author-search') setAuthors(arg.data.map((item) => ({ id: item.id, value: item.name })));
-        if (arg.key === 'documentType-search') setDocumentTypes(arg.data.map((item) => ({ id: item.id, value: item.name })));
+        if (arg.key === Publisher.search) setPublishers(arg.data.map((item) => ({ id: item.id, value: item.name })));
+        if (arg.key === Author.search) setAuthors(arg.data.map((item) => ({ id: item.id, value: item.name })));
+        if (arg.key === DocumentType.search) setDocumentTypes(arg.data.map((item) => ({ id: item.id, value: item.name })));
       }
     });
   };
@@ -39,10 +41,10 @@ const DocumentCreatePage = (props) => {
       publishYear: values.publishYear,
       special: values.special,
     };
-    props.callDatabase({ key: 'document-create', data });
+    props.callDatabase({ key: Document.create, data });
 
-    props.listenOnce('document-create', async (arg) => {
-      await delay(1000);
+    props.listenOnce(Document.create, async (arg) => {
+      await delay(500);
       if (arg.data) props.openNotification('success', 'Tạo Thành Công Tài Liệu');
       setLoading(false);
     });

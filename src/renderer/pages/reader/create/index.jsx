@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button, Form, Input, Radio } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { delay } from '../../../utils/helper';
+import { ReaderType } from 'renderer/constants';
 
 const ReaderCreatePage = (props) => {
   const [form] = Form.useForm();
@@ -20,9 +21,9 @@ const ReaderCreatePage = (props) => {
   }, [readerTypeId]);
 
   const getInitData = () => {
-    props.callDatabase({ key: 'readerType-search' });
+    props.callDatabase({ key: ReaderType.search });
 
-    props.listenOnce('readerType-search', (arg) => {
+    props.listenOnce(ReaderType.search, (arg) => {
       setReaderTypes((arg.data || []).map((item) => ({ value: item.id, label: item.name })));
     });
   };
@@ -31,9 +32,9 @@ const ReaderCreatePage = (props) => {
     setLoading(true);
     const data = { ...values };
 
-    props.callDatabase({ key: 'reader-create', data });
-    props.listenOnce('reader-create', async (arg) => {
-      await delay(1000);
+    props.callDatabase({ key: ReaderType.create, data });
+    props.listenOnce(ReaderType.create, async (arg) => {
+      await delay(500);
       if (arg.data) props.openNotification('success', 'Tạo thành công Độc Giả.');
       setLoading(false);
     });

@@ -4,6 +4,7 @@ import { Button, Input, Select, Space, Dropdown, Table, Form, Radio } from 'antd
 import debounce from 'lodash.debounce';
 import { useNavigate } from 'react-router-dom';
 import { formatDateTime, objectToQueryString, parseDataSelect } from '../../../utils/helper';
+import { Return, ReaderType, Document } from 'renderer/constants';
 
 const ReturnSearchPage = (props) => {
   const [form] = Form.useForm();
@@ -134,8 +135,8 @@ const ReturnSearchPage = (props) => {
   }, [readerTypeId]);
 
   const handleDebounceFn = (reState) => {
-    props.callDatabase({ key: 'return-search', data: reState });
-    props.listenOnce('return-search', (arg) => {
+    props.callDatabase({ key: Return.search, data: reState });
+    props.listenOnce(Return.search, (arg) => {
       setLoading(false);
       setReturns(arg.data);
     });
@@ -157,12 +158,12 @@ const ReturnSearchPage = (props) => {
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
 
   const getInitData = () => {
-    props.callDatabase({ key: 'readerType-search' });
-    props.callDatabase({ key: 'document-search' });
+    props.callDatabase({ key: ReaderType.search });
+    props.callDatabase({ key: Document.search });
 
     props.listenOn(async (arg) => {
       if (arg && arg.data) {
-        if (arg.key === 'readerType-search') {
+        if (arg.key === ReaderType.search) {
           const resReaders = arg.data.map((item) => ({
             value: item.id,
             label: item.name,
@@ -170,7 +171,7 @@ const ReturnSearchPage = (props) => {
           resReaders.push({ id: undefined, label: 'Skip' });
           setReaderTypes(resReaders);
         }
-        if (arg.key === 'document-search') {
+        if (arg.key === Document.search) {
           setDocuments(parseDataSelect(arg.data));
         }
       }
@@ -206,9 +207,9 @@ const ReturnSearchPage = (props) => {
     if (name) data.name = name.trim();
     if (!name && isNaN(id)) data.name = value.trim();
 
-    props.callDatabase({ key: 'document-search', data });
+    props.callDatabase({ key: Document.search, data });
 
-    props.listenOnce('document-search', (arg) => {
+    props.listenOnce(Document.search, (arg) => {
       setDocuments(parseDataSelect(arg.data));
     });
   };

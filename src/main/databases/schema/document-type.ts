@@ -9,7 +9,7 @@ export const IDocumentType = {
   name: {
     type: DataTypes.STRING(256),
     allowNull: false,
-    unique: true
+    unique: true,
   },
   status: {
     type: DataTypes.BOOLEAN,

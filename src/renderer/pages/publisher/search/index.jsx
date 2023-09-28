@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Table, Form, Tag } from 'antd';
 import debounce from 'lodash.debounce';
+import { Publisher } from 'renderer/constants';
 
 const columns = [
   {
@@ -38,8 +39,8 @@ const PublisherSearchPage = (props) => {
     debounceFc(inputState);
   }, []);
   const handleDebounceFn = (reState) => {
-    props.callDatabase({ key: 'publisher-search', data: reState });
-    props.listenOnce('publisher-search', (arg) => {
+    props.callDatabase({ key: Publisher.search, data: reState });
+    props.listenOnce(Publisher.search, (arg) => {
       setLoading(false);
       if (arg && arg.data) {
         setDocuments(arg.data);

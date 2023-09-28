@@ -4,6 +4,7 @@ import { Button, Input, Space, Dropdown, Table, Form, Tag, Radio } from 'antd';
 import debounce from 'lodash.debounce';
 import { useNavigate } from 'react-router-dom';
 import { objectToQueryString } from '../../../utils/helper';
+import { Reader, ReaderType } from 'renderer/constants';
 
 const ReaderSearchPage = (props) => {
   const [form] = Form.useForm();
@@ -89,8 +90,8 @@ const ReaderSearchPage = (props) => {
   ];
 
   const handleDebounceFn = (reState) => {
-    props.callDatabase({ key: 'reader-search', data: reState });
-    props.listenOnce('reader-search', (arg) => {
+    props.callDatabase({ key: Reader.search, data: reState });
+    props.listenOnce(Reader.search, (arg) => {
       setLoading(false);
       setDocuments(arg.data || []);
     });
@@ -114,9 +115,9 @@ const ReaderSearchPage = (props) => {
   }, [readerTypeId]);
 
   const getInitData = () => {
-    props.callDatabase({ key: 'readerType-search' });
+    props.callDatabase({ key: ReaderType.search });
 
-    props.listenOnce('readerType-search', (arg) => {
+    props.listenOnce(ReaderType.search, (arg) => {
       const resReaders = (arg.data || []).map((item) => ({
         value: item.id,
         label: item.name,

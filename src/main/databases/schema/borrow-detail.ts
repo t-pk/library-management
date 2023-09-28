@@ -19,6 +19,10 @@ export const IBorrowDetail = {
     allowNull: false,
     defaultValue: 1,
   },
+  durationTime: {
+    type: DataTypes.DATEONLY,
+    allowNull: false,
+  },
   createdAt: {
     type: DataTypes.DATE,
     defaultValue: Sequelize.fn('now'),
