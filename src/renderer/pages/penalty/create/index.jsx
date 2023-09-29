@@ -189,7 +189,7 @@ const PenaltyCreatePage = (props) => {
               icon={<EyeOutlined />}
             >
               {' '}
-              Xem Kết Quả{' '}
+              Xem {' '}
             </Button>
           </Form.Item>
 

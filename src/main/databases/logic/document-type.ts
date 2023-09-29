@@ -1,7 +1,6 @@
 import { DocumentTypeSchema } from '../db';
 
 export const getDocumentTypes = async (request: any) => {
-  try {
     let query: any = {};
     if (request.name) query.name = request.name;
     if (request.id) query.id = request.id;
@@ -11,7 +10,4 @@ export const getDocumentTypes = async (request: any) => {
       raw: true,
       order: [['id', 'ASC']],
     });
-  } catch (error) {
-    console.log('getDocumentTypes', error);
-  }
 };

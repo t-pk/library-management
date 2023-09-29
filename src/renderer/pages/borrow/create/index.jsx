@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Button, Form, Input, Select, Radio, Alert, Space } from 'antd';
-import { SaveOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { SaveOutlined, ArrowLeftOutlined, EyeOutlined } from '@ant-design/icons';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { delay, objectToQueryString } from '../../../utils/helper';
 import { queryStringToObject, parseDataSelect } from '../../../utils/helper';
@@ -215,10 +215,10 @@ const BorrowCreatePage = (props) => {
               disabled={!Object.keys(borrow).length}
               style={{ minWidth: '47%', marginLeft: 10 }}
               onClick={linkToBorrowSearch}
-              icon={<SaveOutlined />}
+              icon={<EyeOutlined />}
             >
               {' '}
-              Xem Kết Quả{' '}
+              Xem {' '}
             </Button>
           </Form.Item>
         </Form>

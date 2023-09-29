@@ -2,7 +2,6 @@ import { Op } from 'sequelize';
 import { AuthorSchema, DocumentSchema, PublisherSchema, unitOfWork, DocumentTypeSchema } from '../db';
 
 export const getDocuments = async (request: any) => {
-  try {
     let query: any = {};
     if (request.name) {
       query.name = { [Op.iLike]: '%' + request.name + '%' };
@@ -32,9 +31,6 @@ export const getDocuments = async (request: any) => {
       limit: 50,
     });
     return result.map((document) => document.toJSON());
-  } catch (error) {
-    throw error;
-  }
 };
 
 export const createDocument = async (request: any) => {

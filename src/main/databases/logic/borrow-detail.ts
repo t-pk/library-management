@@ -2,7 +2,6 @@ import { Op } from 'sequelize';
 import { BorrowDetailSchema, DocumentSchema, ReturnDetailSchema, ReturnSchema } from '../db';
 
 export const getBorrowDetail = async (request: any) => {
-  try {
     let query: any = {};
     if (request.borrowId) query.borrowId = request.borrowId;
     const returnDocuments = await ReturnDetailSchema.findAll({
@@ -29,7 +28,4 @@ export const getBorrowDetail = async (request: any) => {
       raw: true,
       order: [['id', 'ASC']],
     });
-  } catch (error) {
-    console.log('getDocumentTypes', error);
-  }
 };

@@ -14,7 +14,6 @@ export const createRemind = async (request: any) => {
 
 export const getReminds = async (request: any) => {
   let readerQuery: any = {};
-  let remindQuery: any = {};
 
   if (request.readerId) readerQuery.id = request.readerId;
 

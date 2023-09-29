@@ -9,8 +9,6 @@ interface IObject {
 }
 
 export const getBorrows = async (request: any) => {
-  console.log(request);
-  try {
     let readerQuery: IObject = {};
     let borrowQuery: IObject = {};
     let borrowDetailQuery: IObject = {};
@@ -87,9 +85,6 @@ export const getBorrows = async (request: any) => {
       rest: resultObj[index] || 0,
     }));
     return borrowsJSON;
-  } catch (error) {
-    console.log('getDocuments', error);
-  }
 };
 
 export const createBorrow = async (request: any) => {

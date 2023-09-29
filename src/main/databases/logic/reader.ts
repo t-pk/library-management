@@ -13,7 +13,6 @@ export const createReader = async (request: any) => {
 };
 
 export const getReaders = async (request: any) => {
-  try {
     let query: any = {};
     if (request.id) query.id = request.id;
 
@@ -38,7 +37,4 @@ export const getReaders = async (request: any) => {
     });
     const readersJSON = readers.map((reader) => reader.toJSON());
     return readersJSON;
-  } catch (error) {
-    console.log('getDocuments', error);
-  }
 };

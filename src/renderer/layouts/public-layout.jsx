@@ -6,7 +6,7 @@ const PublicLayout = ({ element: Component }) => {
 
   const openNotification = (type, description) => {
     api[type]({
-      message: `Notification ${type}`,
+      message: `${type.toLocaleUpperCase()} Notification`,
       description: description,
       duration: 6,
     });

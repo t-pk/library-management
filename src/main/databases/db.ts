@@ -1,4 +1,4 @@
-import Sequelize from 'sequelize';
+import Sequelize, {ConnectionRefusedError} from 'sequelize';
 import pg from 'pg';
 import { IBorrowDetail } from './schema/borrow-detail';
 import { IBorrow } from './schema/borrow';
@@ -27,7 +27,9 @@ import { createReturn, getReturns } from './logic/return';
 import { createRemind, getReminds } from './logic/remind';
 import { createPenalty, getPenalties } from './logic/penalty';
 
-export const sequelize = new Sequelize.Sequelize('postgres://postgres:123456@localhost:5433/library', {
+const urlConnection = 'postgres://postgres:123456@localhost:5433/library';
+
+export const sequelize = new Sequelize.Sequelize(urlConnection, {
   dialectModule: pg,
   logging: true,
   pool: { max: 5, min: 0, idle: 10000 },
@@ -179,7 +181,9 @@ export const handleData = async (arg: any, data: any) => {
     }
     return result;
   } catch (error) {
-    console.log(error);
+    if(error instanceof ConnectionRefusedError) {
+     throw `Cannot connect to Database ${error.message}`;
+    }
     throw error;
   }
 };

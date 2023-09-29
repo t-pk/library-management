@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button, Form, Input, Radio } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { SaveOutlined } from '@ant-design/icons';
+import { SaveOutlined, EyeOutlined } from '@ant-design/icons';
 import { delay, queryStringToObject, objectToQueryString } from '../../../utils/helper';
 import { Reader, ReaderType } from 'renderer/constants';
 
@@ -180,10 +180,10 @@ const ReaderCreatePage = (props) => {
             disabled={!Object.keys(reader).length}
             style={{ minWidth: '47%', marginLeft: 10 }}
             onClick={linkToReaderSearch}
-            icon={<SaveOutlined />}
+            icon={<EyeOutlined />}
           >
             {' '}
-            Xem Kết Quả{' '}
+            Xem{' '}
           </Button>
         </Form.Item>
       </Form>

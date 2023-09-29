@@ -189,7 +189,7 @@ const RemindCreatePage = (props) => {
               icon={<EyeOutlined />}
             >
               {' '}
-              Xem Kết Quả{' '}
+              Xem{' '}
             </Button>
           </Form.Item>
         </Form>

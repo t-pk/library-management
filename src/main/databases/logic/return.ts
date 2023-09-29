@@ -41,7 +41,6 @@ export const createReturn = async (request: any) => {
 };
 
 export const getReturns = async (request: any) => {
-  try {
     let readerQuery: IObject = {};
     let returnQuery: IObject = {};
     let borrowDetail: IObject = {};
@@ -123,7 +122,4 @@ export const getReturns = async (request: any) => {
     }));
 
     return returnJSON;
-  } catch (error) {
-    throw error;
-  }
 };

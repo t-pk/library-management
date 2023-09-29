@@ -1,6 +1,6 @@
-import { Button, Spin } from 'antd';
+import { Spin } from 'antd';
 import { Suspense } from 'react';
-import { MemoryRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { MemoryRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import routes from './routers';
 const color = '#174e94';
@@ -53,18 +53,10 @@ const App = () => {
       }}
     >
       <Router>
-        {/* <Suspense
-          fallback={
-            <Spin>
-              <div className="is-spining-full" />
-            </Spin>
-          }
-        > */}
         <Routes>
           {...adminRoutes}
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
-        {/* </Suspense> */}
       </Router>
     </ConfigProvider>
   );
