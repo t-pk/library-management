@@ -15,7 +15,9 @@ const DocumentSearchPage = (props) => {
   const [loading, setLoading] = useState(false);
   const [publishers, setPublishers] = useState([]);
   const [authors, setAuthors] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [documentTypes, setDocumentTypes] = useState([]);
+  const pageSize = 20; // Number of items per page
 
   const redirectCreate = (record) => () => {
     const data = {
@@ -160,6 +162,7 @@ const DocumentSearchPage = (props) => {
   const onChange = (e) => {
     setLoading(true);
     let reState = {};
+    setCurrentPage(1);
     if (e.target.id === 'documentTypes') {
       const ids = documentTypes.filter((documentType) => e.target.value.includes(documentType.value)).map((documentType) => documentType.id);
       reState = { ...inputState, [e.target.id]: ids };
@@ -182,6 +185,10 @@ const DocumentSearchPage = (props) => {
   const onClick = () => {
     setLoading(true);
     debounceFc(inputState);
+  };
+  
+  const handlePageChange = (page, pageSize) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -250,7 +257,12 @@ const DocumentSearchPage = (props) => {
           </Button>
         </Form.Item>
       </Form>
-      <Table columns={columns} dataSource={documents} loading={loading} rowKey={'id'} tableLayout={'fixed'}   scroll={{ x: 1400, y: 450 }}/>
+      <Table columns={columns} dataSource={documents} loading={loading} rowKey={'id'} tableLayout={'fixed'}   scroll={{ x: 1400, y: 450 }}  pagination={{
+          current: currentPage,
+          pageSize: pageSize,
+          total: documents.length,
+          onChange: handlePageChange,
+        }}/>
     </>
   );
 };

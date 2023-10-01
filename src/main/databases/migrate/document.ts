@@ -53,6 +53,67 @@ export const documentSeeds = [
   {
     name: 'Giáo trình Kỹ thuật lập trình', documentTypeId: 1, publisherId: 1, authorId: 8, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
   },
+  {
+    name: 'Hệ thống máy tính và ngôn ngữ C', documentTypeId: 1, publisherId: 1, authorId: 1, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+  {
+    name: 'Tin học II', documentTypeId: 1, publisherId: 1, authorId: 1, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+  {
+    name: 'Quyền tác giả trong không gian ảo', documentTypeId: 1, publisherId: 1, authorId: 2, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+  {
+    name: 'Giáo trình Luật tố tụng dân sự', documentTypeId: 1, publisherId: 1, authorId: 2, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+  {
+    name: 'Tài liệu học tập Luật tố tụng dân sự (Câu hỏi, bài tập tình huống và bản án)', documentTypeId: 1, publisherId: 1, authorId: 2, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+  {
+    name: 'Sách tham khảo Pháp luật Việt Nam dành cho doanh nghiệp và người nước ngoài - 200 câu hỏi-đáp (Việt-Anh-Trung)', documentTypeId: 1, publisherId: 1, authorId: 2, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+  {
+    name: 'Những Ngày Thơ Ấu', documentTypeId: 5, publisherId: 2, authorId: 9, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+  {
+    name: 'Từ Chiến Trường Khốc Liệt', documentTypeId: 5, publisherId: 2, authorId: 10, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+  {
+    name: 'Cát Bụi Chân Ai', documentTypeId: 5, publisherId: 2, authorId: 11, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+  {
+    name: 'Quê người', documentTypeId: 4, publisherId: 2, authorId: 11, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+  {
+    name: 'Dế Mèn phiêu lưu ký', documentTypeId: 11, publisherId: 2, authorId: 11, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+  {
+    name: 'Nhà nghèo', documentTypeId: 11, publisherId: 2, authorId: 11, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+  {
+    name: 'Núi cứu quốc', documentTypeId: 11, publisherId: 2, authorId: 11, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+  {
+    name: 'Miền Tây', documentTypeId: 4, publisherId: 2, authorId: 11, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+  {
+    name: 'Bí Mật Dinh Dưỡng Cho Sức Khỏe Toàn Diện', documentTypeId: 1, publisherId: 3, authorId: 12, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+  {
+    name: 'Hồi Ký Của Một Ông Già Việt Học', documentTypeId: 5, publisherId: 4, authorId: 13, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+  {
+    name: 'Cẩm Nang Du Lịch - Top 10 Paris', documentTypeId: 2, publisherId: 4, authorId: 14, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+  {
+    name: 'Nghiên cứu thời gian tập trung dòng chảy hình thành lũ quét ở các khu vực giao mùa vùng núi phía Bắc Việt Nam', documentTypeId: 8, publisherId: 4, authorId: 15, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+  {
+    name: 'Các thuật toán nâng cao trong khai thác mẫu tuần tự và luật', documentTypeId: 8, publisherId: 1, authorId: 16, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+  {
+    name: 'Phát triển các thuật toán khai thác mẫu tuần tự và luật từ cơ sở dữ liệu chuỗi. (Nafosted, 2014-2016)', documentTypeId: 8, publisherId: 1, authorId: 17, special: false, status: true, quantity: 50, availableQuantity: 50, createdBy: 1, updatedBy: 1,
+  },
+
 ]
 
 export const createDocuments = (data: any) => {
@@ -60,7 +121,7 @@ export const createDocuments = (data: any) => {
     const minYear = 2000;
     const maxYear = 2022;
 
-    data = data.map((item: any, index: number) => ({ ...item, id: index + 1, publishYear: Math.floor(Math.random() * (maxYear - minYear + 1)) + minYear }));
+    data = data.map((item: any, index: number) => ({ ...item, id: index + 1, publishYear: item.publishYear || Math.floor(Math.random() * (maxYear - minYear + 1)) + minYear }));
     return DocumentSchema.bulkCreate(data, { transaction });
   })
 }

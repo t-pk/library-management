@@ -71,6 +71,13 @@ export const documentTypeSeeds = [
 		"status" : true,
 		"createdAt" : "2023-09-21T00:25:00.000Z",
 		"updatedAt" : "2023-09-21T00:25:00.000Z"
+	},
+	{
+		"id" : 11,
+		"name" : "Truyện",
+		"status" : true,
+		"createdAt" : "2023-09-21T00:25:00.000Z",
+		"updatedAt" : "2023-09-21T00:25:00.000Z"
 	}
 ];
 
