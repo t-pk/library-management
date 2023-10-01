@@ -1,5 +1,6 @@
-import { notification } from 'antd';
+import { notification, Layout } from 'antd';
 import './ui.scss';
+const { Footer } = Layout;
 
 const PublicLayout = ({ element: Component }) => {
   const [api, contextHolder] = notification.useNotification();
@@ -36,6 +37,7 @@ const PublicLayout = ({ element: Component }) => {
     <>
       {contextHolder}
       <Component listenOn={listenOn} callDatabase={callDatabase} listenOnce={listenOnce} openNotification={openNotification} />
+      <Footer style={{ textAlign: 'center' }}>{`Created by T ©${new Date().getFullYear()}`}</Footer>
     </>
   );
 };

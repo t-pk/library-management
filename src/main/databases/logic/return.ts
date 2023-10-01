@@ -31,7 +31,7 @@ export const createReturn = async (request: any) => {
       raw: true,
       transaction,
     });
-    
+
     const documents = await DocumentSchema.findAll({ where: { id: { [Op.in]: request.documentIds } }, transaction, raw: true });
     documents.forEach(async (document: any) => {
       const data = {

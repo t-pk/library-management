@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Layout, Menu, Spin, theme, message, notification } from 'antd';
+import { Layout, Menu, Spin, theme, notification } from 'antd';
 import { AppstoreOutlined, MailOutlined } from '@ant-design/icons';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import backgroundUrl from '../assets/background.svg';
-const { Header, Content, Sider } = Layout;
+const { Header, Content, Sider, Footer } = Layout;
 import './ui.scss';
 
 const PrivateLayout = ({ element: Component }) => {
@@ -148,6 +148,7 @@ const PrivateLayout = ({ element: Component }) => {
               />
             </Content>
           </Spin>
+          <Footer style={{ textAlign: 'center' }}>{`Created by T ©${new Date().getFullYear()}`}</Footer>
         </Layout>
       </Layout>
     </>
