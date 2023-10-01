@@ -57,7 +57,7 @@ const ReturnCreatePage = (props) => {
       if (arg.data) {
         form.resetFields(['documentIds']);
         getInitData({ borrowId: form.getFieldValue('borrowId') });
-        props.openNotification('success', 'Tạo thành công Phiếu Trả.');
+        props.openNotification('success', 'Đã Tạo Phiếu Trả.');
         setIReturn(arg.data);
       }
       setLoading(false);

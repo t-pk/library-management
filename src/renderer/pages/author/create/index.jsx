@@ -15,7 +15,7 @@ const AuthorCreatePage = (props) => {
 
     props.listenOnce(Author.create, async (arg) => {
       await delay(300);
-      if (arg.data) props.openNotification('success', 'Tạo thành công Tác Giả');
+      if (arg.data) props.openNotification('success', 'Đã Tạo Tác Giả');
       setLoading(false);
     });
   };

@@ -55,7 +55,7 @@ const BorrowCreatePage = (props) => {
       if (arg.data) {
         form.resetFields();
         console.log(arg.data);
-        props.openNotification('success', 'Tạo thành công Phiếu Mượn.');
+        props.openNotification('success', 'Đã Tạo Phiếu Mượn.');
         setBorrow(arg.data);
       }
 

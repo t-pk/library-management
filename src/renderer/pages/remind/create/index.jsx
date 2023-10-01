@@ -50,7 +50,7 @@ const RemindCreatePage = (props) => {
 
       if (arg.data) {
         form.resetFields();
-        props.openNotification('success', 'Tạo thành công Phiếu Nhắc Nhở');
+        props.openNotification('success', 'Đã Tạo Phiếu Nhắc Nhở');
         setRemind(arg.data);
       }
       setLoading(false);

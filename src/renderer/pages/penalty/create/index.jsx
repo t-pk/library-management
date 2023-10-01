@@ -50,7 +50,7 @@ const PenaltyCreatePage = (props) => {
       await delay(300);
       if (arg.data) {
         form.resetFields();
-        props.openNotification('success', 'Tạo thành công Phiếu Phạt.');
+        props.openNotification('success', 'Đã Tạo Phiếu Phạt.');
         setPenalty(arg.data);
       }
       setLoading(false);
@@ -177,7 +177,7 @@ const PenaltyCreatePage = (props) => {
           </Form.Item>
 
           <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...props.widthStyle }}>
-            <Button loading={loading} style={{ minWidth: '47%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
+            <Button disabled={Object.keys(penalty).length} loading={loading} style={{ minWidth: '47%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
               {' '}
               Submit{' '}
             </Button>
