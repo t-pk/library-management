@@ -1,5 +1,5 @@
 import pg from 'pg';
-import Sequelize, {ConnectionRefusedError} from 'sequelize';
+import Sequelize, { ConnectionRefusedError } from 'sequelize';
 import { IBorrowDetail } from './schema/borrow-detail';
 import { IBorrow } from './schema/borrow';
 import { IDocument } from './schema/document';
@@ -31,7 +31,7 @@ const urlConnection = 'postgres://postgres:123456@localhost:5433/library';
 
 export const sequelize = new Sequelize.Sequelize(urlConnection, {
   dialectModule: pg,
-  logging: process.env.NODE_ENV === 'production' ? false: true,
+  logging: process.env.NODE_ENV === 'production' ? false : true,
   pool: { max: 5, min: 0, idle: 10000 },
 });
 
@@ -48,7 +48,7 @@ export const BorrowSchema = sequelize.define('borrows', IBorrow, { ...attributeC
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const BorrowDetailSchema = sequelize.define('borrowDetails', IBorrowDetail, { ...attributeCommon, updatedAt: false, tableName: 'borrow_details' });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const DocumentSchema = sequelize.define('documents', IDocument, {...attributeCommon, tableName: 'documents'});
+export const DocumentSchema = sequelize.define('documents', IDocument, { ...attributeCommon, tableName: 'documents' });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const ReaderSchema = sequelize.define('readers', IReader, { ...attributeCommon, tableName: 'readers' });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
@@ -56,11 +56,11 @@ export const ReturnSchema = sequelize.define('returns', IReturn, { ...attributeC
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const ReturnDetailSchema = sequelize.define('returnDetails', IReturnDetail, { ...attributeCommon, updatedAt: false, tableName: 'return_details' });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const UserSchema = sequelize.define('users', IUser, {...attributeCommon, tableName: 'users'});
+export const UserSchema = sequelize.define('users', IUser, { ...attributeCommon, tableName: 'users' });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const AuthorSchema = sequelize.define('authors', IAuthor, {...attributeCommon, tableName: 'authors'});
+export const AuthorSchema = sequelize.define('authors', IAuthor, { ...attributeCommon, tableName: 'authors' });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const PublisherSchema = sequelize.define('publishers', IPublisher, {...attributeCommon, tableName: 'publishers'});
+export const PublisherSchema = sequelize.define('publishers', IPublisher, { ...attributeCommon, tableName: 'publishers' });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const DocumentTypeSchema = sequelize.define('documentTypes', IDocumentType, { ...attributeCommon, tableName: 'document_types' });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
@@ -181,8 +181,8 @@ export const handleData = async (arg: any, data: any) => {
     }
     return result;
   } catch (error) {
-    if(error instanceof ConnectionRefusedError) {
-     throw `Cannot connect to Database ${error.message}`;
+    if (error instanceof ConnectionRefusedError) {
+      throw `Cannot connect to Database ${error.message}`;
     }
     throw error;
   }

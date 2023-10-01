@@ -37,7 +37,8 @@
     "test": "jest",
     "format": "prettier --write src/**/*.{ts,tsx,js,jsx,scss,css,json} --print-width 160",
     "seed": "ts-node src/main/databases/migrate/seed.ts",
-    "mock": "ts-node src/main/databases/migrate/mock.ts"
+    "mock": "ts-node src/main/databases/migrate/mock.ts",
+    "reset-data": "ts-node src/main/databases/migrate/reset-data.ts"
   },
   "browserslist": [],
   "prettier": {

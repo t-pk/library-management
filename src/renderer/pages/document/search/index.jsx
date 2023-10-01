@@ -186,7 +186,7 @@ const DocumentSearchPage = (props) => {
     setLoading(true);
     debounceFc(inputState);
   };
-  
+
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
   };
@@ -257,12 +257,20 @@ const DocumentSearchPage = (props) => {
           </Button>
         </Form.Item>
       </Form>
-      <Table columns={columns} dataSource={documents} loading={loading} rowKey={'id'} tableLayout={'fixed'}   scroll={{ x: 1400, y: 450 }}  pagination={{
+      <Table
+        columns={columns}
+        dataSource={documents}
+        loading={loading}
+        rowKey={'id'}
+        tableLayout={'fixed'}
+        scroll={{ x: 1400, y: 450 }}
+        pagination={{
           current: currentPage,
           pageSize: pageSize,
           total: documents.length,
           onChange: handlePageChange,
-        }}/>
+        }}
+      />
     </>
   );
 };

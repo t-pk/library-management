@@ -218,7 +218,7 @@ const BorrowCreatePage = (props) => {
               icon={<EyeOutlined />}
             >
               {' '}
-              Xem {' '}
+              Xem{' '}
             </Button>
           </Form.Item>
         </Form>

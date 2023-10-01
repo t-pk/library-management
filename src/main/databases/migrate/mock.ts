@@ -7,4 +7,4 @@ import { createPublisher, publisherSeeds } from './publisher';
   await createPublisher(publisherSeeds);
   await createDocuments(documentSeeds);
   process.exit();
-})()
+})();

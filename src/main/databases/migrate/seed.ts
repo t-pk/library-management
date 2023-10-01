@@ -7,4 +7,4 @@ import { createUsers, userSeeds } from './user';
   await createDocumentTypes(documentTypeSeeds);
   await createReaderTypes(readerTypeSeeds);
   process.exit();
-})()
+})();

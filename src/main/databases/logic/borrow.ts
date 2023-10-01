@@ -99,16 +99,16 @@ export const createBorrow = async (request: any) => {
       raw: true,
       returning: true,
     });
-    const documents = await DocumentSchema.findAll({ where: { id: { [Op.in]: request.documentIds } }, transaction,raw: true });
-   
+    const documents = await DocumentSchema.findAll({ where: { id: { [Op.in]: request.documentIds } }, transaction, raw: true });
+
     const checkDoc: any = documents.find((document: any) => document.availableQuantity < 1);
-    
+
     if (checkDoc) throw `Tài Liệu ${checkDoc.name} đã hết. Vui lòng kiểm tra số lượng`;
-    
+
     documents.forEach(async (document: any) => {
       const data = {
-        availableQuantity: document.availableQuantity - 1
-      }
+        availableQuantity: document.availableQuantity - 1,
+      };
       await DocumentSchema.update(data, { where: { id: document.id }, transaction });
     });
 
