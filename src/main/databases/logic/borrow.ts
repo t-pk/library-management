@@ -9,82 +9,82 @@ interface IObject {
 }
 
 export const getBorrows = async (request: any) => {
-    let readerQuery: IObject = {};
-    let borrowQuery: IObject = {};
-    let borrowDetailQuery: IObject = {};
+  let readerQuery: IObject = {};
+  let borrowQuery: IObject = {};
+  let borrowDetailQuery: IObject = {};
 
-    if (request.documentIds && request.documentIds.length) {
-      borrowDetailQuery.documentId = { [Op.in]: request.documentIds };
-    }
-    if (request.borrowId) borrowQuery.id = request.borrowId;
-    if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
-    if (request.studentId) readerQuery.studentId = request.studentId;
-    if (request.readerTypeId) readerQuery.readerTypeId = request.readerTypeId;
-    if (request.civilServantId) readerQuery.civilServantId = request.civilServantId;
-    if (request.readerId) readerQuery.id = request.readerId;
+  if (request.documentIds && request.documentIds.length) {
+    borrowDetailQuery.documentId = { [Op.in]: request.documentIds };
+  }
+  if (request.borrowId) borrowQuery.id = request.borrowId;
+  if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
+  if (request.studentId) readerQuery.studentId = request.studentId;
+  if (request.readerTypeId) readerQuery.readerTypeId = request.readerTypeId;
+  if (request.civilServantId) readerQuery.civilServantId = request.civilServantId;
+  if (request.readerId) readerQuery.id = request.readerId;
 
-    const borrows = await BorrowDetailSchema.findAll({
-      where: borrowDetailQuery,
-      include: [
-        {
-          model: DocumentSchema,
-        },
-        {
-          model: ReturnDetailSchema,
-        },
-        {
-          model: BorrowSchema,
-          where: borrowQuery,
-          include: [
-            {
-              model: ReaderSchema,
-              where: readerQuery,
-            },
-          ],
-        },
-      ],
-      order: [
-        ['borrowId', 'DESC'],
-        ['id', 'DESC'],
-      ],
-    });
-    let borrowsJSON = borrows.map((borrow) => borrow.toJSON());
+  const borrows = await BorrowDetailSchema.findAll({
+    where: borrowDetailQuery,
+    include: [
+      {
+        model: DocumentSchema,
+      },
+      {
+        model: ReturnDetailSchema,
+      },
+      {
+        model: BorrowSchema,
+        where: borrowQuery,
+        include: [
+          {
+            model: ReaderSchema,
+            where: readerQuery,
+          },
+        ],
+      },
+    ],
+    order: [
+      ['borrowId', 'DESC'],
+      ['id', 'DESC'],
+    ],
+  });
+  let borrowsJSON = borrows.map((borrow) => borrow.toJSON());
 
-    const borrowObj: { [key in string]: number } = countBy(borrows, 'borrowId');
+  const borrowObj: { [key in string]: number } = countBy(borrows, 'borrowId');
 
-    let resultObj: { [key in string]: number } = {};
+  let resultObj: { [key in string]: number } = {};
 
-    const limit = 20;
-    let count = 0;
-    let mark = 0;
+  const limit = 20;
+  let count = 0;
+  let mark = 0;
 
-    for (const [_, value] of Object.entries(borrowObj).reverse()) {
-      count += value;
-      if (Math.floor(count / limit) > mark) {
-        let start = mark * limit;
-        const end = count;
+  for (const [_, value] of Object.entries(borrowObj).reverse()) {
+    count += value;
+    if (Math.floor(count / limit) > mark) {
+      let start = mark * limit;
+      const end = count;
 
-        let jump = Math.floor(count / limit) - mark;
+      let jump = Math.floor(count / limit) - mark;
 
-        if (jump <= 0) continue;
-        else {
-          while (jump > 0) {
-            ++mark;
-            while (start + limit < end) {
-              resultObj[start + limit] = mark * limit - (count - value);
-              start++;
-            }
-            jump--;
+      if (jump <= 0) continue;
+      else {
+        while (jump > 0) {
+          ++mark;
+          while (start + limit < end) {
+            resultObj[start + limit] = mark * limit - (count - value);
+            start++;
           }
+          jump--;
         }
       }
     }
-    borrowsJSON = borrowsJSON.map((borrow, index) => ({
-      ...borrow,
-      countBorrowId: borrowObj[borrow.borrowId],
-      rest: resultObj[index] || 0,
-    }));
-    return borrowsJSON;
+  }
+  borrowsJSON = borrowsJSON.map((borrow, index) => ({
+    ...borrow,
+    countBorrowId: borrowObj[borrow.borrowId],
+    rest: resultObj[index] || 0,
+  }));
+  return borrowsJSON;
 };
 
 export const createBorrow = async (request: any) => {
@@ -99,7 +99,18 @@ export const createBorrow = async (request: any) => {
       raw: true,
       returning: true,
     });
-    const documents = await DocumentSchema.findAll({ where: { id: { [Op.in]: request.documentIds } }, raw: true });
+    const documents = await DocumentSchema.findAll({ where: { id: { [Op.in]: request.documentIds } }, transaction,raw: true });
+   
+    const checkDoc: any = documents.find((document: any) => document.availableQuantity < 1);
+    
+    if (checkDoc) throw `Tài Liệu ${checkDoc.name} đã hết. Vui lòng kiểm tra số lượng`;
+    
+    documents.forEach(async (document: any) => {
+      const data = {
+        availableQuantity: document.availableQuantity - 1
+      }
+      await DocumentSchema.update(data, { where: { id: document.id }, transaction });
+    });
 
     const borrowDetails = documents.map((document: any) => {
       let durationTime: any = new Date();

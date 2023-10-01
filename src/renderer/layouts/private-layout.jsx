@@ -70,6 +70,7 @@ const PrivateLayout = ({ element: Component }) => {
       message: `${type.toLocaleUpperCase()} Notification`,
       description: description,
       duration: 6,
+      key: description
     });
   };
 
@@ -83,7 +84,7 @@ const PrivateLayout = ({ element: Component }) => {
   const listenOn = async (callback) => {
     window.electron.ipcRenderer.on('ipc-database', async (arg) => {
       if (arg && arg.data) await callback(arg);
-      else openNotification('error', arg.error);
+      else return openNotification('error', arg.error);
     });
   };
 
@@ -91,7 +92,7 @@ const PrivateLayout = ({ element: Component }) => {
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {
       console.log(arg);
       if (arg && arg.key === key) await callback(arg);
-      if (!arg || arg.error) openNotification('error', arg.error);
+      if (arg.key === key &&(!arg || arg.error)) return openNotification('error', arg.error);
     });
   };
 

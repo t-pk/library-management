@@ -42,7 +42,7 @@ const DocumentSearchPage = (props) => {
     {
       title: 'Tên Tài Liệu',
       dataIndex: 'name',
-      width: '25%',
+      // width: '25%',
     },
     {
       title: 'Thể Loại',
@@ -67,6 +67,16 @@ const DocumentSearchPage = (props) => {
       dataIndex: 'special',
       align: 'center',
       render: (text) => <Tag color={text ? 'green' : 'orange'}>{text ? 'Yes' : 'No'}</Tag>,
+    },
+    {
+      title: 'Số Lượng',
+      align: 'center',
+      dataIndex: 'quantity',
+    },
+    {
+      title: 'Có Sẵn',
+      align: 'center',
+      dataIndex: 'availableQuantity',
     },
     {
       title: 'Action',
@@ -240,7 +250,7 @@ const DocumentSearchPage = (props) => {
           </Button>
         </Form.Item>
       </Form>
-      <Table columns={columns} dataSource={documents} loading={loading} rowKey={'id'} tableLayout={'fixed'} />
+      <Table columns={columns} dataSource={documents} loading={loading} rowKey={'id'} tableLayout={'fixed'}   scroll={{ x: 1400, y: 450 }}/>
     </>
   );
 };

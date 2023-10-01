@@ -1,5 +1,5 @@
-import Sequelize, {ConnectionRefusedError} from 'sequelize';
 import pg from 'pg';
+import Sequelize, {ConnectionRefusedError} from 'sequelize';
 import { IBorrowDetail } from './schema/borrow-detail';
 import { IBorrow } from './schema/borrow';
 import { IDocument } from './schema/document';
@@ -13,7 +13,6 @@ import { IDocumentType } from './schema/document-type';
 import { IReaderType } from './schema/reader-type';
 import { IRemind } from './schema/remind';
 import { IPenalty } from './schema/penalty';
-import { Document, Author, Borrow, BorrowDetail, DocumentType, Penalty, Publisher, Reader, ReaderType, Remind, Return, User } from '../../renderer/constants';
 import { getUser } from './logic/user';
 import { createDocument, getDocuments } from './logic/document';
 import { createAuthor, getAuthors } from './logic/author';
@@ -26,12 +25,13 @@ import { getBorrowDetail } from './logic/borrow-detail';
 import { createReturn, getReturns } from './logic/return';
 import { createRemind, getReminds } from './logic/remind';
 import { createPenalty, getPenalties } from './logic/penalty';
+import { Document, Author, Borrow, BorrowDetail, DocumentType, Penalty, Publisher, Reader, ReaderType, Remind, Return, User } from '../../renderer/constants';
 
 const urlConnection = 'postgres://postgres:123456@localhost:5433/library';
 
 export const sequelize = new Sequelize.Sequelize(urlConnection, {
   dialectModule: pg,
-  logging: true,
+  logging: process.env.NODE_ENV === 'production' ? false: true,
   pool: { max: 5, min: 0, idle: 10000 },
 });
 

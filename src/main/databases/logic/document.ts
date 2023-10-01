@@ -2,35 +2,40 @@ import { Op } from 'sequelize';
 import { AuthorSchema, DocumentSchema, PublisherSchema, unitOfWork, DocumentTypeSchema } from '../db';
 
 export const getDocuments = async (request: any) => {
-    let query: any = {};
-    if (request.name) {
-      query.name = { [Op.iLike]: '%' + request.name + '%' };
-    }
+  let query: any = {};
+  if (request.name) {
+    query.name = { [Op.iLike]: '%' + request.name + '%' };
+  }
 
-    if (request.id) query.id = request.id;
+  if (request.id) query.id = request.id;
 
-    if (request.type) query.type = request.type;
+  if (request.type) query.type = request.type;
 
-    if (request.publishYear) query.publishYear = request.publishYear;
+  if (request.publishYear) query.publishYear = request.publishYear;
 
-    if (request.special || request.special === false) query.special = request.special;
+  if (request.special || request.special === false) query.special = request.special;
 
-    if (request.documentTypes && request.documentTypes.length > 0) {
-      query.documentTypeId = { [Op.in]: request.documentTypes };
-    }
-    if (request.publishers && request.publishers.length > 0) {
-      query.publisherId = { [Op.in]: request.publishers };
-    }
-    if (request.authors && request.authors.length > 0) {
-      query.authorId = { [Op.in]: request.authors };
-    }
+  if (request.documentTypes && request.documentTypes.length > 0) {
+    query.documentTypeId = { [Op.in]: request.documentTypes };
+  }
+  if (request.publishers && request.publishers.length > 0) {
+    query.publisherId = { [Op.in]: request.publishers };
+  }
 
-    const result = await DocumentSchema.findAll({
-      where: query,
-      include: [AuthorSchema, PublisherSchema, DocumentTypeSchema],
-      limit: 50,
-    });
-    return result.map((document) => document.toJSON());
+  if (request.authors && request.authors.length > 0) {
+    query.authorId = { [Op.in]: request.authors };
+  }
+
+  if (request.availableQuantity) {
+    query.availableQuantity = { [Op.gte]: request.availableQuantity };
+  }
+
+  const result = await DocumentSchema.findAll({
+    where: query,
+    include: [AuthorSchema, PublisherSchema, DocumentTypeSchema],
+    limit: 50,
+  });
+  return result.map((document) => document.toJSON());
 };
 
 export const createDocument = async (request: any) => {

@@ -11,9 +11,13 @@ export const createReturn = async (request: any) => {
     let returnData: any = await ReturnSchema.findOrCreate({
       where: {
         borrowId: request.borrowId,
-        createdBy: 2,
         readerId: request.readerId,
+      },
+      defaults: {
         description: request.description || '',
+        createdBy: request.createdBy,
+        borrowId: request.borrowId,
+        readerId: request.readerId,
       },
       transaction,
       raw: true,
@@ -41,85 +45,85 @@ export const createReturn = async (request: any) => {
 };
 
 export const getReturns = async (request: any) => {
-    let readerQuery: IObject = {};
-    let returnQuery: IObject = {};
-    let borrowDetail: IObject = {};
+  let readerQuery: IObject = {};
+  let returnQuery: IObject = {};
+  let borrowDetail: IObject = {};
 
-    if (request.documentIds && request.documentIds.length) {
-      borrowDetail.documentId = { [Op.in]: request.documentIds };
-    }
-    if (request.id) returnQuery.id = request.id;
-    if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
-    if (request.studentId) readerQuery.studentId = request.studentId;
-    if (request.readerTypeId) readerQuery.readerTypeId = request.readerTypeId;
-    if (request.civilServantId) readerQuery.civilServantId = request.civilServantId;
+  if (request.documentIds && request.documentIds.length) {
+    borrowDetail.documentId = { [Op.in]: request.documentIds };
+  }
+  if (request.id) returnQuery.id = request.id;
+  if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
+  if (request.studentId) readerQuery.studentId = request.studentId;
+  if (request.readerTypeId) readerQuery.readerTypeId = request.readerTypeId;
+  if (request.civilServantId) readerQuery.civilServantId = request.civilServantId;
 
-    if (request.readerId) readerQuery.id = request.readerId;
+  if (request.readerId) readerQuery.id = request.readerId;
 
-    const returnDetails = await ReturnDetailSchema.findAll({
-      include: [
-        {
-          model: ReturnSchema,
-          include: [
-            {
-              model: ReaderSchema,
-              where: readerQuery,
-            },
-          ],
-          where: returnQuery,
-          required: true,
-        },
-        {
-          model: BorrowDetailSchema,
-          include: [
-            {
-              model: DocumentSchema,
-            },
-          ],
-          where: borrowDetail,
-        },
-      ],
-      order: [
-        ['returnId', 'DESC'],
-        ['id', 'DESC'],
-      ],
-    });
+  const returnDetails = await ReturnDetailSchema.findAll({
+    include: [
+      {
+        model: ReturnSchema,
+        include: [
+          {
+            model: ReaderSchema,
+            where: readerQuery,
+          },
+        ],
+        where: returnQuery,
+        required: true,
+      },
+      {
+        model: BorrowDetailSchema,
+        include: [
+          {
+            model: DocumentSchema,
+          },
+        ],
+        where: borrowDetail,
+      },
+    ],
+    order: [
+      ['returnId', 'DESC'],
+      ['id', 'DESC'],
+    ],
+  });
 
-    let returnJSON = returnDetails.map((iReturn) => iReturn.toJSON());
+  let returnJSON = returnDetails.map((iReturn) => iReturn.toJSON());
 
-    const returnObj: { [key in string]: number } = countBy(returnDetails, 'returnId');
-    let resultObj: { [key in string]: number } = {};
+  const returnObj: { [key in string]: number } = countBy(returnDetails, 'returnId');
+  let resultObj: { [key in string]: number } = {};
 
-    const limit = 20;
-    let count = 0;
-    let mark = 0;
+  const limit = 20;
+  let count = 0;
+  let mark = 0;
 
-    for (const [_, value] of Object.entries(returnObj).reverse()) {
-      count += value;
-      if (Math.floor(count / limit) > mark) {
-        let start = mark * limit;
-        const end = count;
+  for (const [_, value] of Object.entries(returnObj).reverse()) {
+    count += value;
+    if (Math.floor(count / limit) > mark) {
+      let start = mark * limit;
+      const end = count;
 
-        let jump = Math.floor(count / limit) - mark;
+      let jump = Math.floor(count / limit) - mark;
 
-        if (jump <= 0) continue;
-        else {
-          while (jump > 0) {
-            ++mark;
-            while (start + limit < end) {
-              resultObj[start + limit] = mark * limit - (count - value);
-              start++;
-            }
-            jump--;
+      if (jump <= 0) continue;
+      else {
+        while (jump > 0) {
+          ++mark;
+          while (start + limit < end) {
+            resultObj[start + limit] = mark * limit - (count - value);
+            start++;
           }
+          jump--;
         }
       }
     }
-    returnJSON = returnJSON.map((iReturn, index) => ({
-      ...iReturn,
-      countReturnId: returnObj[iReturn.returnId],
-      rest: resultObj[index] || 0,
-    }));
+  }
+  returnJSON = returnJSON.map((iReturn, index) => ({
+    ...iReturn,
+    countReturnId: returnObj[iReturn.returnId],
+    rest: resultObj[index] || 0,
+  }));
 
-    return returnJSON;
+  return returnJSON;
 };

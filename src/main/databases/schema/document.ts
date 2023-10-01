@@ -40,6 +40,10 @@ export const IDocument = {
     type: DataTypes.SMALLINT,
     allowNull: false,
   },
+  availableQuantity: {
+    type: DataTypes.SMALLINT,
+    allowNull: false,
+  },
   createdAt: {
     type: DataTypes.DATE,
     defaultValue: Sequelize.fn('now'),

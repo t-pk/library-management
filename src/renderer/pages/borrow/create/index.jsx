@@ -33,7 +33,7 @@ const BorrowCreatePage = (props) => {
 
   const getInitData = () => {
     props.callDatabase({ key: ReaderType.search });
-    props.callDatabase({ key: Document.search });
+    props.callDatabase({ key: Document.search, data: { availableQuantity: 1 } });
 
     props.listenOn(async (arg) => {
       if (arg && arg.data) {

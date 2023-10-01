@@ -55,6 +55,7 @@ const DocumentCreatePage = (props) => {
       quantity: values.quantity,
       publishYear: values.publishYear,
       special: values.special,
+      availableQuantity: values.quantity
     };
     props.callDatabase({ key: Document.create, data });
 
