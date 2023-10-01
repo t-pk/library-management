@@ -1,10 +1,12 @@
 import { useState, useCallback, useEffect } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Table, Form, Radio } from 'antd';
+import { Button, Input, Table, Form, Radio, Space } from 'antd';
 import debounce from 'lodash.debounce';
-import { ReaderType, Remind } from 'renderer/constants';
+import { ReaderType, Remind, RemindDetail } from 'renderer/constants';
 import { useLocation } from 'react-router-dom';
-import { queryStringToObject } from '../../../utils/helper';
+import { queryStringToObject, formatDateTime, delay } from '../../../utils/helper';
+
+import './ui.scss';
 
 const RemindSearchPage = (props) => {
   const location = useLocation();
@@ -15,6 +17,7 @@ const RemindSearchPage = (props) => {
   const [readerTypes, setReaderTypes] = useState([]);
   const readerTypeId = Form.useWatch('readerTypeId', form);
   const [currentPage, setCurrentPage] = useState(1);
+  const [remindDetail, setRemindDetail] = useState([]);
   const pageSize = 20; // Number of items per page
 
   const columns = [
@@ -123,6 +126,48 @@ const RemindSearchPage = (props) => {
   const handlePageChange = (page, pageSize) => {
     setCurrentPage(page);
   };
+  const clickExpand = (isOpen, record) => {
+    if (!isOpen) return setRemindDetail([]);
+    setLoading(true);
+    props.callDatabase({ key: RemindDetail.search, data: record });
+    props.listenOnce(RemindDetail.search, async (arg) => {
+      await delay(100);
+      setLoading(false);
+      setRemindDetail(arg.data || []);
+    });
+  };
+  const expandedRowRender = () => {
+    const columns = [
+      {
+        title: 'Mã Phiếu Nhắc Nhở',
+        dataIndex: 'id',
+        align: 'center',
+      },
+      {
+        title: 'Mã Phiếu Trả',
+        dataIndex: 'returnId',
+        align: 'center',
+      },
+      {
+        title: 'Mô Tả',
+        dataIndex: 'description',
+        align: 'center',
+      },
+      {
+        title: 'Ngày Tạo',
+        dataIndex: 'createdAt',
+        align: 'center',
+        render: (createdAt) => {
+          return formatDateTime(createdAt);
+        },
+      },
+    ];
+    return (
+      <div className="color-table-children">
+        <Table size="small" bordered={true} rowKey={'id'} columns={columns} dataSource={remindDetail} pagination={false} />
+      </div>
+    );
+  };
 
   return (
     <>
@@ -176,6 +221,11 @@ const RemindSearchPage = (props) => {
           onChange: handlePageChange,
         }}
         scroll={{ x: 1400, y: 450 }}
+        expandable={{
+          expandedRowRender,
+          defaultExpandedRowKeys: ['0'],
+          onExpand: clickExpand,
+        }}
       />
     </>
   );

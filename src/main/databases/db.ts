@@ -23,9 +23,23 @@ import { createReader, getReaders } from './logic/reader';
 import { createBorrow, getBorrows } from './logic/borrow';
 import { getBorrowDetail } from './logic/borrow-detail';
 import { createReturn, getReturns } from './logic/return';
-import { createRemind, getReminds } from './logic/remind';
+import { createRemind, getRemindDetails, getReminds } from './logic/remind';
 import { createPenalty, getPenalties } from './logic/penalty';
-import { Document, Author, Borrow, BorrowDetail, DocumentType, Penalty, Publisher, Reader, ReaderType, Remind, Return, User } from '../../renderer/constants';
+import {
+  Document,
+  Author,
+  Borrow,
+  BorrowDetail,
+  DocumentType,
+  Penalty,
+  Publisher,
+  Reader,
+  ReaderType,
+  Remind,
+  Return,
+  User,
+  RemindDetail,
+} from '../../renderer/constants';
 
 const urlConnection = 'postgres://postgres:123456@localhost:5433/library';
 
@@ -175,6 +189,9 @@ export const handleData = async (arg: any, data: any) => {
         break;
       case Penalty.search:
         result = await getPenalties(data);
+        break;
+      case RemindDetail.search:
+        result = await getRemindDetails(data);
         break;
       default:
         break;

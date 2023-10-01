@@ -11,5 +11,6 @@ export const Borrow = { search: 'borrow-search', create: 'borrow-create' };
 export const BorrowDetail = { search: 'borrowDetail-search', create: 'borrowDetail-create' };
 export const Return = { search: 'return-search', create: 'return-create' };
 export const Remind = { search: 'remind-search', create: 'remind-create' };
+export const RemindDetail = { search: 'remindDetail-search' };
 export const Penalty = { search: 'penalty-search', create: 'penalty-create' };
 export const ReaderType = { search: 'readerType-search', create: 'readerType-create' };

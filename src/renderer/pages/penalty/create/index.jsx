@@ -177,7 +177,14 @@ const PenaltyCreatePage = (props) => {
           </Form.Item>
 
           <Form.Item label={' '} {...props.tailFormItemLayout} style={{ ...props.widthStyle }}>
-            <Button disabled={Object.keys(penalty).length} loading={loading} style={{ minWidth: '47%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
+            <Button
+              disabled={Object.keys(penalty).length}
+              loading={loading}
+              style={{ minWidth: '47%' }}
+              type="primary"
+              htmlType="submit"
+              icon={<SaveOutlined />}
+            >
               {' '}
               Submit{' '}
             </Button>

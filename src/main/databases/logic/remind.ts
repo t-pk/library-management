@@ -42,3 +42,24 @@ export const getReminds = async (request: any) => {
   let remindJSON = reminds.map((remind) => remind.toJSON());
   return remindJSON;
 };
+
+export const getRemindDetails = async (request: any) => {
+  let query: any = {};
+  if (request.fullName) query.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
+  if (request.studentId) query.studentId = request.studentId;
+  if (request.civilServantId) query.civilServantId = request.civilServantId;
+
+  const reminds = await RemindSchema.findAll({
+    include: [
+      {
+        model: ReturnSchema,
+        attributes: ['id'],
+        required: true,
+        include: [{ model: BorrowSchema, attributes: [], required: true, include: [{ model: ReaderSchema, attributes: [], where: query, required: true }] }],
+      },
+    ],
+    order: [['id', 'DESC']],
+  });
+  let remindJSON = reminds.map((remind) => remind.toJSON());
+  return remindJSON;
+};

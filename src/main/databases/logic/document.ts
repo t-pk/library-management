@@ -34,7 +34,7 @@ export const getDocuments = async (request: any) => {
     where: query,
     include: [AuthorSchema, PublisherSchema, DocumentTypeSchema],
     limit: 50,
-    order: [['updatedAt', 'DESC']]
+    order: [['updatedAt', 'DESC']],
   });
   return result.map((document) => document.toJSON());
 };

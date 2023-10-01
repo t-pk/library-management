@@ -31,6 +31,15 @@ export const createReturn = async (request: any) => {
       raw: true,
       transaction,
     });
+    
+    const documents = await DocumentSchema.findAll({ where: { id: { [Op.in]: request.documentIds } }, transaction, raw: true });
+    documents.forEach(async (document: any) => {
+      const data = {
+        availableQuantity: document.availableQuantity + 1,
+      };
+      await DocumentSchema.update(data, { where: { id: document.id }, transaction });
+    });
+
     const retrurnDetails = borrowDetails.map((borrowDetail: any) => ({
       borrowDetailId: borrowDetail.id,
       returnId: returnData[0].id,
