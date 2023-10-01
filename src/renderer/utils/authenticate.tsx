@@ -1,6 +1,6 @@
 import { scryptSync } from 'crypto';
 
 export const encryptPassword = (password: string) => {
-  const hash = scryptSync(password, `'EE101^^_ii_^^101EE'`, 64).toString('hex');
+  const hash = scryptSync(password, `'ExE101^^_i.+.i_^^101ExE'`, 64).toString('hex');
   return hash;
 };

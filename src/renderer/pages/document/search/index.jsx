@@ -42,7 +42,7 @@ const DocumentSearchPage = (props) => {
     {
       title: 'Tên Tài Liệu',
       dataIndex: 'name',
-      // width: '25%',
+      width: '25%',
     },
     {
       title: 'Thể Loại',

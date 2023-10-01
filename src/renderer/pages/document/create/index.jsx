@@ -48,6 +48,7 @@ const DocumentCreatePage = (props) => {
     const author = authors.find((author) => author.value === values.author);
     const publisher = publishers.find((publisher) => publisher.value === values.publisher);
     const data = {
+      id: values.id,
       name: values.name,
       documentTypeId: documentType.id,
       authorId: author.id,

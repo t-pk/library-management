@@ -48,7 +48,7 @@ export const BorrowSchema = sequelize.define('borrows', IBorrow, { ...attributeC
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const BorrowDetailSchema = sequelize.define('borrowDetails', IBorrowDetail, { ...attributeCommon, updatedAt: false, tableName: 'borrow_details' });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const DocumentSchema = sequelize.define('documents', IDocument, attributeCommon);
+export const DocumentSchema = sequelize.define('documents', IDocument, {...attributeCommon, tableName: 'documents'});
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const ReaderSchema = sequelize.define('readers', IReader, { ...attributeCommon, tableName: 'readers' });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
@@ -56,11 +56,11 @@ export const ReturnSchema = sequelize.define('returns', IReturn, { ...attributeC
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const ReturnDetailSchema = sequelize.define('returnDetails', IReturnDetail, { ...attributeCommon, updatedAt: false, tableName: 'return_details' });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const UserSchema = sequelize.define('users', IUser, attributeCommon);
+export const UserSchema = sequelize.define('users', IUser, {...attributeCommon, tableName: 'users'});
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const AuthorSchema = sequelize.define('authors', IAuthor, attributeCommon);
+export const AuthorSchema = sequelize.define('authors', IAuthor, {...attributeCommon, tableName: 'authors'});
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const PublisherSchema = sequelize.define('publishers', IPublisher, attributeCommon);
+export const PublisherSchema = sequelize.define('publishers', IPublisher, {...attributeCommon, tableName: 'publishers'});
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const DocumentTypeSchema = sequelize.define('documentTypes', IDocumentType, { ...attributeCommon, tableName: 'document_types' });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
