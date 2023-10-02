@@ -4,29 +4,20 @@ import { useNavigate } from 'react-router-dom';
 import icon from '../../assets/icon.jpeg';
 import backgroundUrl from '../../assets/background.svg';
 import { TOKEN_KEY, User } from '../../constants';
+import { delay } from 'renderer/utils/helper';
 const NOTI_LOGIN_FAIL = 'Tên Đăng Nhập hoặc Mật Khẩu không đúng. Vui lòng kiểm tra lại.';
 
 const LoginPage = (props) => {
   const navigate = useNavigate();
-  const [success, setSuccess] = useState('primary');
-
-  const sleep = (ms) => {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  };
-
+  const [btnType, setBtnType] = useState('primary');
   const [loading, setLoading] = useState(false);
-
-  const onFinishFailed = () => {
-    setLoading(false);
-    props.openNotification('error', NOTI_LOGIN_FAIL);
-  };
 
   const onFinish = async (user) => {
     setLoading(true);
-    setSuccess('default');
+    setBtnType('default');
     props.callDatabase({ key: User.login, data: user });
     props.listenOnce(User.login, async (arg) => {
-      await sleep(300);
+      await delay(300);
       setLoading(false);
       if (arg && arg.data) {
         localStorage.setItem(TOKEN_KEY, JSON.stringify(arg.data));
@@ -35,27 +26,37 @@ const LoginPage = (props) => {
       if (arg && !arg.error && !arg.data) {
         props.openNotification('error', NOTI_LOGIN_FAIL);
       }
-      setSuccess('primary');
+      setBtnType('primary');
     });
   };
 
   return (
     <div id="login-content">
       <img className="logo-login" src={backgroundUrl} style={{ width: '100%', position: 'absolute' }} alt="icon"></img>
-      <Form name="basic" initialValues={{ remember: true }} onFinish={onFinish} onFinishFailed={onFinishFailed} className="login-wrap">
+      <Form name="dynamic_rule" onFinish={onFinish} className="login-wrap">
         <img className="logo-login" src={icon} alt="icon" />
         <h3 className="logo-name"> Library Management </h3>
-        <Form.Item name="username" rules={[{ required: true, message: 'Please input your username!' }]}>
+        <Form.Item
+          name="username"
+          rules={[
+            { required: true, min: 4, max: 12, message: '4 <= username length <= 12 ' },
+          ]}
+        >
           <Input />
         </Form.Item>
 
-        <Form.Item name="password" rules={[{ required: true, message: 'Please input your password!' }]}>
+        <Form.Item
+          name="password"
+          rules={[
+            { required: true, min: 6, max: 24, message: '6 <= password length <= 24 ' },
+          ]}
+        >
           <Input.Password autoComplete="false" />
         </Form.Item>
 
         <Form.Item>
-          <Button className="login-button" type={success} htmlType="submit" loading={loading}>
-            Submit
+          <Button className="login-button" type={btnType} htmlType="submit" loading={loading}>
+            Login
           </Button>
         </Form.Item>
       </Form>

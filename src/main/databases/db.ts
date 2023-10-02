@@ -40,6 +40,7 @@ import {
   User,
   RemindDetail,
 } from '../../renderer/constants';
+import { IDocumentRequest } from './schema/document-request';
 
 const urlConnection = 'postgres://postgres:123456@localhost:5433/library';
 
@@ -83,6 +84,12 @@ export const ReaderTypeSchema = sequelize.define('readerTypes', IReaderType, { .
 export const RemindSchema = sequelize.define('reminds', IRemind, { ...attributeCommon, tableName: 'reminds' });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const PenaltySchema = sequelize.define('penalties', IPenalty, { ...attributeCommon, tableName: 'penalties' });
+/** @type import("sequelize").ModelStatic<import("sequelize").Model> */
+export const DocumentRequestSchema = sequelize.define('documentRequests', IDocumentRequest, {
+  ...attributeCommon,
+  tableName: 'document_requests',
+  updatedAt: false,
+});
 
 // BorrowSchema.belongsTo(DocumentSchema, { foreignKey: { allowNull: false, name: 'documentId' } });
 BorrowSchema.belongsTo(ReaderSchema, { foreignKey: { allowNull: false, name: 'readerId' } });
@@ -125,6 +132,9 @@ RemindSchema.belongsTo(ReturnSchema, { foreignKey: { allowNull: false, name: 're
 PenaltySchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
 PenaltySchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' } });
 PenaltySchema.belongsTo(ReturnSchema, { foreignKey: { allowNull: false, name: 'returnId' } });
+
+DocumentRequestSchema.belongsTo(UserSchema, { foreignKey: { allowNull: false, name: 'createdBy' } });
+DocumentRequestSchema.belongsTo(UserSchema, { foreignKey: { allowNull: false, name: 'approvedBy' } });
 
 export const handleData = async (arg: any, data: any) => {
   let result;
