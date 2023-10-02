@@ -149,7 +149,7 @@ const ReturnSearchPage = (props) => {
     props.callDatabase({ key: Return.search, data: reState });
     props.listenOnce(Return.search, (arg) => {
       setLoading(false);
-      setReturns(arg.data);
+      setReturns(arg.data || []);
     });
   };
   const createReturns = (key, record) => () => {
