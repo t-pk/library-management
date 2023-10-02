@@ -39,8 +39,10 @@ import {
   Return,
   User,
   RemindDetail,
+  DocumentRequest,
 } from '../../renderer/constants';
 import { IDocumentRequest } from './schema/document-request';
+import { createDocumentRequest, getDocumentRequests } from './logic/document-request';
 
 const urlConnection = 'postgres://postgres:123456@localhost:5433/library';
 
@@ -91,7 +93,9 @@ export const DocumentRequestSchema = sequelize.define('documentRequests', IDocum
   updatedAt: false,
 });
 
-// BorrowSchema.belongsTo(DocumentSchema, { foreignKey: { allowNull: false, name: 'documentId' } });
+AuthorSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
+AuthorSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' } });
+
 BorrowSchema.belongsTo(ReaderSchema, { foreignKey: { allowNull: false, name: 'readerId' } });
 BorrowSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
 BorrowSchema.hasOne(ReturnSchema);
@@ -203,6 +207,13 @@ export const handleData = async (arg: any, data: any) => {
       case RemindDetail.search:
         result = await getRemindDetails(data);
         break;
+      case DocumentRequest.create:
+        result = await createDocumentRequest(data);
+        break;
+      case DocumentRequest.search:
+        result = await getDocumentRequests(data);
+        break;
+
       default:
         break;
     }

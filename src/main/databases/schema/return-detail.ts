@@ -25,6 +25,6 @@ export const IReturnDetail = {
   },
   createdBy: {
     type: DataTypes.SMALLINT,
-    allowNull: false,
+    allowNull: true,
   },
 };

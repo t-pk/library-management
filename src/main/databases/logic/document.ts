@@ -40,7 +40,6 @@ export const getDocuments = async (request: any) => {
 };
 
 export const createDocument = async (request: any) => {
-  console.log(request);
   return unitOfWork(async (transaction: any) => {
     if (request.id) {
       await DocumentSchema.update(request, { where: { id: request.id }, transaction, returning: true });

@@ -20,6 +20,6 @@ export const IRemind = {
   },
   createdBy: {
     type: DataTypes.SMALLINT,
-    allowNull: false,
+    allowNull: true,
   },
 };

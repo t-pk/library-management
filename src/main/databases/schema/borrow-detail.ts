@@ -29,6 +29,6 @@ export const IBorrowDetail = {
   },
   createdBy: {
     type: DataTypes.SMALLINT,
-    allowNull: false,
+    allowNull: true,
   },
 };

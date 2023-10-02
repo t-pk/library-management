@@ -48,7 +48,7 @@ export const IReader = {
   },
   createdBy: {
     type: DataTypes.SMALLINT,
-    allowNull: false,
+    allowNull: true,
   },
   updatedAt: {
     type: DataTypes.DATE,

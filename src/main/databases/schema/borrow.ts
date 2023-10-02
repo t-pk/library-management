@@ -16,6 +16,6 @@ export const IBorrow = {
   },
   createdBy: {
     type: DataTypes.SMALLINT,
-    allowNull: false,
+    allowNull: true,
   },
 };

@@ -10,17 +10,26 @@ export const IDocumentRequest = {
     type: DataTypes.STRING(256),
     allowNull: false,
   },
-  authorName: {
+  author: {
     type: DataTypes.STRING(64),
     allowNull: false,
   },
-  publisherName: {
+  publisher: {
     type: DataTypes.STRING(64),
     allowNull: false,
   },
   status: {
     type: DataTypes.STRING(16),
     allowNull: false,
+  },
+  createdBy: {
+    type: DataTypes.SMALLINT,
+    allowNull: true,
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    defaultValue: Sequelize.fn('now'),
   },
   approvedBy: {
     type: DataTypes.SMALLINT,
@@ -30,13 +39,12 @@ export const IDocumentRequest = {
     type: DataTypes.DATE,
     allowNull: true,
   },
-  createdAt: {
+  rejectedBy: {
+    type: DataTypes.SMALLINT,
+    allowNull: true,
+  },
+  rejectedAt: {
     type: DataTypes.DATE,
     allowNull: true,
-    defaultValue: Sequelize.fn('now'),
-  },
-  createdBy: {
-    type: DataTypes.SMALLINT,
-    allowNull: false,
   },
 };
