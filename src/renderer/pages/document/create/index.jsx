@@ -64,7 +64,7 @@ const DocumentCreatePage = (props) => {
       await delay(300);
       if (arg.data) {
         setDocument(arg.data);
-        props.openNotification('success', 'Thêm - Cập Nhật thành công Tài Liệu');
+        props.openNotification('success', 'Thêm - Sửa thành công Tài Liệu');
         form.resetFields();
       }
       setLoading(false);

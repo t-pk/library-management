@@ -1,6 +1,20 @@
 import { useState, useEffect } from 'react';
 import { Layout, Menu, Spin, theme, notification, Dropdown, Space, Modal, Descriptions, Button } from 'antd';
-import { AppstoreOutlined, MailOutlined, CaretDownFilled } from '@ant-design/icons';
+import {
+  AppstoreOutlined,
+  BookOutlined,
+  CaretDownFilled,
+  FileSearchOutlined,
+  FileExcelOutlined,
+  FileDoneOutlined,
+  FileExclamationOutlined,
+  FileAddOutlined,
+  FileProtectOutlined,
+  AppstoreAddOutlined,
+  UsergroupAddOutlined,
+  UserAddOutlined,
+  UserSwitchOutlined,
+} from '@ant-design/icons';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import backgroundUrl from '../assets/background.svg';
 const { Header, Content, Sider, Footer } = Layout;
@@ -47,19 +61,40 @@ const PrivateLayout = ({ element: Component }) => {
     return { key, icon, children, label };
   }
   const items = [
-    getItem('Tài Liệu', '/', <MailOutlined />, [
-      getItem('Tìm Kiếm', '/document/search'),
-      getItem('Thêm - Cập Nhật', '/document/create'),
-      getItem('Yêu Cầu Tài Liệu', '/document/request'),
+    getItem('Tài Liệu', '/', <BookOutlined />, [
+      getItem('Tìm Kiếm', '/document/search', <FileSearchOutlined />),
+      getItem('Thêm - Sửa', '/document/create', <FileAddOutlined />),
+      getItem('Yêu Cầu', '/document/request', <AppstoreAddOutlined />),
     ]),
-    getItem('Độc Giả', '/reader', <AppstoreOutlined />, [getItem('Tìm Kiếm', '/reader/search'), getItem('Thêm - Cập Nhật', '/reader/create')]),
+    getItem('Độc Giả', '/reader', <UsergroupAddOutlined />, [
+      getItem('Tìm Kiếm', '/reader/search', <UserSwitchOutlined />),
+      getItem('Thêm - Sửa', '/reader/create', <UserAddOutlined />),
+    ]),
 
-    getItem('Phiếu mượn', '/borrow', <AppstoreOutlined />, [getItem('Tìm Kiếm', '/borrow/search'), getItem('Thêm Mới', '/borrow/create')]),
-    getItem('Phiếu Trả', '/return', <AppstoreOutlined />, [getItem('Tìm Kiếm', '/return/search'), getItem('Thêm Mới', '/return/create')]),
-    getItem('Phiếu Nhắc Nhở', '/remind', <AppstoreOutlined />, [getItem('Tìm Kiếm', '/remind/search'), getItem('Thêm Mới', '/remind/create')]),
-    getItem('Phiếu Phạt', '/penalty', <AppstoreOutlined />, [getItem('Tìm Kiếm', '/penalty/search'), getItem('Thêm - Cập Nhật', '/penalty/create')]),
-    getItem('Tác Giả', '/author', <AppstoreOutlined />, [getItem('Tìm Kiếm', '/author/search'), getItem('Thêm - Cập Nhật', '/author/create')]),
-    getItem('Nhà Xuất Bản', '/publisher', <AppstoreOutlined />, [getItem('Tìm Kiếm', '/publisher/search'), getItem('Thêm - Cập Nhật', '/publisher/create')]),
+    getItem('Phiếu mượn', '/borrow', <FileProtectOutlined />, [
+      getItem('Tìm Kiếm', '/borrow/search', <FileSearchOutlined />),
+      getItem('Thêm Mới', '/borrow/create', <FileAddOutlined />),
+    ]),
+    getItem('Phiếu Trả', '/return', <FileDoneOutlined />, [
+      getItem('Tìm Kiếm', '/return/search', <FileSearchOutlined />),
+      getItem('Thêm Mới', '/return/create', <FileAddOutlined />),
+    ]),
+    getItem('Phiếu Nhắc Nhở', '/remind', <FileExclamationOutlined />, [
+      getItem('Tìm Kiếm', '/remind/search', <FileSearchOutlined />),
+      getItem('Thêm Mới', '/remind/create', <FileAddOutlined />),
+    ]),
+    getItem('Phiếu Phạt', '/penalty', <FileExcelOutlined />, [
+      getItem('Tìm Kiếm', '/penalty/search', <FileSearchOutlined />),
+      getItem('Thêm - Sửa', '/penalty/create', <FileAddOutlined />),
+    ]),
+    getItem('Tác Giả', '/author', <UsergroupAddOutlined />, [
+      getItem('Tìm Kiếm', '/author/search', <UserSwitchOutlined />),
+      getItem('Thêm - Sửa', '/author/create', <UserAddOutlined />),
+    ]),
+    getItem('Nhà Xuất Bản', '/publisher', <UsergroupAddOutlined />, [
+      getItem('Tìm Kiếm', '/publisher/search', <UserSwitchOutlined />),
+      getItem('Thêm - Sửa', '/publisher/create', <UserAddOutlined />),
+    ]),
   ];
 
   const onOpenChange = (e) => {
