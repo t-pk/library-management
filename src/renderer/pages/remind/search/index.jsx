@@ -186,7 +186,7 @@ const RemindSearchPage = (props) => {
         initialValues={{ readerTypeId: undefined }}
       >
         <Form.Item name="readerId" label="Mã Độc Giả" style={props.widthStyle}>
-          <Input id="readerId" onChange={onChange} />
+          <Input type="number" id="readerId" onChange={onChange} />
         </Form.Item>
 
         <Form.Item name="fullName" label="Tên Độc Giả" style={props.widthStyle}>

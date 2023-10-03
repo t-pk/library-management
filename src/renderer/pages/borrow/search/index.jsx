@@ -273,11 +273,11 @@ const BorrowSearchPage = (props) => {
         initialValues={{ readerTypeId: undefined }}
       >
         <Form.Item name="borrowId" label="Mã Phiếu Mượn" style={props.widthStyle}>
-          <Input id="borrowId" onChange={onChange} />
+          <Input type="number" id="borrowId" onChange={onChange} />
         </Form.Item>
 
         <Form.Item label="Mã Độc Giả" style={props.widthStyle}>
-          <Input id="readerId" onChange={onChange} />
+          <Input type="number" id="readerId" onChange={onChange} />
         </Form.Item>
 
         <Form.Item name="documents" label="Tài Liệu" style={props.widthStyle}>

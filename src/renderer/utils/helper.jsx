@@ -62,5 +62,5 @@ export const parseDataSelect = (data) => {
 
 export const getUser = () => {
   const user = localStorage.getItem(TOKEN_KEY);
-  return JSON.parse(user);
+  return JSON.parse(user) || {};
 };

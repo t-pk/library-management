@@ -66,7 +66,7 @@ const PublisherSearchPage = (props) => {
     <>
       <Form style={{ display: 'flex' }} layout="vertical">
         <Form.Item style={style} label="Mã Nhà Xuất Bản">
-          <Input placeholder="" value={inputState.id} style={style} id="id" onChange={onChange} maxLength={8} />
+          <Input type="number" placeholder="" value={inputState.id} style={style} id="id" onChange={onChange} maxLength={8} />
         </Form.Item>
         <Form.Item style={style} label="Tên Nhà Xuât Bản">
           <Input placeholder="" value={inputState.name} style={style} id="name" onChange={onChange} />

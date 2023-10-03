@@ -166,7 +166,7 @@ const ReaderCreatePage = (props) => {
           <Input />
         </Form.Item>
 
-        <Form.Item name="email" label="Địa Chỉ Email" style={props.widthStyle}>
+        <Form.Item name="email" label="Email" style={props.widthStyle}>
           <Input />
         </Form.Item>
 

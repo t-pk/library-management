@@ -255,7 +255,7 @@ const ReturnSearchPage = (props) => {
         initialValues={{ readerTypeId: undefined }}
       >
         <Form.Item name="id" label="Mã Phiếu Trả" style={props.widthStyle}>
-          <Input id="id" onChange={onChange} />
+          <Input type="number" id="id" onChange={onChange} />
         </Form.Item>
         <Form.Item label="Mã Độc Giả" style={props.widthStyle}>
           <Input id="readerId" onChange={onChange} />

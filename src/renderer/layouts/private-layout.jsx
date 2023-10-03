@@ -127,7 +127,6 @@ const PrivateLayout = ({ element: Component }) => {
 
   const listenOnce = async (key, callback) => {
     window.electron.ipcRenderer.once('ipc-database', async (arg) => {
-      console.log(arg);
       if (arg && arg.key === key) await callback(arg);
       if (arg.key === key && (!arg || arg.error)) return openNotification('error', arg.error);
     });

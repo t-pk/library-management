@@ -77,7 +77,7 @@ const ReaderSearchPage = (props) => {
       dataIndex: 'phoneNumber',
     },
     {
-      title: 'Địa Chỉ Email',
+      title: 'Email',
       dataIndex: 'email',
     },
     {
@@ -208,7 +208,7 @@ const ReaderSearchPage = (props) => {
         initialValues={{ readerTypeId: undefined }}
       >
         <Form.Item name="id" label="Mã Độc Giả" style={props.widthStyle}>
-          <Input id="id" onChange={onChange} />
+          <Input type="number" id="id" onChange={onChange} />
         </Form.Item>
 
         <Form.Item label="Tên Độc Giả" style={props.widthStyle}>
@@ -231,7 +231,7 @@ const ReaderSearchPage = (props) => {
           <Input id="phoneNumber" onChange={onChange} />
         </Form.Item>
 
-        <Form.Item label="Địa Chỉ Email" style={props.widthStyle}>
+        <Form.Item label="Email" style={props.widthStyle}>
           <Input id="email" onChange={onChange} />
         </Form.Item>
 

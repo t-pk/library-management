@@ -213,7 +213,7 @@ const DocumentSearchPage = (props) => {
         initialValues={{ special: undefined }}
       >
         <Form.Item style={props.widthStyle} name="id" label="Mã Tài Liệu">
-          <Input placeholder="" value={inputState.id} id="id" onChange={onChange} maxLength={8} />
+          <Input type="number" placeholder="" value={inputState.id} id="id" onChange={onChange} maxLength={8} />
         </Form.Item>
         <Form.Item style={props.widthStyle} label="Tên Tài Liệu">
           <Input placeholder="" value={inputState.name} id="name" onChange={onChange} />
