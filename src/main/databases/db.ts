@@ -102,19 +102,19 @@ BorrowSchema.hasOne(ReturnSchema);
 
 BorrowDetailSchema.belongsTo(BorrowSchema, { foreignKey: { allowNull: false, name: 'borrowId' } });
 BorrowDetailSchema.belongsTo(DocumentSchema, { foreignKey: { allowNull: false, name: 'documentId' } });
-BorrowDetailSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' }, as:'createdInfo' });
+BorrowDetailSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' }, as: 'createdInfo' });
 BorrowDetailSchema.hasOne(ReturnDetailSchema, { foreignKey: { allowNull: true, name: 'borrowDetailId' } });
 
 DocumentSchema.belongsTo(AuthorSchema, { foreignKey: { allowNull: false, name: 'authorId' } });
 DocumentSchema.belongsTo(PublisherSchema, { foreignKey: { allowNull: false, name: 'publisherId' } });
 DocumentSchema.belongsTo(DocumentTypeSchema, { foreignKey: { allowNull: false, name: 'documentTypeId' } });
-DocumentSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' }, as:'createdInfo' });
-DocumentSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' }, as:'updatedInfo' });
+DocumentSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' }, as: 'createdInfo' });
+DocumentSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' }, as: 'updatedInfo' });
 
-ReaderSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' }, as:'createdInfo' });
+ReaderSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' }, as: 'createdInfo' });
 ReaderSchema.belongsTo(ReaderTypeSchema, { foreignKey: { allowNull: false, name: 'readerTypeId' } });
 ReaderSchema.hasMany(BorrowSchema);
-ReaderSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' }, as:'updatedInfo' });
+ReaderSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' }, as: 'updatedInfo' });
 ReaderTypeSchema.hasOne(ReaderSchema);
 
 ReturnSchema.belongsTo(ReaderSchema, { foreignKey: { allowNull: false, name: 'readerId' } });
@@ -125,21 +125,21 @@ ReturnSchema.belongsTo(BorrowSchema, { foreignKey: { allowNull: false, name: 'bo
 
 ReturnDetailSchema.belongsTo(ReturnSchema, { foreignKey: { allowNull: false, name: 'returnId' } });
 ReturnDetailSchema.belongsTo(BorrowDetailSchema, { foreignKey: { allowNull: false, name: 'borrowDetailId' } });
-ReturnDetailSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } , as:'createdInfo' });
+ReturnDetailSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' }, as: 'createdInfo' });
 
 UserSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
 UserSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' } });
 
-RemindSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' }, as:'createdInfo' });
+RemindSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' }, as: 'createdInfo' });
 RemindSchema.belongsTo(ReturnSchema, { foreignKey: { allowNull: false, name: 'returnId' } });
 
-PenaltySchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' }, as:'createdInfo'  });
-PenaltySchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' }, as:'updatedInfo'  });
+PenaltySchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' }, as: 'createdInfo' });
+PenaltySchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' }, as: 'updatedInfo' });
 PenaltySchema.belongsTo(ReturnSchema, { foreignKey: { allowNull: false, name: 'returnId' } });
 
-DocumentRequestSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' }, as:'createdInfo' });
-DocumentRequestSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'approvedBy' }, as:'approvedInfo' });
-DocumentRequestSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'rejectedBy' }, as:'rejectedInfo' });
+DocumentRequestSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' }, as: 'createdInfo' });
+DocumentRequestSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'approvedBy' }, as: 'approvedInfo' });
+DocumentRequestSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'rejectedBy' }, as: 'rejectedInfo' });
 
 export const handleData = async (arg: any, data: any) => {
   let result;

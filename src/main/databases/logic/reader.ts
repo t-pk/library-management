@@ -4,7 +4,7 @@ import { Op } from 'sequelize';
 export const createReader = async (request: any) => {
   return unitOfWork(async (transaction: any) => {
     if (request.id) {
-      let data = {...request};
+      let data = { ...request };
       delete data.createdBy;
       await ReaderSchema.update(data, { where: { id: request.id }, returning: true });
       return request;
@@ -34,9 +34,11 @@ export const getReaders = async (request: any) => {
 
   const readers = await ReaderSchema.findAll({
     where: query,
-    include: [{ model: ReaderTypeSchema },       { model: UserSchema, as: 'createdInfo', attributes: ['fullName'] },
-    { model: UserSchema, as: 'updatedInfo', attributes: ['fullName'] },
-  ],
+    include: [
+      { model: ReaderTypeSchema },
+      { model: UserSchema, as: 'createdInfo', attributes: ['fullName'] },
+      { model: UserSchema, as: 'updatedInfo', attributes: ['fullName'] },
+    ],
     order: [['id', 'ASC']],
   });
   const readersJSON = readers.map((reader) => reader.toJSON());

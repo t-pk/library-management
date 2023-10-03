@@ -26,7 +26,7 @@ export const getDocumentRequests = async (request: any) => {
   if (request.name) query.name = request.name;
   if (request.id) query.id = request.id;
 
-  const result= await DocumentRequestSchema.findAll({
+  const result = await DocumentRequestSchema.findAll({
     where: query,
     include: [
       { model: UserSchema, as: 'createdInfo', attributes: ['fullName'] },

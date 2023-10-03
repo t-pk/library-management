@@ -83,12 +83,12 @@ const DocumentSearchPage = (props) => {
     {
       title: 'Người Tạo',
       align: 'center',
-      dataIndex: ['createdInfo', 'fullName']
+      dataIndex: ['createdInfo', 'fullName'],
     },
     {
       title: 'Người Cập Nhật',
       align: 'center',
-      dataIndex: ['updatedInfo', 'fullName']
+      dataIndex: ['updatedInfo', 'fullName'],
     },
     {
       title: 'Action',

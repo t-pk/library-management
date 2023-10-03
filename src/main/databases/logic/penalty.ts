@@ -4,7 +4,7 @@ import { BorrowSchema, PenaltySchema, ReaderSchema, ReturnSchema, UserSchema, un
 export const createPenalty = async (request: any) => {
   return unitOfWork(async (transaction: any) => {
     if (request.id) {
-      let data = {...request};
+      let data = { ...request };
       delete data.createdBy;
       await PenaltySchema.update(data, { where: { id: request.id }, returning: true });
       return request;

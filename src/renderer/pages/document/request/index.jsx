@@ -69,7 +69,7 @@ const DocumentRequestPage = (props) => {
     {
       title: 'Từ Chối Bởi',
       align: 'center',
-      dataIndex: ['rejectedInfo', 'fullName']
+      dataIndex: ['rejectedInfo', 'fullName'],
     },
     {
       title: 'Ngày Từ Chối',
@@ -117,7 +117,6 @@ const DocumentRequestPage = (props) => {
     selectedRowKeys,
     onChange: (newSelectedRowKeys) => {
       setSelectedRowKeys(newSelectedRowKeys);
-
     },
     getCheckboxProps: (record) => ({
       disabled: record.status !== 'awaitingReview',
@@ -137,12 +136,12 @@ const DocumentRequestPage = (props) => {
       setSelectedRowKeys([]);
       setLoading(false);
     });
-  }
+  };
 
   const getPosition = () => {
     const user = localStorage.getItem(TOKEN_KEY);
     return JSON.parse(user).position;
-  }
+  };
 
   return (
     <>
@@ -180,21 +179,31 @@ const DocumentRequestPage = (props) => {
             Tạo{' '}
           </Button>
         </Form.Item>
-        <Form.Item label=" " {...props.tailFormItemLayout} style={{ ...props.widthStyle }} hidden={!(selectedRowKeys.length && getPosition() ==='ADMIN')}>
+        <Form.Item label=" " {...props.tailFormItemLayout} style={{ ...props.widthStyle }} hidden={!(selectedRowKeys.length && getPosition() === 'ADMIN')}>
           <Button onClick={updateDocumentStatus('approved')} style={{ minWidth: '47%' }} type="primary" icon={<CheckOutlined />}>
             {' '}
             Phê Duyệt{' '}
           </Button>
-          <Button onClick={updateDocumentStatus('rejected')} style={{ marginLeft: 8, minWidth: '47%' }} type='dashed' danger icon={<CloseOutlined />}>
+          <Button onClick={updateDocumentStatus('rejected')} style={{ marginLeft: 8, minWidth: '47%' }} type="dashed" danger icon={<CloseOutlined />}>
             {' '}
             Từ Chối{' '}
           </Button>
         </Form.Item>
       </Form>
-      <Table rowSelection={getPosition() ==='ADMIN' && {
-        type: 'checkbox',
-        ...rowSelection,
-      }} columns={columns} dataSource={documentRequests} loading={loading} rowKey={'id'} tableLayout={'fixed'} scroll={{ x: 1400, y: 450 }} />
+      <Table
+        rowSelection={
+          getPosition() === 'ADMIN' && {
+            type: 'checkbox',
+            ...rowSelection,
+          }
+        }
+        columns={columns}
+        dataSource={documentRequests}
+        loading={loading}
+        rowKey={'id'}
+        tableLayout={'fixed'}
+        scroll={{ x: 1400, y: 450 }}
+      />
     </>
   );
 };

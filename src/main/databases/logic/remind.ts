@@ -4,7 +4,7 @@ import { Op } from 'sequelize';
 export const createRemind = async (request: any) => {
   return unitOfWork(async (transaction: any) => {
     if (request.id) {
-      let data = {...request};
+      let data = { ...request };
       delete data.createdBy;
       await RemindSchema.update(data, { where: { id: request.id }, transaction, returning: true });
       return request;

@@ -32,7 +32,11 @@ export const getDocuments = async (request: any) => {
 
   const result = await DocumentSchema.findAll({
     where: query,
-    include: [AuthorSchema, PublisherSchema, DocumentTypeSchema, { model: UserSchema, as: 'createdInfo', attributes: ['fullName'] },
+    include: [
+      AuthorSchema,
+      PublisherSchema,
+      DocumentTypeSchema,
+      { model: UserSchema, as: 'createdInfo', attributes: ['fullName'] },
       { model: UserSchema, as: 'updatedInfo', attributes: ['fullName'] },
     ],
     limit: 50,
@@ -44,7 +48,7 @@ export const getDocuments = async (request: any) => {
 export const createDocument = async (request: any) => {
   return unitOfWork(async (transaction: any) => {
     if (request.id) {
-      let data = {...request};
+      let data = { ...request };
       delete data.createdBy;
       await DocumentSchema.update(data, { where: { id: request.id }, transaction, returning: true });
       return request;
