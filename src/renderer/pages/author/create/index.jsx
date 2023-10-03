@@ -32,7 +32,7 @@ const AuthorCreatePage = (props) => {
         style={{ display: 'flex', flexWrap: 'wrap' }}
         scrollToFirstError
       >
-        <Form.Item name="Id" label="Mã Tác Giả" style={props.widthStyle}>
+        <Form.Item name="Id" label="Id" style={props.widthStyle}>
           <Input disabled={true} />
         </Form.Item>
 

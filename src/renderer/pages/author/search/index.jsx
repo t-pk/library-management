@@ -65,7 +65,7 @@ const AuthorSearchPage = (props) => {
   return (
     <>
       <Form style={{ display: 'flex' }} layout="vertical">
-        <Form.Item style={style} label="Mã Tác Giả">
+        <Form.Item style={style} label="Id">
           <Input type="number" placeholder="" value={inputState.id} style={style} id="id" onChange={onChange} maxLength={8} />
         </Form.Item>
         <Form.Item style={style} label="Tên Tác Giả">

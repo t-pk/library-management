@@ -64,9 +64,10 @@ const AdministratorCreatePage = (props) => {
         style={{ display: 'flex', flexWrap: 'wrap' }}
         scrollToFirstError
       >
-        <Form.Item name="id" label="id" style={props.widthStyle}>
-          <Input />
+        <Form.Item name="id" label="Id" style={props.widthStyle}>
+          <Input disabled={true} />
         </Form.Item>
+
         <Form.Item
           name="fullName"
           label="Họ Và Tên"
