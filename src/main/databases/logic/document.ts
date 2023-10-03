@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { AuthorSchema, DocumentSchema, PublisherSchema, unitOfWork, DocumentTypeSchema } from '../db';
+import { AuthorSchema, DocumentSchema, PublisherSchema, unitOfWork, DocumentTypeSchema, UserSchema } from '../db';
 
 export const getDocuments = async (request: any) => {
   let query: any = {};
@@ -32,7 +32,9 @@ export const getDocuments = async (request: any) => {
 
   const result = await DocumentSchema.findAll({
     where: query,
-    include: [AuthorSchema, PublisherSchema, DocumentTypeSchema],
+    include: [AuthorSchema, PublisherSchema, DocumentTypeSchema, { model: UserSchema, as: 'createdInfo', attributes: ['fullName'] },
+      { model: UserSchema, as: 'updatedInfo', attributes: ['fullName'] },
+    ],
     limit: 50,
     order: [['updatedAt', 'DESC']],
   });
@@ -42,7 +44,9 @@ export const getDocuments = async (request: any) => {
 export const createDocument = async (request: any) => {
   return unitOfWork(async (transaction: any) => {
     if (request.id) {
-      await DocumentSchema.update(request, { where: { id: request.id }, transaction, returning: true });
+      let data = {...request};
+      delete data.createdBy;
+      await DocumentSchema.update(data, { where: { id: request.id }, transaction, returning: true });
       return request;
     }
     const document = await DocumentSchema.create(request, { transaction, returning: true, raw: true });

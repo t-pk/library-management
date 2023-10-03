@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, Checkbox, Form, Input } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { delay } from '../../../utils/helper';
-import { Author } from 'renderer/constants';
+import { Author } from '../../../constants';
 
 const AuthorCreatePage = (props) => {
   const [form] = Form.useForm();

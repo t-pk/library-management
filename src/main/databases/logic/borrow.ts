@@ -1,6 +1,6 @@
 import { Op } from 'sequelize';
 import countBy from 'lodash.countby';
-import { DocumentSchema, unitOfWork, BorrowSchema, BorrowDetailSchema, ReaderSchema, ReturnDetailSchema } from '../db';
+import { DocumentSchema, unitOfWork, BorrowSchema, BorrowDetailSchema, ReaderSchema, ReturnDetailSchema, UserSchema } from '../db';
 import { normalDocumentPeriod, specialDocumentPeriod } from '../../../renderer/constants/const';
 import { formatYmd, addDays } from '../../../renderer/utils/helper';
 
@@ -26,6 +26,7 @@ export const getBorrows = async (request: any) => {
   const borrows = await BorrowDetailSchema.findAll({
     where: borrowDetailQuery,
     include: [
+      { model: UserSchema, as: 'createdInfo', attributes: ['fullName'] },
       {
         model: DocumentSchema,
       },

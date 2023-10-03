@@ -6,7 +6,7 @@ export const getUser = async (request: any) => {
   const result = await UserSchema.findOne({
     where: { username: request.username, password },
     raw: true,
-    attributes: ['id', 'username', 'position'],
+    attributes: ['id', 'username', 'position', 'fullName', 'email', 'phoneNumber'],
   });
   return result;
 };

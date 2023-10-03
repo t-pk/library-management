@@ -4,7 +4,7 @@ import { SaveOutlined, ArrowLeftOutlined, EyeOutlined } from '@ant-design/icons'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { delay } from '../../../utils/helper';
 import { queryStringToObject, objectToQueryString } from '../../../utils/helper';
-import { ReaderType, Remind } from 'renderer/constants';
+import { ReaderType, Remind } from '../../../constants';
 
 const RemindCreatePage = (props) => {
   const navigate = useNavigate();

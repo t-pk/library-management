@@ -1,3 +1,4 @@
+import { TOKEN_KEY } from '../constants';
 export const objectToQueryString = (obj) => {
   const queryParams = new URLSearchParams(obj);
   return queryParams.toString();
@@ -57,4 +58,9 @@ export const parseDataSelect = (data) => {
     id: item.id,
     value: `${item.id} - ${item.name}`,
   }));
+};
+
+export const getUser = () => {
+  const user = localStorage.getItem(TOKEN_KEY);
+  return JSON.parse(user);
 };

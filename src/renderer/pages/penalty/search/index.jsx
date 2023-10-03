@@ -3,7 +3,7 @@ import { SearchOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { Button, Input, Table, Form, Radio } from 'antd';
 import debounce from 'lodash.debounce';
 import { formatDateTime, queryStringToObject } from '../../../utils/helper';
-import { Penalty, ReaderType } from 'renderer/constants';
+import { Penalty, ReaderType } from '../../../constants';
 import { useLocation } from 'react-router-dom';
 
 const PenaltySearchPage = (props) => {
@@ -54,7 +54,12 @@ const PenaltySearchPage = (props) => {
       align: 'center',
     },
     {
-      title: 'Ngày Tạo Phiếu Phạt',
+      title: 'Người Tạo',
+      dataIndex: ['createdInfo', 'fullName'],
+      align: 'center',
+    },
+    {
+      title: 'Ngày Tạo',
       dataIndex: 'createdAt',
       align: 'center',
       render: (dateTime) => {

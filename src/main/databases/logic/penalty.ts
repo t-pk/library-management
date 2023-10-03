@@ -1,10 +1,12 @@
 import { Op } from 'sequelize';
-import { BorrowSchema, PenaltySchema, ReaderSchema, ReturnSchema, unitOfWork } from '../db';
+import { BorrowSchema, PenaltySchema, ReaderSchema, ReturnSchema, UserSchema, unitOfWork } from '../db';
 
 export const createPenalty = async (request: any) => {
   return unitOfWork(async (transaction: any) => {
     if (request.id) {
-      await PenaltySchema.update(request, { where: { id: request.id }, returning: true });
+      let data = {...request};
+      delete data.createdBy;
+      await PenaltySchema.update(data, { where: { id: request.id }, returning: true });
       return request;
     }
     const penalty = await PenaltySchema.create(request, { transaction, returning: true, raw: true });
@@ -30,6 +32,7 @@ export const getPenalties = async (request: any) => {
   const penalties = await PenaltySchema.findAll({
     where: penaltyQuery,
     include: [
+      { model: UserSchema, as: 'createdInfo', attributes: ['fullName'] },
       {
         model: ReturnSchema,
         required: true,

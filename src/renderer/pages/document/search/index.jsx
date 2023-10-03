@@ -3,7 +3,7 @@ import { SearchOutlined, DownOutlined } from '@ant-design/icons';
 import { Button, Input, Select, Table, Form, Tag, InputNumber, Radio, Space, Dropdown } from 'antd';
 import debounce from 'lodash.debounce';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Author, Document, DocumentType, Publisher } from 'renderer/constants';
+import { Author, Document, DocumentType, Publisher } from '../../../constants';
 import { objectToQueryString, queryStringToObject } from '../../../utils/helper';
 
 const DocumentSearchPage = (props) => {
@@ -79,6 +79,16 @@ const DocumentSearchPage = (props) => {
       title: 'Có Sẵn',
       align: 'center',
       dataIndex: 'availableQuantity',
+    },
+    {
+      title: 'Người Tạo',
+      align: 'center',
+      dataIndex: ['createdInfo', 'fullName']
+    },
+    {
+      title: 'Người Cập Nhật',
+      align: 'center',
+      dataIndex: ['updatedInfo', 'fullName']
     },
     {
       title: 'Action',

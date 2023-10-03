@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Layout, Menu, Spin, theme, notification } from 'antd';
-import { AppstoreOutlined, MailOutlined } from '@ant-design/icons';
+import { Layout, Menu, Spin, theme, notification, Dropdown, Space, Modal, Descriptions, Button } from 'antd';
+import { AppstoreOutlined, MailOutlined, CaretDownFilled } from '@ant-design/icons';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import backgroundUrl from '../assets/background.svg';
 const { Header, Content, Sider, Footer } = Layout;
+import { getUser } from '../utils/helper';
 import './ui.scss';
 
 const PrivateLayout = ({ element: Component }) => {
@@ -14,6 +15,7 @@ const PrivateLayout = ({ element: Component }) => {
   const [api, contextHolder] = notification.useNotification();
   const [animate, setAnimate] = useState('/document/search');
   const widthStyle = { minWidth: '32%' };
+  const [openModal, setOpenModal] = useState(false);
 
   const formItemLayout = {
     labelCol: { xs: { span: 30 }, sm: { span: 30 } },
@@ -96,9 +98,70 @@ const PrivateLayout = ({ element: Component }) => {
     });
   };
 
+  const dropdownItems = [
+    {
+      key: '1',
+      label: 'Thông tin cơ bản',
+    },
+    {
+      key: '2',
+      danger: true,
+      label: 'Đăng xuất',
+    },
+  ];
+
+  const handleMenuClick = (e) => {
+    if (e.key === '1') {
+      return setOpenModal(true);
+    }
+    Modal.confirm({
+      title: 'Xác nhận',
+      content: 'Bạn có chắc là muốn đăng xuất?',
+      onOk() {
+        localStorage.clear();
+        navigate('/login');
+      },
+    });
+  };
+  const handleStatusModal = () => {
+    setOpenModal(!openModal);
+  };
+  const descriptionItems = [
+    {
+      key: '1',
+      label: 'Id',
+      children: getUser().id,
+    },
+    {
+      key: '2',
+      label: 'Username',
+      children: getUser().username,
+    },
+    {
+      key: '3',
+      label: 'Họ và tên',
+      children: getUser().fullName,
+    },
+    {
+      key: '4',
+      label: 'Chức Vụ',
+      children: getUser().position,
+    },
+    {
+      key: '5',
+      label: 'Số điện thoại',
+      children: getUser().phoneNumber,
+    },
+    {
+      key: '6',
+      label: 'Email',
+      children: getUser().email,
+    },
+  ];
+
   return localStorage.getItem('TOKEN_KEY') ? (
     <>
-      <img className="logo-login" src={backgroundUrl} style={{ width: '100%', position: 'absolute' }} alt="icon"></img>
+      {/* <img className="logo-login" src={backgroundUrl} style={{ width: '100%', position: 'absolute' }} alt="icon"></img> */}
       <Layout>
         <Sider breakpoint="lg" collapsedWidth="0">
           <div className="logo-icon">
@@ -122,11 +185,24 @@ const PrivateLayout = ({ element: Component }) => {
         <Layout>
           <Header
             style={{
-              display: 'flex',
+              textAlign: 'right',
               alignItems: 'center',
             }}
-          />
-
+          >
+            <Dropdown
+              menu={{
+                items: dropdownItems,
+                onClick: handleMenuClick,
+              }}
+            >
+              <a style={{ color: 'white' }} onClick={(e) => e.preventDefault()}>
+                <Space>
+                  {getUser().fullName} - {getUser().position}
+                  <CaretDownFilled />
+                </Space>
+              </a>
+            </Dropdown>
+          </Header>
           <Spin spinning={spinning} wrapperClassName={`${animate == location.pathname ? 'my-animation' : ''}`}>
             {contextHolder}
             <Content
@@ -137,6 +213,9 @@ const PrivateLayout = ({ element: Component }) => {
                 background: colorBgContainer,
               }}
             >
+              <Modal title="Thông tin người dùng" open={openModal} onOk={handleStatusModal} maskClosable={false} onCancel={handleStatusModal} width={'70%'}>
+                <Descriptions title="" items={descriptionItems} />
+              </Modal>
               <Component
                 widthStyle={widthStyle}
                 formItemLayout={formItemLayout}

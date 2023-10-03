@@ -7,6 +7,7 @@ export const userSeeds = [
     id: 1,
     username: 'admin',
     password: '123456',
+    fullName: 'Tommy',
     email: 'T@gmail.com',
     phoneNumber: '01234567890',
     status: true,
@@ -17,6 +18,7 @@ export const userSeeds = [
   {
     id: 2,
     username: 'staff',
+    fullName: 'Mas',
     password: '123456',
     email: 'staff@gmail.com',
     phoneNumber: '09876543210',

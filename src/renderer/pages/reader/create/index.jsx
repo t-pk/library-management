@@ -3,7 +3,7 @@ import { Button, Form, Input, Radio } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SaveOutlined, EyeOutlined } from '@ant-design/icons';
 import { delay, queryStringToObject, objectToQueryString } from '../../../utils/helper';
-import { Reader, ReaderType } from 'renderer/constants';
+import { Reader, ReaderType } from '../../../constants';
 
 const ReaderCreatePage = (props) => {
   const navigate = useNavigate();

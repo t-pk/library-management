@@ -108,6 +108,11 @@ const BorrowSearchPage = (props) => {
       render: (isReturn) => isReturn && <CheckCircleOutlined style={{ fontSize: 20, color: 'green' }} />,
     },
     {
+      title: 'Người Tạo',
+      dataIndex: ['createdInfo', 'fullName'],
+      align: 'center',
+    },
+    {
       title: 'Mã Sinh Viên',
       dataIndex: ['borrow', 'reader', 'studentId'],
       render: (studentId) => studentId,

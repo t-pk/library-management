@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Table, Form, Tag } from 'antd';
 import debounce from 'lodash.debounce';
-import { Publisher } from 'renderer/constants';
+import { Publisher } from '../../../constants';
 
 const columns = [
   {

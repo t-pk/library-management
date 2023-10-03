@@ -1,10 +1,12 @@
-import { BorrowSchema, ReaderSchema, RemindSchema, ReturnSchema, sequelize, unitOfWork } from '../db';
+import { BorrowSchema, ReaderSchema, RemindSchema, ReturnSchema, UserSchema, sequelize, unitOfWork } from '../db';
 import { Op } from 'sequelize';
 
 export const createRemind = async (request: any) => {
   return unitOfWork(async (transaction: any) => {
     if (request.id) {
-      await RemindSchema.update(request, { where: { id: request.id }, transaction, returning: true });
+      let data = {...request};
+      delete data.createdBy;
+      await RemindSchema.update(data, { where: { id: request.id }, transaction, returning: true });
       return request;
     }
     const document = await RemindSchema.create(request, { transaction, returning: true, raw: true });
@@ -51,6 +53,7 @@ export const getRemindDetails = async (request: any) => {
 
   const reminds = await RemindSchema.findAll({
     include: [
+      { model: UserSchema, as: 'createdInfo', attributes: ['fullName'] },
       {
         model: ReturnSchema,
         attributes: ['id'],

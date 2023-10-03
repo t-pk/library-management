@@ -4,7 +4,7 @@ import { Button, Input, Select, Space, Dropdown, Table, Form, Radio } from 'antd
 import debounce from 'lodash.debounce';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { formatDateTime, objectToQueryString, parseDataSelect, queryStringToObject } from '../../../utils/helper';
-import { Return, ReaderType, Document } from 'renderer/constants';
+import { Return, ReaderType, Document } from '../../../constants';
 
 const ReturnSearchPage = (props) => {
   const location = useLocation();
@@ -74,6 +74,11 @@ const ReturnSearchPage = (props) => {
       render: (dateTime) => {
         return dateTime && formatDateTime(dateTime);
       },
+    },
+    {
+      title: 'Người Tạo',
+      align: 'center',
+      dataIndex: ['createdInfo', 'fullName']
     },
     {
       title: 'Mã Sinh Viên',

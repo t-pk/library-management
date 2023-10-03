@@ -3,7 +3,7 @@ import { AutoComplete, Button, Checkbox, Form, Input, InputNumber } from 'antd';
 import { SaveOutlined, EyeOutlined } from '@ant-design/icons';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { delay, queryStringToObject, objectToQueryString } from '../../../utils/helper';
-import { Author, Document, DocumentType, Publisher } from 'renderer/constants';
+import { Author, Document, DocumentType, Publisher } from '../../../constants';
 
 const DocumentCreatePage = (props) => {
   const location = useLocation();

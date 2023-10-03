@@ -11,6 +11,10 @@ export const IUser = {
     allowNull: false,
     unique: true,
   },
+  fullName: {
+    type: DataTypes.STRING(64),
+    allowNull: false,
+  },
   password: {
     type: DataTypes.STRING(128),
     allowNull: false,

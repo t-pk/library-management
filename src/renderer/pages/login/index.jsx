@@ -36,21 +36,11 @@ const LoginPage = (props) => {
       <Form name="dynamic_rule" onFinish={onFinish} className="login-wrap">
         <img className="logo-login" src={icon} alt="icon" />
         <h3 className="logo-name"> Library Management </h3>
-        <Form.Item
-          name="username"
-          rules={[
-            { required: true, min: 4, max: 12, message: '4 <= username length <= 12 ' },
-          ]}
-        >
+        <Form.Item name="username" rules={[{ required: true, min: 4, max: 12, message: '4 <= username length <= 12 ' }]}>
           <Input />
         </Form.Item>
 
-        <Form.Item
-          name="password"
-          rules={[
-            { required: true, min: 6, max: 24, message: '6 <= password length <= 24 ' },
-          ]}
-        >
+        <Form.Item name="password" rules={[{ required: true, min: 6, max: 24, message: '6 <= password length <= 24 ' }]}>
           <Input.Password autoComplete="false" />
         </Form.Item>
 

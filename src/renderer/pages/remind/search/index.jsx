@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Table, Form, Radio, Space } from 'antd';
 import debounce from 'lodash.debounce';
-import { ReaderType, Remind, RemindDetail } from 'renderer/constants';
+import { ReaderType, Remind, RemindDetail } from '../../../constants';
 import { useLocation } from 'react-router-dom';
 import { queryStringToObject, formatDateTime, delay } from '../../../utils/helper';
 
@@ -151,6 +151,11 @@ const RemindSearchPage = (props) => {
       {
         title: 'Mô Tả',
         dataIndex: 'description',
+        align: 'center',
+      },
+      {
+        title: 'Người Tạo',
+        dataIndex: ['createdInfo', 'fullName'],
         align: 'center',
       },
       {

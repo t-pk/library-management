@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button, Input, Table, Form, Tag, InputNumber } from 'antd';
-import { FormOutlined,SaveOutlined } from '@ant-design/icons';
-import { DocumentRequest } from '../../../constants';
+import { CloseOutlined, SaveOutlined, CheckOutlined } from '@ant-design/icons';
+import { DocumentRequest, TOKEN_KEY } from '../../../constants';
 import { delay, formatDateTime } from '../../../utils/helper';
 
 const DocumentRequestPage = (props) => {
@@ -9,11 +9,12 @@ const DocumentRequestPage = (props) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [documentRequests, setDocumentRequests] = useState([]);
-  const mappingStatus ={
-    'awaitingReview': 'Đang Xem Xét',
-    'approved': 'Đã Phê Duyệt',
-    'rejected': 'Đã Từ Chối'
-  }
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const mappingStatus = {
+    awaitingReview: 'Đang Xem Xét',
+    approved: 'Đã Phê Duyệt',
+    rejected: 'Đã Từ Chối',
+  };
   const columns = [
     {
       title: 'Id',
@@ -29,8 +30,7 @@ const DocumentRequestPage = (props) => {
       title: 'Trạng Thái',
       align: 'center',
       dataIndex: 'status',
-      render: (status) => <Tag color={status === 'awaitingReview' ? 'orange' : status === 'approved' ? 'green': 'red'}>{mappingStatus[status]}</Tag>,
-
+      render: (status) => <Tag color={status === 'awaitingReview' ? 'orange' : status === 'approved' ? 'green' : 'red'}>{mappingStatus[status]}</Tag>,
     },
     {
       title: 'Nhà Xuất Bản',
@@ -44,7 +44,7 @@ const DocumentRequestPage = (props) => {
     {
       title: 'Người Tạo',
       align: 'center',
-      dataIndex: 'createdBy',
+      dataIndex: ['createdInfo', 'fullName'],
     },
     {
       title: 'Ngày Tạo',
@@ -56,7 +56,7 @@ const DocumentRequestPage = (props) => {
     {
       title: 'Phê Duyệt Bởi',
       align: 'center',
-      dataIndex: 'approvedBy',
+      dataIndex: ['approvedInfo', 'fullName'],
     },
     {
       title: 'Ngày Phê Duyệt',
@@ -69,7 +69,7 @@ const DocumentRequestPage = (props) => {
     {
       title: 'Từ Chối Bởi',
       align: 'center',
-      dataIndex: 'rejectedBy',
+      dataIndex: ['rejectedInfo', 'fullName']
     },
     {
       title: 'Ngày Từ Chối',
@@ -86,7 +86,7 @@ const DocumentRequestPage = (props) => {
 
   const onFinish = (values) => {
     setLoading(true);
-    props.callDatabase({ key: DocumentRequest.create, data: {...values, status: 'awaitingReview'} });
+    props.callDatabase({ key: DocumentRequest.create, data: { ...values, status: 'awaitingReview' } });
 
     props.listenOnce(DocumentRequest.create, async (arg) => {
       await delay(300);
@@ -97,7 +97,7 @@ const DocumentRequestPage = (props) => {
       }
       setLoading(false);
     });
-   };
+  };
 
   const getDocumentRequest = () => {
     setLoading(true);
@@ -106,10 +106,42 @@ const DocumentRequestPage = (props) => {
     props.listenOnce(DocumentRequest.search, async (arg) => {
       await delay(300);
       if (arg.data) {
+        console.log(arg);
         setDocumentRequests(arg.data);
       }
       setLoading(false);
     });
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (newSelectedRowKeys) => {
+      setSelectedRowKeys(newSelectedRowKeys);
+
+    },
+    getCheckboxProps: (record) => ({
+      disabled: record.status !== 'awaitingReview',
+      name: record.name,
+    }),
+  };
+
+  const updateDocumentStatus = (key) => () => {
+    props.callDatabase({ key: DocumentRequest.create, data: { key, ids: selectedRowKeys } });
+    props.listenOnce(DocumentRequest.create, async (arg) => {
+      await delay(300);
+      if (arg.data) {
+        props.openNotification('success', 'Đã cập nhật');
+        form.resetFields();
+        getDocumentRequest();
+      }
+      setSelectedRowKeys([]);
+      setLoading(false);
+    });
+  }
+
+  const getPosition = () => {
+    const user = localStorage.getItem(TOKEN_KEY);
+    return JSON.parse(user).position;
   }
 
   return (
@@ -131,22 +163,15 @@ const DocumentRequestPage = (props) => {
           <Input.TextArea rows={1} showCount maxLength={200} />
         </Form.Item>
 
-        <Form.Item name="publisher" label="Nhà Xuất Bản" style={props.widthStyle} rules={[{ required: true, message: 'Please select publisher!' }]}>
+        <Form.Item name="publisher" label="Nhà Xuất Bản" style={props.widthStyle} rules={[{ required: true, message: 'Please input publisher!' }]}>
           <Input style={{ width: '100%' }} />
         </Form.Item>
 
-        <Form.Item name="author" label="Tác Giả" style={props.widthStyle} rules={[{ required: true, message: 'Please select author!' }]}>
+        <Form.Item name="author" label="Tác Giả" style={props.widthStyle} rules={[{ required: true, message: 'Please input author!' }]}>
           <Input style={{ width: '100%' }} />
         </Form.Item>
 
-        <Form.Item
-          name="quantity"
-          label="Số Lượng"
-          style={props.widthStyle}
-          rules={[
-            { type: 'number', min: 1, max:999, message: 'min >= 1, max <= 999' },
-          ]}
-        >
+        <Form.Item name="quantity" label="Số Lượng" style={props.widthStyle} rules={[{ type: 'number', min: 1, max: 999, message: 'min >= 1, max <= 999' }]}>
           <InputNumber min={1} style={{ width: '100%' }} />
         </Form.Item>
         <Form.Item label=" " {...props.tailFormItemLayout} style={{ ...props.widthStyle }}>
@@ -154,20 +179,22 @@ const DocumentRequestPage = (props) => {
             {' '}
             Tạo{' '}
           </Button>
-          <Button style={{ marginLeft: 8, minWidth: '47%' }} type="primary" icon={<FormOutlined />}>
+        </Form.Item>
+        <Form.Item label=" " {...props.tailFormItemLayout} style={{ ...props.widthStyle }} hidden={!(selectedRowKeys.length && getPosition() ==='ADMIN')}>
+          <Button onClick={updateDocumentStatus('approved')} style={{ minWidth: '47%' }} type="primary" icon={<CheckOutlined />}>
             {' '}
             Phê Duyệt{' '}
           </Button>
+          <Button onClick={updateDocumentStatus('rejected')} style={{ marginLeft: 8, minWidth: '47%' }} type='dashed' danger icon={<CloseOutlined />}>
+            {' '}
+            Từ Chối{' '}
+          </Button>
         </Form.Item>
       </Form>
-      <Table
-        columns={columns}
-        dataSource={documentRequests}
-        loading={loading}
-        rowKey={'id'}
-        tableLayout={'fixed'}
-        scroll={{ x: 1400, y: 450 }}
-      />
+      <Table rowSelection={getPosition() ==='ADMIN' && {
+        type: 'checkbox',
+        ...rowSelection,
+      }} columns={columns} dataSource={documentRequests} loading={loading} rowKey={'id'} tableLayout={'fixed'} scroll={{ x: 1400, y: 450 }} />
     </>
   );
 };

@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { delay, objectToQueryString } from '../../../utils/helper';
 import { queryStringToObject, parseDataSelect } from '../../../utils/helper';
 import debounce from 'lodash.debounce';
-import { Borrow, Document, ReaderType } from 'renderer/constants';
+import { Borrow, Document, ReaderType } from '../../../constants';
 
 const BorrowCreatePage = (props) => {
   const navigate = useNavigate();

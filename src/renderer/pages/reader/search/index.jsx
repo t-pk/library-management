@@ -3,8 +3,8 @@ import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Space, Dropdown, Table, Form, Tag, Radio } from 'antd';
 import debounce from 'lodash.debounce';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { objectToQueryString, queryStringToObject } from '../../../utils/helper';
-import { Borrow, Reader, ReaderType } from 'renderer/constants';
+import { objectToQueryString, queryStringToObject, formatDateTime } from '../../../utils/helper';
+import { Borrow, Reader, ReaderType } from '../../../constants';
 
 const ReaderSearchPage = (props) => {
   const navigate = useNavigate();
@@ -81,6 +81,28 @@ const ReaderSearchPage = (props) => {
       dataIndex: 'email',
     },
     {
+      title: 'Người Tạo',
+      dataIndex: ['createdInfo', 'fullName'],
+    },
+    {
+      title: 'Ngày Tạo',
+      dataIndex: 'createdAt',
+      render: (dateTime) => {
+        return formatDateTime(dateTime);
+      },
+    },
+    {
+      title: 'Người Cập Nhật',
+      dataIndex: ['updatedInfo', 'fullName'],
+    },
+    {
+      title: 'Ngày Tạo',
+      dataIndex: 'updatedAt',
+      render: (dateTime) => {
+        return formatDateTime(dateTime);
+      },
+    },
+    {
       title: 'Action',
       key: 'operation',
       fixed: 'right',
@@ -114,6 +136,7 @@ const ReaderSearchPage = (props) => {
     props.callDatabase({ key: Reader.search, data: reState });
     props.listenOnce(Reader.search, (arg) => {
       setLoading(false);
+      console.log(arg);
       setDocuments(arg.data || []);
     });
   };
