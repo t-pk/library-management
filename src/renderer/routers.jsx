@@ -1,6 +1,8 @@
 import PrivateLayout from './layouts/private-layout';
 import PublicLayout from './layouts/public-layout';
 
+import AdministratorCreatePage from './pages/administrator/create';
+import AdministratorSearchPage from './pages/administrator/search';
 import LoginPage from './pages/login';
 import DocumentSeachPage from './pages/document/search';
 import DocumentCreatePage from './pages/document/create';
@@ -150,6 +152,18 @@ const routes = [
     exact: true,
     layout: PublicLayout,
     main: LoginPage,
+  },
+  {
+    path: '/administrator/create',
+    exact: true,
+    layout: PrivateLayout,
+    main: AdministratorCreatePage,
+  },
+  {
+    path: '/administrator/search',
+    exact: true,
+    layout: PrivateLayout,
+    main: AdministratorSearchPage,
   },
   {
     path: '*',

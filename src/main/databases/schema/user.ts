@@ -32,7 +32,7 @@ export const IUser = {
   status: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
-    defaultValue: false,
+    defaultValue: true,
   },
   position: {
     type: DataTypes.STRING(32),

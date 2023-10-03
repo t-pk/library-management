@@ -1,7 +1,7 @@
 export const specialDocumentPeriod = 10; //unit is day;
 export const normalDocumentPeriod = 14; //unit is day;
 
-export const User = { login: 'user-login' };
+export const User = { login: 'user-login', search: 'user-search', create: 'user-create', resetPwd: 'user-resetPassword' };
 export const Document = { search: 'document-search', create: 'document-create' };
 export const DocumentType = { search: 'documentType-search', create: 'documentType-create' };
 export const DocumentRequest = { search: 'documentRequest-search', create: 'documentRequest-create' };

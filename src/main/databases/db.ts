@@ -13,7 +13,7 @@ import { IDocumentType } from './schema/document-type';
 import { IReaderType } from './schema/reader-type';
 import { IRemind } from './schema/remind';
 import { IPenalty } from './schema/penalty';
-import { getUser } from './logic/user';
+import { createUser, getUser, getUsers, resetPassword } from './logic/user';
 import { createDocument, getDocuments } from './logic/document';
 import { createAuthor, getAuthors } from './logic/author';
 import { createPublisher, getPublishers } from './logic/publisher';
@@ -127,8 +127,8 @@ ReturnDetailSchema.belongsTo(ReturnSchema, { foreignKey: { allowNull: false, nam
 ReturnDetailSchema.belongsTo(BorrowDetailSchema, { foreignKey: { allowNull: false, name: 'borrowDetailId' } });
 ReturnDetailSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' }, as: 'createdInfo' });
 
-UserSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
-UserSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' } });
+UserSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' }, as: 'createdInfo' });
+UserSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' }, as: 'updatedInfo' });
 
 RemindSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' }, as: 'createdInfo' });
 RemindSchema.belongsTo(ReturnSchema, { foreignKey: { allowNull: false, name: 'returnId' } });
@@ -213,6 +213,17 @@ export const handleData = async (arg: any, data: any) => {
         break;
       case DocumentRequest.search:
         result = await getDocumentRequests(data);
+        break;
+      case User.search:
+        result = await getUsers(data);
+        break;
+      case User.create:
+        result = await createUser(data);
+        break;
+      case User.resetPwd:
+        console.log(`      case User.resetPwd:
+        `);
+        result = await resetPassword(data);
         break;
 
       default:

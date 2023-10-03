@@ -6,7 +6,7 @@ export const createReader = async (request: any) => {
     if (request.id) {
       let data = { ...request };
       delete data.createdBy;
-      await ReaderSchema.update(data, { where: { id: request.id }, returning: true });
+      await ReaderSchema.update(data, { where: { id: request.id }, transaction, returning: true });
       return request;
     }
     const reader = await ReaderSchema.create(request, { transaction, returning: true, raw: true });

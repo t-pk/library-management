@@ -6,7 +6,7 @@ export const createPenalty = async (request: any) => {
     if (request.id) {
       let data = { ...request };
       delete data.createdBy;
-      await PenaltySchema.update(data, { where: { id: request.id }, returning: true });
+      await PenaltySchema.update(data, { where: { id: request.id }, transaction, returning: true });
       return request;
     }
     const penalty = await PenaltySchema.create(request, { transaction, returning: true, raw: true });

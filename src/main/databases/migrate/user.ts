@@ -4,7 +4,6 @@ import { encryptPassword } from '../../../renderer/utils/authenticate';
 
 export const userSeeds = [
   {
-    id: 1,
     username: 'admin',
     password: '123456',
     fullName: 'Tommy',
@@ -16,7 +15,6 @@ export const userSeeds = [
     updatedBy: 1,
   },
   {
-    id: 2,
     username: 'staff',
     fullName: 'Mas',
     password: '123456',

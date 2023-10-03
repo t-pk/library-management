@@ -14,6 +14,7 @@ import {
   UsergroupAddOutlined,
   UserAddOutlined,
   UserSwitchOutlined,
+  DesktopOutlined,
 } from '@ant-design/icons';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import backgroundUrl from '../assets/background.svg';
@@ -39,7 +40,6 @@ const PrivateLayout = ({ element: Component }) => {
   const tailFormItemLayout = { wrapperCol: { xs: { span: 40, offset: 0 }, sm: { span: 30, offset: 0 } } };
 
   useEffect(() => {
-    console.log('asdsa', location);
     setAnimate(location.pathname === '/' ? '/document/search' : location.pathname);
 
     const keyPath = '/' + location.pathname.split('/')[1];
@@ -94,6 +94,10 @@ const PrivateLayout = ({ element: Component }) => {
     getItem('Nhà Xuất Bản', '/publisher', <UsergroupAddOutlined />, [
       getItem('Tìm Kiếm', '/publisher/search', <UserSwitchOutlined />),
       getItem('Thêm - Sửa', '/publisher/create', <UserAddOutlined />),
+    ]),
+   getUser().position === 'ADMIN' && getItem('Quản Trị', '/administrator', <DesktopOutlined />, [
+      getItem('Tìm Kiếm', '/administrator/search', <UserSwitchOutlined />),
+      getItem('Thêm - Sửa', '/administrator/create', <UserAddOutlined />),
     ]),
   ];
 
