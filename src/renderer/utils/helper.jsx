@@ -66,11 +66,11 @@ export const getUser = () => {
 };
 
 export const generateRandomString = (length) => {
-  const charset = "12211211144431144411666511611888711181199991111";
-  let result = "";
+  const charset = '12211211144431144411666511611888711181199991111';
+  let result = '';
   for (let i = 0; i < length; i++) {
     const randomIndex = Math.floor(Math.random() * charset.length);
     result += charset[randomIndex];
   }
   return result;
-}
+};

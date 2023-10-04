@@ -9,8 +9,8 @@ export const getUser = async (request: any) => {
     raw: true,
     attributes: ['id', 'username', 'position', 'fullName', 'email', 'phoneNumber', 'status'],
   });
-  console.log("result", result);
-  if(result && !result.status) throw('Tài khoản đã bị vô hiệu hóa, vui lòng liên hệ admin để hỗ trợ.')
+  console.log('result', result);
+  if (result && !result.status) throw 'Tài khoản đã bị vô hiệu hóa, vui lòng liên hệ admin để hỗ trợ.';
   return result;
 };
 

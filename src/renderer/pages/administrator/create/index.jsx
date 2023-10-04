@@ -125,10 +125,13 @@ const AdministratorCreatePage = (props) => {
           name="email"
           label="Email"
           style={props.widthStyle}
-          rules={[{ required: true, min: 10, max: 32, message: 'Please input email, 10 <= email <= 32' }, {
-            type: 'email',
-            message: 'Invalid email format!',
-          },]}
+          rules={[
+            { required: true, min: 10, max: 32, message: 'Please input email, 10 <= email <= 32' },
+            {
+              type: 'email',
+              message: 'Invalid email format!',
+            },
+          ]}
           hasFeedback
         >
           <Input />

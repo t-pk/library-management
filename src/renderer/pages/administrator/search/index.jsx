@@ -112,7 +112,7 @@ const AdministratorSearchPage = (props) => {
                 {
                   label: <a onClick={resetPassword(record)}>Đặt Lại Mật Khẩu</a>,
                   key: '2',
-                  danger: true
+                  danger: true,
                 },
               ],
             }}
@@ -192,14 +192,25 @@ const AdministratorSearchPage = (props) => {
       title: 'Xác nhận',
       content: (
         <div>
-          <p>Bạn có chắc là muốn đặt lại Mật Khẩu cho tài khoản:  <b>{e.username}</b></p>
+          <p>
+            Bạn có chắc là muốn đặt lại Mật Khẩu cho tài khoản: <b>{e.username}</b>
+          </p>
         </div>
       ),
       onOk() {
-         const password = generateRandomString(8);
+        const password = generateRandomString(8);
         props.callDatabase({ key: User.resetPwd, data: { id: e.id, password: password } });
         props.listenOnce(User.resetPwd, async (arg) => {
-          if (arg.data) props.openNotification('success', <> <p>Mật khẩu mới là: <b>{password}</b> </p></>);
+          if (arg.data)
+            props.openNotification(
+              'success',
+              <>
+                {' '}
+                <p>
+                  Mật khẩu mới là: <b>{password}</b>{' '}
+                </p>
+              </>
+            );
         });
       },
     });
@@ -207,7 +218,7 @@ const AdministratorSearchPage = (props) => {
 
   return (
     <>
-    {contextHolder}
+      {contextHolder}
       <Form
         {...props.formItemLayout}
         form={form}
@@ -249,9 +260,7 @@ const AdministratorSearchPage = (props) => {
 
         <Form.Item name="status" label={'Trạng Thái'} style={{ ...props.widthStyle }}>
           <Radio.Group name="status" onChange={onChange} buttonStyle="solid">
-            <Radio.Button value={true}>
-              Hoạt Động
-            </Radio.Button>
+            <Radio.Button value={true}>Hoạt Động</Radio.Button>
             <Radio.Button value={false}>Vô Hiệu Hóa</Radio.Button>
             <Radio.Button value={undefined}>Skip</Radio.Button>
           </Radio.Group>

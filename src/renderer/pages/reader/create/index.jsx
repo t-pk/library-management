@@ -88,7 +88,13 @@ const ReaderCreatePage = (props) => {
           <Input />
         </Form.Item>
 
-        <Form.Item name="readerTypeId" label="Loại Độc Giả" style={props.widthStyle} rules={[{ required: true, message: 'Please input civil servant!' }]} hasFeedback>
+        <Form.Item
+          name="readerTypeId"
+          label="Loại Độc Giả"
+          style={props.widthStyle}
+          rules={[{ required: true, message: 'Please input civil servant!' }]}
+          hasFeedback
+        >
           <Radio.Group disabled={disableUpdate} options={readerTypes} optionType="button" buttonStyle="solid" />
         </Form.Item>
 
