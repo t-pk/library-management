@@ -172,6 +172,7 @@ const PenaltyCreatePage = (props) => {
                 message: 'min >= 1,000 and max <= 100,000,000',
               },
             ]}
+            hasFeedback
           >
             <InputNumber min={1} style={{ width: '100%' }} formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} />
           </Form.Item>

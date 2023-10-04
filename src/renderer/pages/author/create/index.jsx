@@ -36,7 +36,7 @@ const AuthorCreatePage = (props) => {
           <Input disabled={true} />
         </Form.Item>
 
-        <Form.Item name="name" label="Tên Tác Giả" style={props.widthStyle} rules={[{ required: true, message: 'Please input name!' }]}>
+        <Form.Item name="name" label="Tên Tác Giả" style={props.widthStyle} rules={[{ required: true, message: 'Please input name!' }]} hasFeedback>
           <Input style={{ width: '100%' }} />
         </Form.Item>
 

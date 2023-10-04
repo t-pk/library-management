@@ -73,6 +73,7 @@ const AdministratorCreatePage = (props) => {
           label="Họ Và Tên"
           style={props.widthStyle}
           rules={[{ required: true, min: 4, max: 64, message: 'Please input fullName, 4 <= fullName <=64' }]}
+          hasFeedback
         >
           <Input />
         </Form.Item>
@@ -82,6 +83,7 @@ const AdministratorCreatePage = (props) => {
           label="Tên Đăng Nhập"
           style={props.widthStyle}
           rules={[{ required: true, min: 4, max: 12, message: 'Please input username, 4 <= username <=12' }]}
+          hasFeedback
         >
           <Input />
         </Form.Item>
@@ -91,11 +93,12 @@ const AdministratorCreatePage = (props) => {
           label="Mật Khẩu"
           style={props.widthStyle}
           rules={!disableUpdate && [{ required: true, min: 6, max: 24, message: 'Please input password,  6 <= password <=24' }]}
+          hasFeedback
         >
-          <Input disabled={disableUpdate} />
+          <Input.Password disabled={disableUpdate} />
         </Form.Item>
 
-        <Form.Item name="position" label="Chức Vụ" style={props.widthStyle} rules={[{ required: true, message: 'Please input position!' }]}>
+        <Form.Item name="position" label="Chức Vụ" style={props.widthStyle} rules={[{ required: true, message: 'Please input position!' }]} hasFeedback>
           <Select
             options={[
               { value: 'ADMIN', label: 'Quản Trị' },
@@ -109,6 +112,7 @@ const AdministratorCreatePage = (props) => {
           label="Số Điện Thoại"
           style={props.widthStyle}
           rules={[{ required: true, min: 10, max: 16, message: 'Please input phoneNumber, 10 <= phoneNumber <= 16' }]}
+          hasFeedback
         >
           <Input style={{ width: '100%' }} />
         </Form.Item>
@@ -121,7 +125,11 @@ const AdministratorCreatePage = (props) => {
           name="email"
           label="Email"
           style={props.widthStyle}
-          rules={[{ required: true, min: 10, max: 32, message: 'Please input email, 10 <= email <= 32' }]}
+          rules={[{ required: true, min: 10, max: 32, message: 'Please input email, 10 <= email <= 32' }, {
+            type: 'email',
+            message: 'Invalid email format!',
+          },]}
+          hasFeedback
         >
           <Input />
         </Form.Item>

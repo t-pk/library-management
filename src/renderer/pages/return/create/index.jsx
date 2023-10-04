@@ -178,6 +178,7 @@ const ReturnCreatePage = (props) => {
                 },
               },
             ]}
+            hasFeedback
           >
             <Select
               mode="multiple"

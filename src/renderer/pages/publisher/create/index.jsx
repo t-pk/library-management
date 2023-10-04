@@ -37,7 +37,7 @@ const PublisherCreatePage = (props) => {
           <Input disabled={true} />
         </Form.Item>
 
-        <Form.Item name="name" label="Tên Nhà Xuất Bản" style={props.widthStyle} rules={[{ required: true, message: 'Please input name!' }]}>
+        <Form.Item name="name" label="Tên Nhà Xuất Bản" style={props.widthStyle} rules={[{ required: true, message: 'Please input publisher!' }]} hasFeedback>
           <Input style={{ width: '100%' }} />
         </Form.Item>
 

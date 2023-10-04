@@ -187,6 +187,7 @@ const BorrowCreatePage = (props) => {
                 },
               },
             ]}
+            hasFeedback
           >
             <Select
               mode="multiple"

@@ -97,7 +97,7 @@ const DocumentCreatePage = (props) => {
           <Input disabled={true} />
         </Form.Item>
 
-        <Form.Item name="name" label="Tên Tài Liệu" style={props.widthStyle} rules={[{ required: true, message: 'Please input name' }]}>
+        <Form.Item name="name" label="Tên Tài Liệu" style={props.widthStyle} rules={[{ required: true, message: 'Please input name' }]} hasFeedback>
           <Input.TextArea rows={1} showCount maxLength={200} />
         </Form.Item>
 
@@ -114,6 +114,7 @@ const DocumentCreatePage = (props) => {
               },
             },
           ]}
+          hasFeedback
         >
           <AutoComplete
             options={documentTypes}
@@ -135,6 +136,7 @@ const DocumentCreatePage = (props) => {
               message: 'min >= 1 and max <= 9999',
             },
           ]}
+          hasFeedback
         >
           <InputNumber min={1} style={{ width: '100%' }} />
         </Form.Item>
@@ -152,6 +154,7 @@ const DocumentCreatePage = (props) => {
               },
             },
           ]}
+          hasFeedback
         >
           <AutoComplete
             options={authors}
@@ -173,6 +176,7 @@ const DocumentCreatePage = (props) => {
               },
             },
           ]}
+          hasFeedback
         >
           <AutoComplete
             options={publishers}
@@ -195,6 +199,7 @@ const DocumentCreatePage = (props) => {
               message: `min >= 1 and max <= ${new Date().getFullYear()}`,
             },
           ]}
+          hasFeedback
         >
           <InputNumber min={1} style={{ width: '100%' }} />
         </Form.Item>

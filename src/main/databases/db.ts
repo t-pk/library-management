@@ -13,7 +13,7 @@ import { IDocumentType } from './schema/document-type';
 import { IReaderType } from './schema/reader-type';
 import { IRemind } from './schema/remind';
 import { IPenalty } from './schema/penalty';
-import { createUser, getUser, getUsers, resetPassword } from './logic/user';
+import { changePassword, createUser, getUser, getUsers, resetPassword } from './logic/user';
 import { createDocument, getDocuments } from './logic/document';
 import { createAuthor, getAuthors } from './logic/author';
 import { createPublisher, getPublishers } from './logic/publisher';
@@ -221,9 +221,10 @@ export const handleData = async (arg: any, data: any) => {
         result = await createUser(data);
         break;
       case User.resetPwd:
-        console.log(`      case User.resetPwd:
-        `);
         result = await resetPassword(data);
+        break;
+      case User.changePwd:
+        result = await changePassword(data);
         break;
 
       default:

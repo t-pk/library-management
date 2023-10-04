@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Layout, Menu, Spin, theme, notification, Dropdown, Space, Modal, Descriptions, Button } from 'antd';
+import { Layout, Menu, Spin, theme, notification, Dropdown, Space, Modal, Descriptions, Button, Form, Input } from 'antd';
 import {
-  AppstoreOutlined,
   BookOutlined,
   CaretDownFilled,
   FileSearchOutlined,
@@ -17,10 +16,11 @@ import {
   DesktopOutlined,
 } from '@ant-design/icons';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import backgroundUrl from '../assets/background.svg';
-const { Header, Content, Sider, Footer } = Layout;
-import { getUser } from '../utils/helper';
+import { User } from '../constants';
+import { getUser, delay } from '../utils/helper';
 import './ui.scss';
+
+const { Header, Content, Sider, Footer } = Layout;
 
 const PrivateLayout = ({ element: Component }) => {
   const location = useLocation();
@@ -30,7 +30,9 @@ const PrivateLayout = ({ element: Component }) => {
   const [api, contextHolder] = notification.useNotification();
   const [animate, setAnimate] = useState('/document/search');
   const widthStyle = { minWidth: '32%' };
-  const [openModal, setOpenModal] = useState(false);
+  const [openModal, setOpenModal] = useState('0');
+  const [form] = Form.useForm();
+  const [modal, contextModal] = Modal.useModal();
 
   const formItemLayout = {
     labelCol: { xs: { span: 30 }, sm: { span: 30 } },
@@ -95,10 +97,11 @@ const PrivateLayout = ({ element: Component }) => {
       getItem('Tìm Kiếm', '/publisher/search', <UserSwitchOutlined />),
       getItem('Thêm - Sửa', '/publisher/create', <UserAddOutlined />),
     ]),
-   getUser().position === 'ADMIN' && getItem('Quản Trị', '/administrator', <DesktopOutlined />, [
-      getItem('Tìm Kiếm', '/administrator/search', <UserSwitchOutlined />),
-      getItem('Thêm - Sửa', '/administrator/create', <UserAddOutlined />),
-    ]),
+    getUser().position === 'ADMIN' &&
+      getItem('Quản Trị', '/administrator', <DesktopOutlined />, [
+        getItem('Tìm Kiếm', '/administrator/search', <UserSwitchOutlined />),
+        getItem('Thêm - Sửa', '/administrator/create', <UserAddOutlined />),
+      ]),
   ];
 
   const onOpenChange = (e) => {
@@ -111,7 +114,7 @@ const PrivateLayout = ({ element: Component }) => {
       message: `${type.toLocaleUpperCase()} Notification`,
       description: description,
       duration: 6,
-      key: description,
+      key: JSON.stringify(description),
     });
   };
 
@@ -144,15 +147,23 @@ const PrivateLayout = ({ element: Component }) => {
     {
       key: '2',
       danger: true,
+      label: 'Đổi mật khẩu',
+    },
+    {
+      key: '3',
+      danger: true,
       label: 'Đăng xuất',
     },
   ];
 
   const handleMenuClick = (e) => {
     if (e.key === '1') {
-      return setOpenModal(true);
+      return setOpenModal(e.key);
     }
-    Modal.confirm({
+    if (e.key === '2') {
+      return setOpenModal(e.key);
+    }
+    modal.confirm({
       title: 'Xác nhận',
       content: 'Bạn có chắc là muốn đăng xuất?',
       onOk() {
@@ -197,9 +208,28 @@ const PrivateLayout = ({ element: Component }) => {
     },
   ];
 
+  const handleChangePassword = (values) => {
+    const data = {
+      ...values,
+      id: getUser().id || 0,
+    };
+    callDatabase({ key: User.changePwd, data });
+
+    listenOnce(User.changePwd, async (arg) => {
+      await delay(300);
+      if (arg.data) {
+        form.resetFields();
+        openNotification('success', 'Đã cập nhật mật khẩu, lòng đăng nhập lại.');
+        await delay(3000);
+        setOpenModal(false);
+        localStorage.clear();
+        navigate('/login');
+      }
+    });
+  };
+
   return localStorage.getItem('TOKEN_KEY') ? (
     <>
-      {/* <img className="logo-login" src={backgroundUrl} style={{ width: '100%', position: 'absolute' }} alt="icon"></img> */}
       <Layout>
         <Sider breakpoint="lg" collapsedWidth="0">
           <div className="logo-icon">
@@ -242,7 +272,7 @@ const PrivateLayout = ({ element: Component }) => {
             </Dropdown>
           </Header>
           <Spin spinning={spinning} wrapperClassName={`${animate == location.pathname ? 'my-animation' : ''}`}>
-            {contextHolder}
+            {contextHolder} {contextModal}
             <Content
               style={{
                 padding: 15,
@@ -251,8 +281,64 @@ const PrivateLayout = ({ element: Component }) => {
                 background: colorBgContainer,
               }}
             >
-              <Modal title="Thông tin người dùng" open={openModal} onOk={handleStatusModal} maskClosable={false} onCancel={handleStatusModal} width={'70%'}>
+              <Modal
+                title="Thông tin người dùng"
+                open={openModal === '1'}
+                maskClosable={false}
+                onCancel={handleStatusModal}
+                width={'70%'}
+                okButtonProps={{ style: { display: 'none' } }}
+              >
                 <Descriptions title="" items={descriptionItems} />
+              </Modal>
+              <Modal title="Đổi Mật Khẩu" open={openModal === '2'} onOk={handleStatusModal} footer={[]} maskClosable={false} onCancel={handleStatusModal}>
+                <Form form={form} name="change_password" layout="vertical" onFinish={handleChangePassword}>
+                  <Form.Item
+                    label="Nhập mật khẩu hiện tại"
+                    name="password"
+                    rules={[{ required: true, min: 6, max: 12, message: '6 <= password length <= 12 ' }]}
+                  >
+                    <Input.Password autoComplete="false" />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Nhập mật khẩu mới"
+                    name="newPassword"
+                    rules={[{ required: true, min: 6, max: 24, message: '6 <= new password length <= 24 ' }]}
+                    hasFeedback
+                  >
+                    <Input.Password autoComplete="false" />
+                  </Form.Item>
+
+                  <Form.Item
+                    dependencies={['password']}
+                    label="Xác nhận"
+                    name="reNewPassword"
+                    hasFeedback
+                    rules={[
+                      { required: true, min: 6, max: 24, message: '6 <= confirm password length <= 24 ' },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (!value || getFieldValue('newPassword') === value) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject(new Error('không khớp với mật khẩu mới!'));
+                        },
+                      }),
+                    ]}
+                  >
+                    <Input.Password autoComplete="false" />
+                  </Form.Item>
+
+                  <Form.Item>
+                    <Button type="primary" key="ok" htmlType="submit">
+                      Submit
+                    </Button>
+                    <Button style={{ marginLeft: 5 }} onClick={handleStatusModal} key="cancel">
+                      cancel
+                    </Button>
+                  </Form.Item>
+                </Form>
               </Modal>
               <Component
                 widthStyle={widthStyle}

@@ -4,11 +4,13 @@ import { Op } from 'sequelize';
 
 export const getUser = async (request: any) => {
   const password = encryptPassword(request.password);
-  const result = await UserSchema.findOne({
+  const result: any = await UserSchema.findOne({
     where: { username: request.username, password },
     raw: true,
-    attributes: ['id', 'username', 'position', 'fullName', 'email', 'phoneNumber'],
+    attributes: ['id', 'username', 'position', 'fullName', 'email', 'phoneNumber', 'status'],
   });
+  console.log("result", result);
+  if(result && !result.status) throw('Tài khoản đã bị vô hiệu hóa, vui lòng liên hệ admin để hỗ trợ.')
   return result;
 };
 
@@ -51,7 +53,7 @@ export const changePassword = async (request: any) => {
     const user = await UserSchema.findOne({ where: { id: request.id, password: request.password } });
     if (!user) throw 'Mật khẩu hiện tại không đúng, vui lòng kiểm tra lại.';
 
-    await UserSchema.update({ password: request.newPassword }, { where: { id: request.id }, transaction, returning: true });
+    await UserSchema.update({ password: encryptPassword(request.newPassword) }, { where: { id: request.id }, transaction, returning: true });
     return { id: request.id };
   });
 };

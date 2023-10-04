@@ -84,11 +84,11 @@ const ReaderCreatePage = (props) => {
           <Input disabled={true} />
         </Form.Item>
 
-        <Form.Item name="fullName" label="Tên Độc Giả" style={props.widthStyle} rules={[{ required: true, message: 'Please input name' }]}>
+        <Form.Item name="fullName" label="Tên Độc Giả" style={props.widthStyle} rules={[{ required: true, message: 'Please input name' }]} hasFeedback>
           <Input />
         </Form.Item>
 
-        <Form.Item name="readerTypeId" label="Loại Độc Giả" style={props.widthStyle} rules={[{ required: true, message: 'Please input civil servant!' }]}>
+        <Form.Item name="readerTypeId" label="Loại Độc Giả" style={props.widthStyle} rules={[{ required: true, message: 'Please input civil servant!' }]} hasFeedback>
           <Radio.Group disabled={disableUpdate} options={readerTypes} optionType="button" buttonStyle="solid" />
         </Form.Item>
 
@@ -108,6 +108,7 @@ const ReaderCreatePage = (props) => {
               message: ' 5 <= student id <= 12',
             },
           ]}
+          hasFeedback
         >
           <Input disabled={readerTypeId !== 1} />
         </Form.Item>
@@ -128,6 +129,7 @@ const ReaderCreatePage = (props) => {
               message: ' 5 <= civil servant <= 12',
             },
           ]}
+          hasFeedback
         >
           <Input disabled={readerTypeId === 1} />
         </Form.Item>
@@ -145,6 +147,7 @@ const ReaderCreatePage = (props) => {
               message: ' 9 <= citizen identify <= 15',
             },
           ]}
+          hasFeedback
         >
           <Input />
         </Form.Item>
@@ -162,11 +165,12 @@ const ReaderCreatePage = (props) => {
               message: '10 <= phone number <= 12',
             },
           ]}
+          hasFeedback
         >
           <Input />
         </Form.Item>
 
-        <Form.Item name="email" label="Email" style={props.widthStyle}>
+        <Form.Item name="email" label="Email" style={props.widthStyle} hasFeedback>
           <Input />
         </Form.Item>
 

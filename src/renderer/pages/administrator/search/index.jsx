@@ -1,10 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Button, Input, Table, Form, Tag, Checkbox, Select, Space, Dropdown, Modal } from 'antd';
+import { Button, Input, Table, Form, Tag, Checkbox, Select, Space, Dropdown, Modal, Radio } from 'antd';
 import { SearchOutlined, DownOutlined } from '@ant-design/icons';
 import { User } from '../../../constants';
 import debounce from 'lodash.debounce';
-import { delay, formatDateTime, objectToQueryString, queryStringToObject } from '../../../utils/helper';
+import { delay, formatDateTime, objectToQueryString, queryStringToObject, generateRandomString } from '../../../utils/helper';
 import { useLocation, useNavigate } from 'react-router-dom';
+
+const mappingPosition = {
+  STAFF: 'Nhân Viên',
+  ADMIN: 'Quản Trị',
+};
 
 const AdministratorSearchPage = (props) => {
   const navigate = useNavigate();
@@ -12,6 +17,7 @@ const AdministratorSearchPage = (props) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
+  const [modal, contextHolder] = Modal.useModal();
 
   const redirectCreate = (record) => () => {
     const data = {
@@ -46,6 +52,7 @@ const AdministratorSearchPage = (props) => {
     {
       title: 'Chức Vụ',
       dataIndex: 'position',
+      render: (position) => mappingPosition[position],
     },
     {
       title: 'Trạng Thái',
@@ -105,6 +112,7 @@ const AdministratorSearchPage = (props) => {
                 {
                   label: <a onClick={resetPassword(record)}>Đặt Lại Mật Khẩu</a>,
                   key: '2',
+                  danger: true
                 },
               ],
             }}
@@ -161,7 +169,7 @@ const AdministratorSearchPage = (props) => {
     let data = {};
     for (const [key, value] of Object.entries(form.getFieldsValue())) {
       if (value) data[key] = value;
-      if (key === 'status') data[key] = value;
+      if (key === 'status' && value !== undefined) data[key] = value;
     }
 
     props.callDatabase({ key: User.search, data });
@@ -180,18 +188,18 @@ const AdministratorSearchPage = (props) => {
   };
 
   const resetPassword = (e) => () => {
-    Modal.confirm({
+    modal.confirm({
       title: 'Xác nhận',
       content: (
         <div>
-          <p>Bạn có chắc là muốn đặt lại Mật Khẩu cho tài khoản:</p>
-          <b>{e.username}</b>
+          <p>Bạn có chắc là muốn đặt lại Mật Khẩu cho tài khoản:  <b>{e.username}</b></p>
         </div>
       ),
       onOk() {
-        props.callDatabase({ key: User.resetPwd, data: { id: e.id, password: '123456' } });
+         const password = generateRandomString(8);
+        props.callDatabase({ key: User.resetPwd, data: { id: e.id, password: password } });
         props.listenOnce(User.resetPwd, async (arg) => {
-          if (arg.data) props.openNotification('success', 'Đã đặt lại mật khẩu mặc định là: 123456');
+          if (arg.data) props.openNotification('success', <> <p>Mật khẩu mới là: <b>{password}</b> </p></>);
         });
       },
     });
@@ -199,13 +207,14 @@ const AdministratorSearchPage = (props) => {
 
   return (
     <>
+    {contextHolder}
       <Form
         {...props.formItemLayout}
         form={form}
         layout="vertical"
         name="register"
         onFinish={onFinish}
-        initialValues={{ status: true, position: '' }}
+        initialValues={{ status: undefined, position: undefined }}
         style={{ display: 'flex', flexWrap: 'wrap' }}
         scrollToFirstError
         noValidate={true}
@@ -222,14 +231,12 @@ const AdministratorSearchPage = (props) => {
           <Input onChange={onChange} />
         </Form.Item>
 
-        <Form.Item name="position" label="Chức Vụ" style={props.widthStyle}>
-          <Select
-            onChange={onChange}
-            options={[
-              { value: 'ADMIN', label: 'Quản Trị' },
-              { value: 'STAFF', label: 'Nhân Viên' },
-            ]}
-          />
+        <Form.Item name="position" label={'Chức Vụ'} style={{ ...props.widthStyle }}>
+          <Radio.Group name="position" onChange={onChange} buttonStyle="solid">
+            <Radio.Button value={'ADMIN'}>Quản Trị</Radio.Button>
+            <Radio.Button value={'STAFF'}>Nhân Viên</Radio.Button>
+            <Radio.Button value={undefined}>Skip</Radio.Button>
+          </Radio.Group>
         </Form.Item>
 
         <Form.Item name="phoneNumber" label="Số Điện Thoại" style={props.widthStyle}>
@@ -240,8 +247,14 @@ const AdministratorSearchPage = (props) => {
           <Input onChange={onChange} />
         </Form.Item>
 
-        <Form.Item name="status" label={'Trạng Thái'} valuePropName="checked" style={{ ...props.widthStyle }} {...props.tailFormItemLayout}>
-          <Checkbox onChange={onChange}> Hoạt Động </Checkbox>
+        <Form.Item name="status" label={'Trạng Thái'} style={{ ...props.widthStyle }}>
+          <Radio.Group name="status" onChange={onChange} buttonStyle="solid">
+            <Radio.Button value={true}>
+              Hoạt Động
+            </Radio.Button>
+            <Radio.Button value={false}>Vô Hiệu Hóa</Radio.Button>
+            <Radio.Button value={undefined}>Skip</Radio.Button>
+          </Radio.Group>
         </Form.Item>
 
         <Form.Item label=" " {...props.tailFormItemLayout} style={{ ...props.widthStyle }}>
