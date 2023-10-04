@@ -102,6 +102,7 @@ const PrivateLayout = ({ element: Component }) => {
         getItem('Tìm Kiếm', '/administrator/search', <UserSwitchOutlined />),
         getItem('Thêm - Sửa', '/administrator/create', <UserAddOutlined />),
       ]),
+    getItem('Thống Kê', '/report', <DesktopOutlined />, [getItem('Phiếu', '/report/note', <UserSwitchOutlined />)]),
   ];
 
   const onOpenChange = (e) => {

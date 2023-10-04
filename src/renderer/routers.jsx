@@ -25,6 +25,7 @@ import PenaltySeachPage from './pages/penalty/search';
 import PenaltyCreatePage from './pages/penalty/create';
 
 import NotFoundPage from './pages/not_found';
+import NoteReportPage from './pages/report/note';
 
 const routes = [
   {
@@ -164,6 +165,12 @@ const routes = [
     exact: true,
     layout: PrivateLayout,
     main: AdministratorSearchPage,
+  },
+  {
+    path: '/report/note',
+    exact: true,
+    layout: PrivateLayout,
+    main: NoteReportPage,
   },
   {
     path: '*',
