@@ -158,15 +158,15 @@ const DocumentRequestPage = (props) => {
         style={{ display: 'flex', flexWrap: 'wrap' }}
         scrollToFirstError
       >
-        <Form.Item name="name" label="Tên Tài Liệu" style={props.widthStyle} rules={[{ required: true, message: 'Please input name' }]}>
+        <Form.Item name="name" label="Tên Tài Liệu" style={props.widthStyle} rules={[{ required: true, message: 'Please input name' }]} hasFeedback>
           <Input.TextArea rows={1} showCount maxLength={200} />
         </Form.Item>
 
-        <Form.Item name="publisher" label="Nhà Xuất Bản" style={props.widthStyle} rules={[{ required: true, message: 'Please input publisher!' }]}>
+        <Form.Item name="publisher" label="Nhà Xuất Bản" style={props.widthStyle} rules={[{ required: true, message: 'Please input publisher!' }]} hasFeedback>
           <Input style={{ width: '100%' }} />
         </Form.Item>
 
-        <Form.Item name="author" label="Tác Giả" style={props.widthStyle} rules={[{ required: true, message: 'Please input author!' }]}>
+        <Form.Item name="author" label="Tác Giả" style={props.widthStyle} rules={[{ required: true, message: 'Please input author!' }]} hasFeedback>
           <Input style={{ width: '100%' }} />
         </Form.Item>
 

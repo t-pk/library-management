@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import { MemoryRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import routes from './routers';
-const color = '#174e94';
+const primaryColor = '#cdc2c2';
 
 const App = () => {
   const adminRoutes = routes.map((route) => (
@@ -29,21 +29,21 @@ const App = () => {
           Menu: { borderRadius: 0, colorBgBase: '#FFF' },
           Table: { headerBg: '#c1e1ff', fontWeightStrong: 530 },
           Layout: {
-            colorFillContentHover: '#cdc2c2',
+            colorFillContentHover: primaryColor,
             headerBg: '#112c5ef2',
           },
           Button: {
-            colorPrimary: color,
+            colorPrimary: '#174e94',
           },
           Input: {
-            hoverBorderColor: '#cdc2c2',
-            activeBorderColor: '#cdc2c2',
-            activeShadow: '#cdc2c2',
+            hoverBorderColor: primaryColor,
+            activeBorderColor: primaryColor,
+            activeShadow: primaryColor,
           },
           InputNumber: {
-            hoverBorderColor: '#cdc2c2',
-            activeBorderColor: '#cdc2c2',
-            activeShadow: '#cdc2c2',
+            hoverBorderColor: primaryColor,
+            activeBorderColor: primaryColor,
+            activeShadow: primaryColor,
           },
         },
         token: {
