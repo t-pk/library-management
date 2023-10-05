@@ -94,7 +94,7 @@ export const getDocumentReports = async (request: any) => {
     limit: limit,
   });
 
-  const returnValues = borrowCount.map((borrow: any) => {
+  const returnValues = borrowCount.reverse().map((borrow: any) => {
     const isExist: any = returnCount.find((iReturn: any) => iReturn['borrowDetail.document.name'] === borrow['document.name']);
     if (isExist) return +isExist.count;
     else return 0;
