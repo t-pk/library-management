@@ -14,6 +14,8 @@ import {
   UserAddOutlined,
   UserSwitchOutlined,
   DesktopOutlined,
+  AreaChartOutlined,
+  CalendarOutlined,
 } from '@ant-design/icons';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { User } from '../constants';
@@ -102,7 +104,7 @@ const PrivateLayout = ({ element: Component }) => {
         getItem('Tìm Kiếm', '/administrator/search', <UserSwitchOutlined />),
         getItem('Thêm - Sửa', '/administrator/create', <UserAddOutlined />),
       ]),
-    getItem('Thống Kê', '/report', <DesktopOutlined />, [getItem('Phiếu', '/report/note', <UserSwitchOutlined />)]),
+    getItem('Thống Kê', '/report', <AreaChartOutlined />, [getItem('Phiếu', '/report/note', <CalendarOutlined />)]),
   ];
 
   const onOpenChange = (e) => {

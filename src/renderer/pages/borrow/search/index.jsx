@@ -224,7 +224,7 @@ const BorrowSearchPage = (props) => {
     } else {
       reState = { ...inputState, [e.target.id]: e.target.value };
     }
-
+    setCurrentPage(1);
     setinputState(reState);
     debounceFc(reState);
   };

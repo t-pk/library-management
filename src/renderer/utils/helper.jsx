@@ -22,6 +22,12 @@ export const addDays = function (dateTime, days) {
   return date;
 };
 
+export const minusDays = function (dateTime, days) {
+  var date = new Date(dateTime);
+  date.setDate(date.getDate() - days);
+  return date;
+};
+
 export const formatDateTime = (date) => {
   if (!date) return date;
   const day = String(date.getDate()).padStart(2, '0');
@@ -32,6 +38,13 @@ export const formatDateTime = (date) => {
   const seconds = String(date.getSeconds()).padStart(2, '0');
 
   return `${day}/${month}/${year} ${hours}:${minutes}:00`;
+};
+
+export const formatDayMonth = (date) => {
+  if (!date) return date;
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  return `${day}-${month}`;
 };
 
 export const formatDmy = (date) => {

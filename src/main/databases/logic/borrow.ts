@@ -1,8 +1,8 @@
 import { Op } from 'sequelize';
 import countBy from 'lodash.countby';
-import { DocumentSchema, unitOfWork, BorrowSchema, BorrowDetailSchema, ReaderSchema, ReturnDetailSchema, UserSchema } from '../db';
+import { DocumentSchema, unitOfWork, BorrowSchema, BorrowDetailSchema, ReaderSchema, ReturnDetailSchema, UserSchema, sequelize } from '../db';
 import { normalDocumentPeriod, specialDocumentPeriod } from '../../../renderer/constants/const';
-import { formatYmd, addDays } from '../../../renderer/utils/helper';
+import { formatYmd, addDays, minusDays, formatDayMonth } from '../../../renderer/utils/helper';
 
 interface IObject {
   [key: string]: string | {};
@@ -128,4 +128,32 @@ export const createBorrow = async (request: any) => {
     await BorrowDetailSchema.bulkCreate(borrowDetails, { transaction, returning: true });
     return borrowRes.dataValues;
   });
+};
+
+export const getBorrowReports = async (request: any) => {
+  const endDate = new Date();
+  const startDate = minusDays(endDate, 9);
+  let borrows = await BorrowSchema.findAll({
+    where: { createdAt: { [Op.between]: [startDate, endDate] } },
+    attributes: [
+      [sequelize.literal("TO_CHAR(created_at, 'dd-mm')"), 'date'],
+      [sequelize.fn('COUNT', sequelize.col('*')), 'count'], // You can also count the rows in each group
+    ],
+    group: [sequelize.literal("TO_CHAR(created_at, 'dd-mm')") as any],
+  });
+  borrows = borrows.map((borrow: any) => borrow.toJSON());
+  let labels: any[] = [];
+  for (let i = 0; i < 10; i++) {
+    const date = addDays(startDate, i);
+    labels.push(date);
+  }
+  labels = labels.map((label: any) => formatDayMonth(label));
+  let values = [];
+  for (let i = 0; i < labels.length; i++) {
+    const borrow: any = borrows.find((borrow: any) => borrow.date === labels[i]);
+    if (borrow) values.push(+borrow.count);
+    else values.push(0);
+  }
+  console.log(values);
+  return { labels, values };
 };

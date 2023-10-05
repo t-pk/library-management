@@ -1,7 +1,7 @@
 import { Op } from 'sequelize';
 import countBy from 'lodash.countby';
-import { BorrowDetailSchema, DocumentSchema, ReaderSchema, ReturnDetailSchema, ReturnSchema, UserSchema, unitOfWork } from '../db';
-
+import { BorrowDetailSchema, DocumentSchema, ReaderSchema, ReturnDetailSchema, ReturnSchema, UserSchema, sequelize, unitOfWork } from '../db';
+import { minusDays, addDays, formatDayMonth } from '../../../renderer/utils/helper';
 interface IObject {
   [key: string]: string | {};
 }
@@ -136,4 +136,31 @@ export const getReturns = async (request: any) => {
   }));
 
   return returnJSON;
+};
+
+export const getReturnReports = async (request: any) => {
+  const endDate = new Date();
+  const startDate = minusDays(endDate, 9);
+  let returns = await ReturnSchema.findAll({
+    where: { createdAt: { [Op.between]: [startDate, endDate] } },
+    attributes: [
+      [sequelize.literal("TO_CHAR(created_at, 'dd-mm')"), 'date'],
+      [sequelize.fn('COUNT', sequelize.col('*')), 'count'], // You can also count the rows in each group
+    ],
+    group: [sequelize.literal("TO_CHAR(created_at, 'dd-mm')") as any],
+  });
+  returns = returns.map((borrow: any) => borrow.toJSON());
+  let labels: any[] = [];
+  for (let i = 0; i < 10; i++) {
+    const date = addDays(startDate, i);
+    labels.push(date);
+  }
+  labels = labels.map((label: any) => formatDayMonth(label));
+  let values = [];
+  for (let i = 0; i < labels.length; i++) {
+    const borrow: any = returns.find((borrow: any) => borrow.date === labels[i]);
+    if (borrow) values.push(+borrow.count);
+    else values.push(0);
+  }
+  return { labels, values };
 };

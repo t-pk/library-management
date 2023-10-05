@@ -95,6 +95,7 @@
     "electron-updater": "^5.3.0",
     "faker": "5.5.3",
     "html2canvas": "^1.4.1",
+    "lodash.clonedeep": "^4.5.0",
     "lodash.countby": "^4.6.0",
     "lodash.debounce": "^4.0.8",
     "pg": "^8.11.3",
@@ -239,8 +240,7 @@
       "repo": "library management"
     }
   },
-  "collective": {
-  },
+  "collective": {},
   "devEngines": {
     "node": ">=18.17.x",
     "npm": ">=9.6.x"

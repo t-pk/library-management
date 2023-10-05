@@ -20,11 +20,11 @@ import { createPublisher, getPublishers } from './logic/publisher';
 import { getDocumentTypes } from './logic/document-type';
 import { getReaderTypes } from './logic/reader-type';
 import { createReader, getReaders } from './logic/reader';
-import { createBorrow, getBorrows } from './logic/borrow';
+import { createBorrow, getBorrowReports, getBorrows } from './logic/borrow';
 import { getBorrowDetail } from './logic/borrow-detail';
-import { createReturn, getReturns } from './logic/return';
-import { createRemind, getRemindDetails, getReminds } from './logic/remind';
-import { createPenalty, getPenalties } from './logic/penalty';
+import { createReturn, getReturnReports, getReturns } from './logic/return';
+import { createRemind, getRemindDetails, getRemindReports, getReminds } from './logic/remind';
+import { createPenalty, getPenalties, getPenaltyReports } from './logic/penalty';
 import {
   Document,
   Author,
@@ -226,7 +226,18 @@ export const handleData = async (arg: any, data: any) => {
       case User.changePwd:
         result = await changePassword(data);
         break;
-
+      case Borrow.report:
+        result = await getBorrowReports(data);
+        break;
+      case Return.report:
+        result = await getReturnReports(data);
+        break;
+      case Penalty.report:
+        result = await getPenaltyReports(data);
+        break;
+      case Remind.report:
+        result = await getRemindReports(data);
+        break;
       default:
         break;
     }

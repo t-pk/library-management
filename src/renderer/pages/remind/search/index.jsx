@@ -75,19 +75,29 @@ const RemindSearchPage = (props) => {
     }
   }, []);
 
-  const handleDebounceFn = async (reState) => {
-    const remind = await props.invoke({ key: Remind.search, data: reState });
-    setReminds(remind.data || []);
-    setLoading(false);
+  const handleDebounceFn = (reState) => {
+    props.callDatabase({ key: Remind.search, data: reState });
+    props.listenOnce(Remind.search, (arg) => {
+      setLoading(false);
+      setReminds(arg.data || []);
+    });
   };
 
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
 
-  const getInitData = async () => {
-    let readerType = await props.invoke({ key: ReaderType.search });
-    readerType = (readerType.data || []).map((item) => ({ id: item.id, value: item.name }));
-    readerType.push({ id: undefined, label: 'Skip' });
-    setReaderTypes(readerType);
+  const getInitData = () => {
+    props.callDatabase({ key: ReaderType.search });
+
+    props.listenOnce(ReaderType.search, async (arg) => {
+      if (arg && arg.data) {
+        const resReaders = arg.data.map((item) => ({
+          value: item.id,
+          label: item.name,
+        }));
+        resReaders.push({ id: undefined, label: 'Skip' });
+        setReaderTypes(resReaders);
+      }
+    });
   };
 
   const onChange = (e) => {
