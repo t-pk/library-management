@@ -35,11 +35,11 @@ const ReturnCreatePage = (props) => {
 
   const getInitData = async (borrowInfo) => {
     const readerType = await props.invoke({ key: ReaderType.search });
-    setReaderTypes(readerType.data.map((item) => ({ value: item.id, label: item.name })));
+    setReaderTypes((readerType.data || []).map((item) => ({ value: item.id, label: item.name })));
 
     if (borrowInfo && borrowInfo.borrowId) {
       const borrow = await props.invoke({ key: BorrowDetail.search, data: { borrowId: borrowInfo.borrowId } });
-      setBorrowedDocuments(borrow.data.map((item) => ({ value: item.id, label: item.name })) || []);
+      setBorrowedDocuments((borrow.data || []).map((item) => ({ value: item.id, label: item.name })) || []);
     }
   };
 

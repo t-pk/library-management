@@ -33,9 +33,9 @@ const DocumentCreatePage = (props) => {
     const author = await props.invoke({ key: Author.search });
     const documentType = await props.invoke({ key: DocumentType.search });
 
-    setPublishers(publisher.data.map((item) => ({ id: item.id, value: item.name })));
-    setAuthors(author.data.map((item) => ({ id: item.id, value: item.name })));
-    setDocumentTypes(documentType.data.map((item) => ({ id: item.id, value: item.name })));
+    setPublishers((publisher.data || []).map((item) => ({ id: item.id, value: item.name })));
+    setAuthors((author.data || []).map((item) => ({ id: item.id, value: item.name })));
+    setDocumentTypes((documentType.data || []).map((item) => ({ id: item.id, value: item.name })));
   };
 
   const onFinish = async (values) => {

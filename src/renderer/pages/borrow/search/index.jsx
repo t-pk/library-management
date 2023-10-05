@@ -204,7 +204,7 @@ const BorrowSearchPage = (props) => {
     const documentSearch = await props.invoke({ key: Document.search });
     const borrows = await props.invoke({ key: Borrow.search, data: query.borrowQuery });
 
-    const resReaders = readerType.data.map((item) => ({ value: item.id, label: item.name }));
+    const resReaders = (readerType.data || []).map((item) => ({ value: item.id, label: item.name }));
 
     resReaders.push({ id: undefined, label: 'Skip' });
     setLoading(false);

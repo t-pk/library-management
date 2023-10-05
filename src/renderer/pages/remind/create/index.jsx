@@ -43,7 +43,6 @@ const RemindCreatePage = (props) => {
   };
 
   const onFinish = async (values) => {
-    console.log(values);
     setLoading(true);
     const data = { ...values };
     props.callDatabase({ key: Remind.create, data });

@@ -52,7 +52,6 @@ const BorrowCreatePage = (props) => {
       await delay(300);
       if (arg.data) {
         form.resetFields();
-        console.log(arg.data);
         props.openNotification('success', 'Đã Tạo Phiếu Mượn.');
         setBorrow(arg.data);
       }

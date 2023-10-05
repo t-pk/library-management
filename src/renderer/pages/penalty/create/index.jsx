@@ -39,7 +39,7 @@ const PenaltyCreatePage = (props) => {
     props.callDatabase({ key: ReaderType.search });
 
     props.listenOnce(ReaderType.search, (arg) => {
-      setReaderTypes(arg.data.map((item) => ({ value: item.id, label: item.name })));
+      setReaderTypes((arg.data || []).map((item) => ({ value: item.id, label: item.name })));
     });
   };
 

@@ -158,7 +158,6 @@ const ReturnSearchPage = (props) => {
     });
   };
   const createReturns = (key, record) => () => {
-    console.log(record);
     const data = {
       returnId: record.returnId,
       readerId: record.return.reader.id,

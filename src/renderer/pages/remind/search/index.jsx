@@ -85,7 +85,7 @@ const RemindSearchPage = (props) => {
 
   const getInitData = async () => {
     let readerType = await props.invoke({ key: ReaderType.search });
-    readerType = readerType.data.map((item) => ({ id: item.id, value: item.name }));
+    readerType = (readerType.data || []).map((item) => ({ id: item.id, value: item.name }));
     readerType.push({ id: undefined, label: 'Skip' });
     setReaderTypes(readerType);
   };

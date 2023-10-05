@@ -136,7 +136,6 @@ const ReaderSearchPage = (props) => {
     props.callDatabase({ key: Reader.search, data: reState });
     props.listenOnce(Reader.search, (arg) => {
       setLoading(false);
-      console.log(arg);
       setDocuments(arg.data || []);
     });
   };

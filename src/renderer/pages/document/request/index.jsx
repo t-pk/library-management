@@ -106,7 +106,6 @@ const DocumentRequestPage = (props) => {
     props.listenOnce(DocumentRequest.search, async (arg) => {
       await delay(300);
       if (arg.data) {
-        console.log(arg);
         setDocumentRequests(arg.data);
       }
       setLoading(false);

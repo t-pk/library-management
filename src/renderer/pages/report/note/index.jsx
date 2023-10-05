@@ -43,7 +43,6 @@ const NoteReportPage = (props) => {
         },
       ],
     };
-    console.log(iData);
     setData(iData);
   }, []);
 

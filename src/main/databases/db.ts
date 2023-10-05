@@ -232,7 +232,7 @@ export const handleData = async (arg: any, data: any) => {
     }
     return result;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     if (error instanceof ConnectionRefusedError) {
       throw `Cannot connect to Database ${error.message}`;
     }

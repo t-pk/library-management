@@ -25,7 +25,6 @@ const AdministratorCreatePage = (props) => {
   }, []);
 
   const onFinish = (values) => {
-    console.log(values);
     setLoading(true);
     props.callDatabase({ key: User.create, data: values });
 
@@ -33,7 +32,6 @@ const AdministratorCreatePage = (props) => {
       await delay(300);
       if (arg.data) {
         setUser(arg.data);
-        console.log('arg', arg);
         if (values.id) props.openNotification('success', 'Đã Cập Nhật');
         else props.openNotification('success', 'Đã Tạo Tài Khoản');
         form.resetFields();
