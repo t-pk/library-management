@@ -14,7 +14,7 @@ import { IReaderType } from './schema/reader-type';
 import { IRemind } from './schema/remind';
 import { IPenalty } from './schema/penalty';
 import { changePassword, createUser, getUser, getUsers, resetPassword } from './logic/user';
-import { createDocument, getDocuments } from './logic/document';
+import { createDocument, getDocumentReports, getDocuments } from './logic/document';
 import { createAuthor, getAuthors } from './logic/author';
 import { createPublisher, getPublishers } from './logic/publisher';
 import { getDocumentTypes } from './logic/document-type';
@@ -237,6 +237,9 @@ export const handleData = async (arg: any, data: any) => {
         break;
       case Remind.report:
         result = await getRemindReports(data);
+        break;
+      case Document.report:
+        result = await getDocumentReports(data);
         break;
       default:
         break;

@@ -26,6 +26,8 @@ import PenaltyCreatePage from './pages/penalty/create';
 
 import NotFoundPage from './pages/not_found';
 import NoteReportPage from './pages/report/note';
+import DocumentReportPage from './pages/report/document';
+import StaffReportPage from './pages/report/staff';
 
 const routes = [
   {
@@ -171,6 +173,18 @@ const routes = [
     exact: true,
     layout: PrivateLayout,
     main: NoteReportPage,
+  },
+  {
+    path: '/report/document',
+    exact: true,
+    layout: PrivateLayout,
+    main: DocumentReportPage,
+  },
+  {
+    path: '/report/staff',
+    exact: true,
+    layout: PrivateLayout,
+    main: StaffReportPage,
   },
   {
     path: '*',

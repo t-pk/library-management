@@ -1,5 +1,15 @@
 import { Op } from 'sequelize';
-import { AuthorSchema, DocumentSchema, PublisherSchema, unitOfWork, DocumentTypeSchema, UserSchema } from '../db';
+import {
+  AuthorSchema,
+  DocumentSchema,
+  PublisherSchema,
+  unitOfWork,
+  DocumentTypeSchema,
+  UserSchema,
+  BorrowDetailSchema,
+  sequelize,
+  ReturnDetailSchema,
+} from '../db';
 
 export const getDocuments = async (request: any) => {
   let query: any = {};
@@ -56,4 +66,46 @@ export const createDocument = async (request: any) => {
     const document = await DocumentSchema.create(request, { transaction, returning: true, raw: true });
     return document.dataValues;
   });
+};
+
+export const getDocumentReports = async (request: any) => {
+  const limit = 40;
+  let borrowCount = await BorrowDetailSchema.findAll({
+    attributes: [
+      'document_id',
+      'document.name',
+      [sequelize.fn('COUNT', sequelize.col('document_id')), 'count'], // You can also count the rows in each group
+    ],
+    group: ['document_id', 'document.name'],
+    raw: true,
+    include: [{ model: DocumentSchema, attributes: ['name'] }],
+    order: [['count', 'DESC']],
+    limit: limit,
+  });
+
+  let returnCount = await ReturnDetailSchema.findAll({
+    attributes: [
+      [sequelize.fn('COUNT', sequelize.col('borrowDetail->document.id')), 'count'], // You can also count the rows in each group
+    ],
+    group: ['borrowDetail->document.id', 'borrowDetail->document.name'],
+    raw: true,
+    include: [{ model: BorrowDetailSchema, required: true, attributes: [], include: [{ model: DocumentSchema, attributes: ['name'], required: true }] }],
+    order: [['count', 'DESC']],
+    limit: limit,
+  });
+
+  const returnValues = borrowCount.map((borrow: any) => {
+    const isExist: any = returnCount.find((iReturn: any) => iReturn['borrowDetail.document.name'] === borrow['document.name']);
+    if (isExist) return +isExist.count;
+    else return 0;
+  });
+
+  const result: any =  {
+    labels: borrowCount.map((borrow: any) => borrow['document.name'].substring(0, 30) + (borrow['document.name'].length > 30 ? '....' : '')),
+    borrowValues: borrowCount.map((borrow: any) => +borrow.count),
+    returnValues: returnValues,
+  };
+  const avgValues = result.borrowValues.map((value: any, index:number)=> (value+result.returnValues[index])/2);
+  result.avgValues = avgValues;
+  return result;
 };

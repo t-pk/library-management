@@ -104,7 +104,12 @@ const PrivateLayout = ({ element: Component }) => {
         getItem('Tìm Kiếm', '/administrator/search', <UserSwitchOutlined />),
         getItem('Thêm - Sửa', '/administrator/create', <UserAddOutlined />),
       ]),
-    getItem('Thống Kê', '/report', <AreaChartOutlined />, [getItem('Phiếu', '/report/note', <CalendarOutlined />)]),
+    getItem('Thống Kê', '/report', <AreaChartOutlined />, [
+      getItem('Phiếu', '/report/note', <CalendarOutlined />),
+
+      getItem('Tài Liệu', '/report/document', <FileSearchOutlined />),
+      getItem('Nhân Viên', '/report/staff', <UsergroupAddOutlined />),
+    ]),
   ];
 
   const onOpenChange = (e) => {

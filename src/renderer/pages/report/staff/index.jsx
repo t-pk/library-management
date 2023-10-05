@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Form, Button } from 'antd';
 import { Line } from 'react-chartjs-2';
@@ -27,8 +27,9 @@ const options = {
   },
 };
 
-const NoteReportPage = (props) => {
+const StaffReportPage = (props) => {
   ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+  const canvasRef = useRef();
   const [borrows, setBorrrows] = useState({ labels: [], datasets: [] });
   const [borrowOpts, setBorrowOpts] = useState({ labels: [], datasets: [] });
   const [returnOpts, setReturnOpts] = useState({ labels: [], datasets: [] });
@@ -118,6 +119,7 @@ const NoteReportPage = (props) => {
   return (
     <div>
       <Form
+        ref={canvasRef}
         className="export-image"
         {...formItemLayout}
         layout="vertical"
@@ -147,4 +149,4 @@ const NoteReportPage = (props) => {
   );
 };
 
-export default NoteReportPage;
+export default StaffReportPage;
