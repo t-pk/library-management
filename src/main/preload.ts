@@ -5,7 +5,6 @@ import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 export type Channels = 'ipc-database';
 export type InvokeChannels = 'invoke-database';
 
-
 const electronHandler = {
   ipcRenderer: {
     sendMessage(channel: Channels, ...args: unknown[]) {
@@ -24,8 +23,8 @@ const electronHandler = {
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
-    invoke(channel: InvokeChannels,...args: unknown[]) {
-     return ipcRenderer.invoke(channel, ...args)
+    invoke(channel: InvokeChannels, ...args: unknown[]) {
+      return ipcRenderer.invoke(channel, ...args);
     },
   },
 };

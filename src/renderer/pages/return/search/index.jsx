@@ -176,25 +176,15 @@ const ReturnSearchPage = (props) => {
 
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
 
-  const getInitData = () => {
-    props.callDatabase({ key: ReaderType.search });
-    props.callDatabase({ key: Document.search });
+  const getInitData = async () => {
+    let readerType = await props.invoke({ key: ReaderType.search });
+    const documentSearch = await props.invoke({ key: Document.search, data: { availableQuantity: 1 } });
 
-    props.listenOn(async (arg) => {
-      if (arg && arg.data) {
-        if (arg.key === ReaderType.search) {
-          const resReaders = arg.data.map((item) => ({
-            value: item.id,
-            label: item.name,
-          }));
-          resReaders.push({ id: undefined, label: 'Skip' });
-          setReaderTypes(resReaders);
-        }
-        if (arg.key === Document.search) {
-          setDocuments(parseDataSelect(arg.data));
-        }
-      }
-    });
+    readerType = (readerType.data || []).map((item) => ({ value: item.id, label: item.name }));
+    readerType.push({ id: undefined, label: 'Skip' });
+
+    setReaderTypes(readerType);
+    setDocuments(parseDataSelect(documentSearch.data || []));
   };
 
   const onChange = (e) => {

@@ -48,11 +48,11 @@ ipcMain.handle('invoke-database', async (channel, arg) => {
       data.updatedBy = userId;
     }
     const result = await handleData(arg, data);
-   return { key: arg.key, data: result };
+    return { key: arg.key, data: result };
   } catch (error) {
-   return { key: arg.key, error: JSON.stringify(error) };
+    return { key: arg.key, error: JSON.stringify(error) };
   }
-})
+});
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

@@ -28,18 +28,14 @@ const DocumentCreatePage = (props) => {
     }
   }, []);
 
-  const getInitData = () => {
-    props.callDatabase({ key: Publisher.search });
-    props.callDatabase({ key: Author.search });
-    props.callDatabase({ key: DocumentType.search });
+  const getInitData = async () => {
+    const publisher = await props.invoke({ key: Publisher.search });
+    const author = await props.invoke({ key: Author.search });
+    const documentType = await props.invoke({ key: DocumentType.search });
 
-    props.listenOn((arg) => {
-      if (arg && arg.data) {
-        if (arg.key === Publisher.search) setPublishers(arg.data.map((item) => ({ id: item.id, value: item.name })));
-        if (arg.key === Author.search) setAuthors(arg.data.map((item) => ({ id: item.id, value: item.name })));
-        if (arg.key === DocumentType.search) setDocumentTypes(arg.data.map((item) => ({ id: item.id, value: item.name })));
-      }
-    });
+    setPublishers(publisher.data.map((item) => ({ id: item.id, value: item.name })));
+    setAuthors(author.data.map((item) => ({ id: item.id, value: item.name })));
+    setDocumentTypes(documentType.data.map((item) => ({ id: item.id, value: item.name })));
   };
 
   const onFinish = async (values) => {

@@ -58,7 +58,6 @@ const RemindSearchPage = (props) => {
     if (remindInfo && Object.keys(remindInfo).length) {
       remindInfo.readerTypeId = +remindInfo.readerTypeId;
       remindQuery = { ...remindQuery, ...remindInfo };
-      console.log('remindInfo', remindInfo);
       form.setFieldsValue(remindInfo);
     }
 
@@ -76,32 +75,19 @@ const RemindSearchPage = (props) => {
     }
   }, []);
 
-  const handleDebounceFn = (reState) => {
-    props.callDatabase({ key: Remind.search, data: reState });
-    props.listenOnce(Remind.search, (arg) => {
-      setLoading(false);
-      setReminds(arg.data || []);
-    });
+  const handleDebounceFn = async (reState) => {
+    const remind = await props.invoke({ key: Remind.search, data: reState });
+    setReminds(remind.data || []);
+    setLoading(false);
   };
 
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
 
-  const getInitData = () => {
-    props.callDatabase({ key: ReaderType.search });
-    props.callDatabase({ key: Remind.search });
-
-    props.listenOn(async (arg) => {
-      if (arg && arg.data) {
-        if (arg.key === ReaderType.search) {
-          const resReaders = arg.data.map((item) => ({
-            value: item.id,
-            label: item.name,
-          }));
-          resReaders.push({ id: undefined, label: 'Skip' });
-          setReaderTypes(resReaders);
-        }
-      }
-    });
+  const getInitData = async () => {
+    let readerType = await props.invoke({ key: ReaderType.search });
+    readerType = readerType.data.map((item) => ({ id: item.id, value: item.name }));
+    readerType.push({ id: undefined, label: 'Skip' });
+    setReaderTypes(readerType);
   };
 
   const onChange = (e) => {

@@ -220,13 +220,19 @@ const PrivateLayout = ({ element: Component }) => {
       await delay(300);
       if (arg.data) {
         form.resetFields();
-        openNotification('success', 'Đã cập nhật mật khẩu, lòng đăng nhập lại.');
+        openNotification('success', 'Đã cập nhật mật khẩu. Vui lòng đăng nhập lại.');
         await delay(3000);
         setOpenModal(false);
         localStorage.clear();
         navigate('/login');
       }
     });
+  };
+
+  const invoke = async (data) => {
+    const result = await window.electron.ipcRenderer.invoke('invoke-database', data);
+    if (result) return result;
+    if (result && result.error) return openNotification('error', result.error);
   };
 
   return localStorage.getItem('TOKEN_KEY') ? (
@@ -349,6 +355,7 @@ const PrivateLayout = ({ element: Component }) => {
                 callDatabase={callDatabase}
                 listenOnce={listenOnce}
                 openNotification={openNotification}
+                invoke={invoke}
               />
             </Content>
           </Spin>

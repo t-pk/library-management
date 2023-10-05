@@ -65,7 +65,7 @@ export const getUser = () => {
   return JSON.parse(user) || {};
 };
 
-export const generateRandomString = (length) => {
+export const generateRandomPassword = (length) => {
   const charset = '12211211144431144411666511611888711181199991111';
   let result = '';
   for (let i = 0; i < length; i++) {

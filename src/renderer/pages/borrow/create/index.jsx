@@ -20,27 +20,25 @@ const BorrowCreatePage = (props) => {
   const location = useLocation();
 
   useEffect(() => {
-    getInitData();
-
     let readerInfo = queryStringToObject(location.search);
     setHiddenForm(!Object.keys(readerInfo).length);
-    readerInfo.readerTypeId = +readerInfo.readerTypeId;
-    form.setFieldsValue(readerInfo);
 
-    if (readerTypeId === 1) form.setFieldsValue({ civilServantId: undefined });
-    if (readerTypeId === 2) form.setFieldsValue({ studentId: undefined });
+    if (Object.keys(readerInfo).length) {
+      getInitData();
+      readerInfo.readerTypeId = +readerInfo.readerTypeId;
+      form.setFieldsValue(readerInfo);
+
+      if (readerTypeId === 1) form.setFieldsValue({ civilServantId: undefined });
+      if (readerTypeId === 2) form.setFieldsValue({ studentId: undefined });
+    }
   }, [readerTypeId, location]);
 
-  const getInitData = () => {
-    props.callDatabase({ key: ReaderType.search });
-    props.callDatabase({ key: Document.search, data: { availableQuantity: 1 } });
+  const getInitData = async () => {
+    const readerType = await props.invoke({ key: ReaderType.search });
+    const documentSearch = await props.invoke({ key: Document.search, data: { availableQuantity: 1 } });
 
-    props.listenOn(async (arg) => {
-      if (arg && arg.data) {
-        if (arg.key === ReaderType.search) setReaderTypes(arg.data.map((item) => ({ value: item.id, label: item.name })));
-        if (arg.key === Document.search) setDocuments(parseDataSelect(arg.data));
-      }
-    });
+    setReaderTypes((readerType.data || []).map((item) => ({ value: item.id, label: item.name })));
+    setDocuments(parseDataSelect(documentSearch.data || []));
   };
 
   const onFinish = async (values) => {

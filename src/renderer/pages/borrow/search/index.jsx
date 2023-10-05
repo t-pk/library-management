@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { Button, Input, Select, Space, Dropdown, Table, Form, Radio } from 'antd';
 import { DownOutlined, SearchOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { formatDateTime, formatDmy, objectToQueryString, parseDataSelect, queryStringToObject } from '../../../utils/helper';
+import { Borrow, ReaderType, Document } from '../../../constants';
 
 const BorrowSearchPage = (props) => {
   const [form] = Form.useForm();
@@ -17,24 +18,6 @@ const BorrowSearchPage = (props) => {
   const readerTypeId = Form.useWatch('readerTypeId', form);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 20; // Number of items per page
-
-  props.listenOn(async (arg) => {
-    if (arg && arg.data) {
-      if (arg.key === 'readerType-search') {
-        const resReaders = arg.data.map((item) => ({
-          value: item.id,
-          label: item.name,
-        }));
-        resReaders.push({ id: undefined, label: 'Skip' });
-        setReaderTypes(resReaders);
-      }
-      if (arg.key === 'borrow-search') {
-        setLoading(false);
-        setBorrows(arg.data);
-      }
-      if (arg.key === 'document-search') setDocuments(parseDataSelect(arg.data));
-    }
-  });
 
   const groupByBorrow = (borrow, index) => {
     const reIndex = currentPage >= 2 ? currentPage * pageSize - pageSize + index : index;
@@ -161,8 +144,10 @@ const BorrowSearchPage = (props) => {
     },
   ];
 
-  const handleDebounceFn = (reState) => {
-    props.callDatabase({ key: 'borrow-search', data: reState });
+  const handleDebounceFn = async (reState) => {
+    const borrow = await props.invoke({ key: Borrow.search, data: reState });
+    setLoading(false);
+    setBorrows(borrow.data || []);
   };
 
   const debounceFc = useCallback(debounce(handleDebounceFn, 200), []);
@@ -214,10 +199,18 @@ const BorrowSearchPage = (props) => {
     }
   }, []);
 
-  const getInitData = (query) => {
-    props.callDatabase({ key: 'readerType-search' });
-    props.callDatabase({ key: 'borrow-search', data: query.borrowQuery });
-    props.callDatabase({ key: 'document-search' });
+  const getInitData = async (query) => {
+    const readerType = await props.invoke({ key: ReaderType.search });
+    const documentSearch = await props.invoke({ key: Document.search });
+    const borrows = await props.invoke({ key: Borrow.search, data: query.borrowQuery });
+
+    const resReaders = readerType.data.map((item) => ({ value: item.id, label: item.name }));
+
+    resReaders.push({ id: undefined, label: 'Skip' });
+    setLoading(false);
+    setReaderTypes(resReaders);
+    setDocuments(parseDataSelect(documentSearch.data || []));
+    setBorrows(borrows.data || []);
   };
 
   const onChange = (e) => {
@@ -248,7 +241,8 @@ const BorrowSearchPage = (props) => {
     if (name) data.name = name.trim();
     if (!name && isNaN(id)) data.name = value.trim();
 
-    props.callDatabase({ key: 'document-search', data });
+    const documentSearch = await props.invoke({ key: Document.search, data });
+    setDocuments(parseDataSelect(documentSearch.data || []));
   };
 
   const documentFc = useCallback(debounce(debounceDocument, 400), []);

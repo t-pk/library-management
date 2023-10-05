@@ -19,10 +19,12 @@ const ReturnCreatePage = (props) => {
   useEffect(() => {
     let borrowInfo = queryStringToObject(location.search);
     setHiddenForm(!Object.keys(borrowInfo).length);
-    borrowInfo.readerTypeId = +borrowInfo.readerTypeId;
-    form.setFieldsValue(borrowInfo);
+    if (Object.keys(borrowInfo).length) {
+      borrowInfo.readerTypeId = +borrowInfo.readerTypeId;
+      form.setFieldsValue(borrowInfo);
+      getInitData(borrowInfo);
+    }
 
-    getInitData(borrowInfo);
     if (readerTypeId === 1) {
       form.setFieldsValue({ civilServantId: undefined });
     }
@@ -31,19 +33,14 @@ const ReturnCreatePage = (props) => {
     }
   }, [readerTypeId, location]);
 
-  const getInitData = (borrowInfo) => {
-    props.callDatabase({ key: ReaderType.search });
+  const getInitData = async (borrowInfo) => {
+    const readerType = await props.invoke({ key: ReaderType.search });
+    setReaderTypes(readerType.data.map((item) => ({ value: item.id, label: item.name })));
 
     if (borrowInfo && borrowInfo.borrowId) {
-      const requestBorrowDetail = { borrowId: borrowInfo.borrowId };
-      props.callDatabase({ key: BorrowDetail.search, data: requestBorrowDetail });
+      const borrow = await props.invoke({ key: BorrowDetail.search, data: { borrowId: borrowInfo.borrowId } });
+      setBorrowedDocuments(borrow.data.map((item) => ({ value: item.id, label: item.name })) || []);
     }
-    props.listenOn((arg) => {
-      if (arg && arg.data) {
-        if (arg.key === ReaderType.search) setReaderTypes(arg.data.map((item) => ({ value: item.id, label: item.name })));
-        if (arg.key === BorrowDetail.search) setBorrowedDocuments(arg.data.map((item) => ({ value: item.id, label: item.name })));
-      }
-    });
   };
 
   const onFinish = async (values) => {

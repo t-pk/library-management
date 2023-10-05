@@ -20,10 +20,13 @@ const PenaltyCreatePage = (props) => {
   useEffect(() => {
     let returnInfo = queryStringToObject(location.search);
     setHiddenForm(!Object.keys(returnInfo).length);
-    returnInfo.readerTypeId = +returnInfo.readerTypeId;
-    form.setFieldsValue(returnInfo);
+    if (Object.keys(returnInfo).length) {
+      returnInfo.readerTypeId = +returnInfo.readerTypeId;
+      form.setFieldsValue(returnInfo);
 
-    getInitData();
+      getInitData();
+    }
+
     if (readerTypeId === 1) {
       form.setFieldsValue({ civilServantId: undefined });
     }

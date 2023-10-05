@@ -3,7 +3,7 @@ import { Button, Input, Table, Form, Tag, Checkbox, Select, Space, Dropdown, Mod
 import { SearchOutlined, DownOutlined } from '@ant-design/icons';
 import { User } from '../../../constants';
 import debounce from 'lodash.debounce';
-import { delay, formatDateTime, objectToQueryString, queryStringToObject, generateRandomString } from '../../../utils/helper';
+import { delay, formatDateTime, objectToQueryString, queryStringToObject, generateRandomPassword } from '../../../utils/helper';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const mappingPosition = {
@@ -198,7 +198,7 @@ const AdministratorSearchPage = (props) => {
         </div>
       ),
       onOk() {
-        const password = generateRandomString(8);
+        const password = generateRandomPassword(8);
         props.callDatabase({ key: User.resetPwd, data: { id: e.id, password: password } });
         props.listenOnce(User.resetPwd, async (arg) => {
           if (arg.data)

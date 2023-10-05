@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { SearchOutlined, DownOutlined } from '@ant-design/icons';
 import { Button, Input, Select, Table, Form, Tag, InputNumber, Radio, Space, Dropdown } from 'antd';
 import { Author, Document, DocumentType, Publisher } from '../../../constants';
-import { objectToQueryString, queryStringToObject } from '../../../utils/helper';
+import { objectToQueryString, queryStringToObject, parseDataSelect } from '../../../utils/helper';
 
 const DocumentSearchPage = (props) => {
   const navigate = useNavigate();
@@ -137,36 +137,14 @@ const DocumentSearchPage = (props) => {
     getInitData(), debounceFc(documentQuery);
   }, []);
 
-  const getInitData = () => {
-    props.callDatabase({ key: Publisher.search });
-    props.callDatabase({ key: Author.search });
-    props.callDatabase({ key: DocumentType.search });
+  const getInitData = async () => {
+    const publisher = await props.invoke({ key: Publisher.search });
+    const author = await props.invoke({ key: Author.search });
+    const documentType = await props.invoke({ key: DocumentType.search });
 
-    props.listenOn(async (arg) => {
-      if (arg && arg.data) {
-        if (arg.key === Publisher.search)
-          setPublishers(
-            arg.data.map((item) => ({
-              id: item.id,
-              value: `${item.id} - ${item.name}`,
-            }))
-          );
-        if (arg.key === Author.search)
-          setAuthors(
-            arg.data.map((item) => ({
-              id: item.id,
-              value: `${item.id} - ${item.name}`,
-            }))
-          );
-        if (arg.key === DocumentType.search)
-          setDocumentTypes(
-            arg.data.map((item) => ({
-              id: item.id,
-              value: `${item.id} - ${item.name}`,
-            }))
-          );
-      }
-    });
+    setPublishers(parseDataSelect(publisher.data));
+    setAuthors(parseDataSelect(author.data));
+    setDocumentTypes(parseDataSelect(documentType.data));
   };
 
   const onChange = (e) => {

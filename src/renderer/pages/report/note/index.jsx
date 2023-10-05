@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Form } from 'antd';
 import { Line } from 'react-chartjs-2';
-import html2canvas from "html2canvas";
+import html2canvas from 'html2canvas';
 import faker from 'faker';
 
 const formItemLayout = {
@@ -47,12 +47,12 @@ const NoteReportPage = (props) => {
     setData(iData);
   }, []);
 
-  const div2PDF = e => {
+  const div2PDF = (e) => {
     const but = e.target;
-    but.style.display = "none";
-    let input = window.document.getElementsByClassName("div2PDF")[0];
-    html2canvas(input).then(canvas => {
-      const img = canvas.toDataURL("image/jpeg");
+    but.style.display = 'none';
+    let input = window.document.getElementsByClassName('div2PDF')[0];
+    html2canvas(input).then((canvas) => {
+      const img = canvas.toDataURL('image/jpeg');
       const downloadLink = document.createElement('a');
       downloadLink.href = img;
       downloadLink.download = 'exported-image.png';
@@ -61,8 +61,8 @@ const NoteReportPage = (props) => {
   };
 
   return (
-    <div  ref={canvasRef} className="div2PDF">
-      <Form   {...formItemLayout} layout="vertical" name="dynamic_rule" style={{ display: 'flex', flexWrap: 'wrap' }} scrollToFirstError>
+    <div ref={canvasRef} className="div2PDF">
+      <Form {...formItemLayout} layout="vertical" name="dynamic_rule" style={{ display: 'flex', flexWrap: 'wrap' }} scrollToFirstError>
         <Form.Item style={widthStyle}>
           <Line options={options} data={data} />
         </Form.Item>
