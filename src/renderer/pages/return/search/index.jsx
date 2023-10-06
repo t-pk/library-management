@@ -78,7 +78,7 @@ const ReturnSearchPage = (props) => {
     {
       title: 'Người Tạo',
       align: 'center',
-      dataIndex: ['createdInfo', 'fullName'],
+      dataIndex: ['user', 'fullName'],
     },
     {
       title: 'Mã Sinh Viên',

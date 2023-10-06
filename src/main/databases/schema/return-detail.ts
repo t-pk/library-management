@@ -14,6 +14,10 @@ export const IReturnDetail = {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  idempotencyToken: {
+    type: DataTypes.UUID,
+    allowNull: false,
+  },
   quantity: {
     type: DataTypes.INTEGER,
     allowNull: false,

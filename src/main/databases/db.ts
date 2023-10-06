@@ -13,7 +13,7 @@ import { IDocumentType } from './schema/document-type';
 import { IReaderType } from './schema/reader-type';
 import { IRemind } from './schema/remind';
 import { IPenalty } from './schema/penalty';
-import { changePassword, createUser, getUser, getUsers, resetPassword } from './logic/user';
+import { changePassword, createUser, getStaffReports, getUser, getUsers, resetPassword } from './logic/user';
 import { createDocument, getDocumentReports, getDocuments } from './logic/document';
 import { createAuthor, getAuthors } from './logic/author';
 import { createPublisher, getPublishers } from './logic/publisher';
@@ -125,7 +125,7 @@ ReturnSchema.belongsTo(BorrowSchema, { foreignKey: { allowNull: false, name: 'bo
 
 ReturnDetailSchema.belongsTo(ReturnSchema, { foreignKey: { allowNull: false, name: 'returnId' } });
 ReturnDetailSchema.belongsTo(BorrowDetailSchema, { foreignKey: { allowNull: false, name: 'borrowDetailId' } });
-ReturnDetailSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' }, as: 'createdInfo' });
+ReturnDetailSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
 
 UserSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' }, as: 'createdInfo' });
 UserSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' }, as: 'updatedInfo' });
@@ -240,6 +240,9 @@ export const handleData = async (arg: any, data: any) => {
         break;
       case Document.report:
         result = await getDocumentReports(data);
+        break;
+      case User.report:
+        result = await getStaffReports(data);
         break;
       default:
         break;

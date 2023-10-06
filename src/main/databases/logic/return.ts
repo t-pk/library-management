@@ -1,7 +1,7 @@
 import { Op } from 'sequelize';
 import countBy from 'lodash.countby';
 import { BorrowDetailSchema, DocumentSchema, ReaderSchema, ReturnDetailSchema, ReturnSchema, UserSchema, sequelize, unitOfWork } from '../db';
-import { minusDays, addDays, formatDayMonth } from '../../../renderer/utils/helper';
+import { minusDays, addDays, formatDayMonth, generateUUIDv4 } from '../../../renderer/utils/helper';
 interface IObject {
   [key: string]: string | {};
 }
@@ -40,10 +40,13 @@ export const createReturn = async (request: any) => {
       await DocumentSchema.update(data, { where: { id: document.id }, transaction });
     });
 
+    const idempotencyToken = generateUUIDv4();
+
     const retrurnDetails = borrowDetails.map((borrowDetail: any) => ({
       borrowDetailId: borrowDetail.id,
       returnId: returnData[0].id,
       createdBy: request.createdBy,
+      idempotencyToken,
     }));
     await ReturnDetailSchema.bulkCreate(retrurnDetails, {
       transaction,
@@ -71,7 +74,7 @@ export const getReturns = async (request: any) => {
 
   const returnDetails = await ReturnDetailSchema.findAll({
     include: [
-      { model: UserSchema, as: 'createdInfo', attributes: ['fullName'] },
+      { model: UserSchema, attributes: ['fullName'] },
       {
         model: ReturnSchema,
         include: [

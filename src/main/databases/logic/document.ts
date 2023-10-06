@@ -49,8 +49,7 @@ export const getDocuments = async (request: any) => {
       { model: UserSchema, as: 'createdInfo', attributes: ['fullName'] },
       { model: UserSchema, as: 'updatedInfo', attributes: ['fullName'] },
     ],
-    limit: 50,
-    order: [['updatedAt', 'DESC']],
+    order: [['id', 'DESC']],
   });
   return result.map((document) => document.toJSON());
 };
@@ -100,12 +99,12 @@ export const getDocumentReports = async (request: any) => {
     else return 0;
   });
 
-  const result: any =  {
+  const result: any = {
     labels: borrowCount.map((borrow: any) => borrow['document.name'].substring(0, 30) + (borrow['document.name'].length > 30 ? '....' : '')),
     borrowValues: borrowCount.map((borrow: any) => +borrow.count),
     returnValues: returnValues,
   };
-  const avgValues = result.borrowValues.map((value: any, index:number)=> (value+result.returnValues[index])/2);
+  const avgValues = result.borrowValues.map((value: any, index: number) => (value + result.returnValues[index]) / 2);
   result.avgValues = avgValues;
   return result;
 };

@@ -1,4 +1,4 @@
-import { UserSchema, unitOfWork } from '../db';
+import { BorrowSchema, PenaltySchema, RemindSchema, ReturnDetailSchema, UserSchema, sequelize, unitOfWork } from '../db';
 import { encryptPassword } from '../../../renderer/utils/authenticate';
 import { Op } from 'sequelize';
 
@@ -64,4 +64,63 @@ export const resetPassword = async (request: any) => {
     await UserSchema.update({ password: request.password }, { where: { id: request.id }, transaction, returning: true });
     return { id: request.id };
   });
+};
+
+export const getStaffReports = async (request: any) => {
+  const limit = 40;
+  let borrowCount = await BorrowSchema.findAll({
+    attributes: [[sequelize.fn('COUNT', sequelize.col('user.username')), 'count']],
+    group: ['user.username'],
+    raw: true,
+    include: [{ model: UserSchema, attributes: ['username'] }],
+    order: [['count', 'DESC']],
+    limit: limit,
+  });
+  let returnCount = await ReturnDetailSchema.findAll({
+    attributes: [[sequelize.literal('COUNT(DISTINCT("returnDetails".idempotency_token))'), 'count']],
+    raw: true,
+    include: [{ model: UserSchema, attributes: ['username'], required: true }],
+    order: [['count', 'DESC']],
+    limit: limit,
+    group: ['user.username'],
+  });
+
+  let remindCount = await RemindSchema.findAll({
+    attributes: [[sequelize.fn('COUNT', sequelize.col('createdInfo.username')), 'count']],
+    group: ['createdInfo.username'],
+    raw: true,
+    include: [{ model: UserSchema, as: 'createdInfo', attributes: ['username'] }],
+    order: [['count', 'DESC']],
+    limit: limit,
+  });
+
+  let penaltyCount = await PenaltySchema.findAll({
+    attributes: [[sequelize.fn('COUNT', sequelize.col('createdInfo.username')), 'count']],
+    group: ['createdInfo.username'],
+    raw: true,
+    include: [{ model: UserSchema, as: 'createdInfo', attributes: ['username'] }],
+    order: [['count', 'DESC']],
+    limit: limit,
+  });
+
+  let remindValues: any[] = [];
+  let returnValues: any[] = [];
+  let penaltyValues: any[] = [];
+  const borrowValues = borrowCount.map((borrow: any) => {
+    const returnInfo: any = returnCount.find((item: any) => item['user.username'] === borrow['user.username']);
+    if (returnInfo) returnValues.push(+returnInfo.count);
+    else returnValues.push(0);
+
+    const remindInfo: any = remindCount.find((item: any) => item['createdInfo.username'] === borrow['user.username']);
+    if (remindInfo) remindValues.push(+remindInfo.count);
+    else remindValues.push(0);
+
+    const penaltyInfo: any = penaltyCount.find((item: any) => item['createdInfo.username'] === borrow['user.username']);
+    if (penaltyInfo) penaltyValues.push(+returnInfo.count);
+    else penaltyValues.push(0);
+    return +borrow.count;
+  });
+  const labels = borrowCount.map((borrow: any) => borrow['user.username']);
+  const result = { labels, borrowValues, returnValues, remindValues, penaltyValues };
+  return result;
 };

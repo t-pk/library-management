@@ -1,10 +1,10 @@
-import { useEffect, useState, useRef } from 'react';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { useEffect, useState } from 'react';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Form, Button } from 'antd';
-import { Line } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import html2canvas from 'html2canvas';
 import cloneDeep from 'lodash.clonedeep';
-import { Borrow, Return, Remind, Penalty } from '../../../constants';
+import { User } from '../../../constants';
 import { formatDateTime } from 'renderer/utils/helper';
 
 const formItemLayout = {
@@ -15,31 +15,28 @@ const formItemLayout = {
 const widthStyle = { minWidth: '49%' };
 
 const options = {
-  responsive: true,
   plugins: {
-    legend: {
-      position: 'top',
-    },
     title: {
       display: true,
-      text: 'Chart.js Line Chart',
+      text: 'Chart.js Bar Chart - Stacked',
+    },
+  },
+  responsive: true,
+  scales: {
+    x: {
+      stacked: true,
+    },
+    y: {
+      stacked: true,
     },
   },
 };
 
 const StaffReportPage = (props) => {
-  ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
-  const canvasRef = useRef();
-  const [borrows, setBorrrows] = useState({ labels: [], datasets: [] });
-  const [borrowOpts, setBorrowOpts] = useState({ labels: [], datasets: [] });
-  const [returnOpts, setReturnOpts] = useState({ labels: [], datasets: [] });
-  const [remindOpts, setRemindOpts] = useState({ labels: [], datasets: [] });
-  const [penaltyOpts, setPenaltyOpts] = useState({ labels: [], datasets: [] });
+  ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-  const [returns, setReturns] = useState({ labels: [], datasets: [] });
-  const [reminds, setReminds] = useState({ labels: [], datasets: [] });
-  const [penalties, setPenalties] = useState({ labels: [], datasets: [] });
-
+  const [dataOpts, setDataOpts] = useState({ labels: [], datasets: [] });
+  const [data, setData] = useState({ labels: [], datasets: [] });
   const labels = [];
 
   useEffect(() => {
@@ -51,58 +48,61 @@ const StaffReportPage = (props) => {
       labels,
       datasets: [
         {
+          type: 'bar',
           label: 'Mượn',
           data: [],
           borderColor: 'rgb(255, 99, 132)',
           backgroundColor: 'rgba(255, 99, 132, 0.5)',
         },
+        {
+          type: 'bar',
+          label: 'Mượn',
+          data: [],
+          borderColor: 'rgb(255, 99, 132)',
+          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        },
+        { type: 'bar', label: 'Mượn', data: [], borderColor: 'rgb(255, 99, 132)', backgroundColor: 'rgba(255, 99, 132, 0.5)' },
+        { type: 'bar', label: 'Mượn', data: [], borderColor: 'rgb(255, 99, 132)', backgroundColor: 'rgba(255, 99, 132, 0.5)' },
       ],
     };
-    const borrow = await props.invoke({ key: Borrow.report });
+    const staffReport = await props.invoke({ key: User.report });
+
     const borrowReports = cloneDeep(iData);
-    borrowReports.labels = borrow.data.labels;
-    borrowReports.datasets[0].data = borrow.data.values;
+    borrowReports.labels = staffReport.data.labels;
+    borrowReports.datasets[0].data = staffReport.data.borrowValues;
     borrowReports.datasets[0].label = 'Số Phiếu Mượn';
     borrowReports.datasets[0].borderColor = '#4CD4FF';
     borrowReports.datasets[0].backgroundColor = '#A8EAFF';
-    const iBorrowOpts = cloneDeep(options);
-    iBorrowOpts.plugins.title.text = 'Thống Kê Phiếu Mượn';
-    setBorrowOpts(iBorrowOpts);
-    setBorrrows(borrowReports);
+    const idataOpts = cloneDeep(options);
+    const maxvalue = (Math.max(...staffReport.data.borrowValues) + Math.max(...staffReport.data.returnValues)) * 1.5
+    idataOpts.scale = {
+      y: {
+        suggestedMax: maxvalue,
+        beginAtZero: true,
+      },
+    };
+    setDataOpts(idataOpts);
 
-    const returns = await props.invoke({ key: Return.report });
-    const returnReport = cloneDeep(iData);
-    returnReport.labels = returns.data.labels;
-    returnReport.datasets[0].data = returns.data.values;
-    returnReport.datasets[0].label = 'Số Phiếu Trả';
-    returnReport.datasets[0].borderColor = '#35EA95';
-    returnReport.datasets[0].backgroundColor = '#77FEBE';
-    const iReturnOpts = cloneDeep(options);
-    iReturnOpts.plugins.title.text = 'Thống Kê Phiếu Trả';
-    setReturnOpts(iReturnOpts);
-    setReturns(returnReport);
+    const returnReport = cloneDeep(borrowReports);
+    returnReport.labels = staffReport.data.labels;
+    returnReport.datasets[1].data = staffReport.data.returnValues;
+    returnReport.datasets[1].label = 'Số Phiếu Trả';
+    returnReport.datasets[1].borderColor = '#35EA95';
+    returnReport.datasets[1].backgroundColor = '#77FEBE';
 
-    const reminds = await props.invoke({ key: Remind.report });
-    const remindReport = cloneDeep(iData);
-    remindReport.labels = reminds.data.labels;
-    remindReport.datasets[0].data = reminds.data.values;
-    remindReport.datasets[0].label = 'Số Phiếu Nhắc Nhở';
-    remindReport.datasets[0].borderColor = '#FCD433';
-    remindReport.datasets[0].backgroundColor = '#FFE88D';
-    const iRemindOpts = cloneDeep(options);
-    iRemindOpts.plugins.title.text = 'Thống Kê Phiếu Nhắc Nhở';
-    setRemindOpts(iRemindOpts);
-    setReminds(remindReport);
+    const remindReport = cloneDeep(returnReport);
+    remindReport.labels = staffReport.data.labels;
+    remindReport.datasets[2].data = staffReport.data.remindValues;
+    remindReport.datasets[2].label = 'Số Phiếu Nhắc Nhở';
+    remindReport.datasets[2].borderColor = '#FCD433';
+    remindReport.datasets[2].backgroundColor = '#FFE88D';
 
-    const penalty = await props.invoke({ key: Penalty.report });
-    const penaltyReport = cloneDeep(iData);
-    penaltyReport.labels = penalty.data.labels;
-    penaltyReport.datasets[0].data = penalty.data.values;
-    penaltyReport.datasets[0].label = 'Số Phiếu Phạt';
-    const iPenaltyOpts = cloneDeep(options);
-    iPenaltyOpts.plugins.title.text = 'Thống Kê Phiếu Phạt';
-    setPenaltyOpts(iPenaltyOpts);
-    setPenalties(penaltyReport);
+    const penaltyReport = cloneDeep(remindReport);
+    penaltyReport.labels = staffReport.data.labels;
+    penaltyReport.datasets[3].data = staffReport.data.penaltyValues;
+    penaltyReport.datasets[3].label = 'Số Phiếu Phạt';
+
+    setData(penaltyReport);
   };
 
   const exportReportToImage = (e) => {
@@ -118,26 +118,9 @@ const StaffReportPage = (props) => {
 
   return (
     <div>
-      <Form
-        ref={canvasRef}
-        className="export-image"
-        {...formItemLayout}
-        layout="vertical"
-        name="dynamic_rule"
-        style={{ display: 'flex', flexWrap: 'wrap' }}
-        scrollToFirstError
-      >
+      <Form className="export-image" {...formItemLayout} layout="vertical" name="dynamic_rule" style={{ display: 'flex', flexWrap: 'wrap' }} scrollToFirstError>
         <Form.Item style={widthStyle}>
-          <Line options={borrowOpts} data={borrows} />
-        </Form.Item>
-        <Form.Item style={widthStyle}>
-          <Line options={returnOpts} data={returns} />
-        </Form.Item>
-        <Form.Item style={widthStyle}>
-          <Line options={remindOpts} data={reminds} />
-        </Form.Item>
-        <Form.Item style={widthStyle}>
-          <Line options={penaltyOpts} data={penalties} />
+          <Bar options={dataOpts} data={data} />
         </Form.Item>
       </Form>
       <div>

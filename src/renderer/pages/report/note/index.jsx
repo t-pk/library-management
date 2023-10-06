@@ -66,6 +66,12 @@ const NoteReportPage = (props) => {
     borrowReports.datasets[0].backgroundColor = '#A8EAFF';
     const iBorrowOpts = cloneDeep(options);
     iBorrowOpts.plugins.title.text = 'Thống Kê Phiếu Mượn';
+    iBorrowOpts.scale = {
+      y: {
+        suggestedMax: Math.max(...borrow.data.values) + Math.round(Math.max(...borrow.data.values) * 0.2),
+        beginAtZero: true,
+      },
+    };
     setBorrowOpts(iBorrowOpts);
     setBorrrows(borrowReports);
 
@@ -78,6 +84,13 @@ const NoteReportPage = (props) => {
     returnReport.datasets[0].backgroundColor = '#77FEBE';
     const iReturnOpts = cloneDeep(options);
     iReturnOpts.plugins.title.text = 'Thống Kê Phiếu Trả';
+    iReturnOpts.scale = {
+      y: {
+        suggestedMax: Math.max(...returns.data.values) + Math.round(Math.max(...returns.data.values) * 0.2),
+        beginAtZero: true,
+      },
+    };
+
     setReturnOpts(iReturnOpts);
     setReturns(returnReport);
 
@@ -90,6 +103,12 @@ const NoteReportPage = (props) => {
     remindReport.datasets[0].backgroundColor = '#FFE88D';
     const iRemindOpts = cloneDeep(options);
     iRemindOpts.plugins.title.text = 'Thống Kê Phiếu Nhắc Nhở';
+    iRemindOpts.scale = {
+      y: {
+        suggestedMax: Math.max(...reminds.data.values) + Math.round(Math.max(...reminds.data.values) * 1),
+        beginAtZero: true,
+      },
+    };
     setRemindOpts(iRemindOpts);
     setReminds(remindReport);
 
@@ -100,6 +119,12 @@ const NoteReportPage = (props) => {
     penaltyReport.datasets[0].label = 'Số Phiếu Phạt';
     const iPenaltyOpts = cloneDeep(options);
     iPenaltyOpts.plugins.title.text = 'Thống Kê Phiếu Phạt';
+    iPenaltyOpts.scale = {
+      y: {
+        suggestedMax: Math.max(...penalty.data.values) + Math.round(Math.max(...penalty.data.values) * 1),
+        beginAtZero: true,
+      },
+    };
     setPenaltyOpts(iPenaltyOpts);
     setPenalties(penaltyReport);
   };
@@ -117,14 +142,7 @@ const NoteReportPage = (props) => {
 
   return (
     <div>
-      <Form
-        className="export-image"
-        {...formItemLayout}
-        layout="vertical"
-        name="dynamic_rule"
-        style={{ display: 'flex', flexWrap: 'wrap' }}
-        scrollToFirstError
-      >
+      <Form className="export-image" {...formItemLayout} layout="vertical" name="dynamic_rule" style={{ display: 'flex', flexWrap: 'wrap' }} scrollToFirstError>
         <Form.Item style={widthStyle}>
           <Line options={borrowOpts} data={borrows} />
         </Form.Item>
