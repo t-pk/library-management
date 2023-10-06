@@ -49,20 +49,20 @@ const StaffReportPage = (props) => {
       datasets: [
         {
           type: 'bar',
-          label: 'Mượn',
+          label: '',
           data: [],
           borderColor: 'rgb(255, 99, 132)',
           backgroundColor: 'rgba(255, 99, 132, 0.5)',
         },
         {
           type: 'bar',
-          label: 'Mượn',
+          label: '',
           data: [],
           borderColor: 'rgb(255, 99, 132)',
           backgroundColor: 'rgba(255, 99, 132, 0.5)',
         },
-        { type: 'bar', label: 'Mượn', data: [], borderColor: 'rgb(255, 99, 132)', backgroundColor: 'rgba(255, 99, 132, 0.5)' },
-        { type: 'bar', label: 'Mượn', data: [], borderColor: 'rgb(255, 99, 132)', backgroundColor: 'rgba(255, 99, 132, 0.5)' },
+        { type: 'bar', label: '', data: [], borderColor: 'rgb(255, 99, 132)', backgroundColor: 'rgba(255, 99, 132, 0.5)' },
+        { type: 'bar', label: '', data: [], borderColor: 'rgb(255, 99, 132)', backgroundColor: 'rgba(255, 99, 132, 0.5)' },
       ],
     };
     const staffReport = await props.invoke({ key: User.report });

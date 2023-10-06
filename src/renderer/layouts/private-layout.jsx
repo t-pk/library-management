@@ -108,7 +108,7 @@ const PrivateLayout = ({ element: Component }) => {
       getItem('Phiếu', '/report/note', <CalendarOutlined />),
 
       getItem('Tài Liệu', '/report/document', <FileSearchOutlined />),
-      getItem('Nhân Viên', '/report/staff', <UsergroupAddOutlined />),
+      getUser().position === 'ADMIN' &&  getItem('Nhân Viên', '/report/staff', <UsergroupAddOutlined />),
     ]),
   ];
 

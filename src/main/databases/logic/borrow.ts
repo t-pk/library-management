@@ -137,7 +137,7 @@ export const getBorrowReports = async (request: any) => {
     where: { createdAt: { [Op.between]: [startDate, endDate] } },
     attributes: [
       [sequelize.literal("TO_CHAR(created_at, 'dd-mm')"), 'date'],
-      [sequelize.fn('COUNT', sequelize.col('*')), 'count'], // You can also count the rows in each group
+      [sequelize.fn('COUNT', sequelize.col('*')), 'count'],
     ],
     group: [sequelize.literal("TO_CHAR(created_at, 'dd-mm')") as any],
   });
@@ -154,6 +154,5 @@ export const getBorrowReports = async (request: any) => {
     if (borrow) values.push(+borrow.count);
     else values.push(0);
   }
-  console.log(values);
   return { labels, values };
 };

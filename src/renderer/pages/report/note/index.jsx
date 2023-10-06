@@ -50,7 +50,7 @@ const NoteReportPage = (props) => {
       labels,
       datasets: [
         {
-          label: 'Mượn',
+          label: '',
           data: [],
           borderColor: 'rgb(255, 99, 132)',
           backgroundColor: 'rgba(255, 99, 132, 0.5)',

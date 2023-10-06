@@ -46,9 +46,8 @@ const DocumentReportPage = (props) => {
           data: [],
           borderColor: 'rgb(54, 227, 32)',
           backgroundColor: 'rgba(54, 227, 32, 0.5)',
-
-          borderWidth: 2,
-          borderRadius: 5,
+          borderWidth: 1,
+          borderRadius: 3,
           borderSkipped: false,
         },
         {
@@ -57,8 +56,8 @@ const DocumentReportPage = (props) => {
           borderColor: 'white',
           borderColor: 'rgb(32, 104, 227)',
           backgroundColor: 'rgba(32, 104, 227, 0.5)',
-          borderWidth: 2,
-          borderRadius: 5,
+          borderWidth: 1,
+          borderRadius: 3,
           borderSkipped: false,
         },
         {
@@ -67,7 +66,7 @@ const DocumentReportPage = (props) => {
           backgroundColor: 'rgb(252, 60, 8)',
           borderColor: 'rgb(252, 60, 8)',
           fill: true,
-          data: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+          data: [],
           cubicInterpolationMode: 'monotone',
         },
       ],
