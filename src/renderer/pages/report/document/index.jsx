@@ -73,7 +73,7 @@ const DocumentReportPage = (props) => {
     };
     const document = await props.invoke({ key: Document.report });
     const documentReports = cloneDeep(iData);
-    
+
     documentReports.labels = document.data.labels;
     documentReports.datasets[0].data = document.data.borrowValues;
     documentReports.datasets[0].label = 'Tổng Tài Liệu Mượn';
@@ -83,7 +83,7 @@ const DocumentReportPage = (props) => {
 
     const idocumentOpts = cloneDeep(options);
     idocumentOpts.plugins.title.text = 'Thống Kê Tài Liệu';
-    const maxvalue = (Math.max(...document.data.borrowValues) + Math.max(...document.data.returnValues))
+    const maxvalue = Math.max(...document.data.borrowValues) + Math.max(...document.data.returnValues);
     idocumentOpts.scale = {
       y: {
         suggestedMax: maxvalue,

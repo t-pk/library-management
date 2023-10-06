@@ -74,7 +74,7 @@ const StaffReportPage = (props) => {
     borrowReports.datasets[0].borderColor = '#4CD4FF';
     borrowReports.datasets[0].backgroundColor = '#A8EAFF';
     const idataOpts = cloneDeep(options);
-    const maxvalue = (Math.max(...staffReport.data.borrowValues) + Math.max(...staffReport.data.returnValues)) * 1.5
+    const maxvalue = (Math.max(...staffReport.data.borrowValues) + Math.max(...staffReport.data.returnValues)) * 1.5;
     idataOpts.scale = {
       y: {
         suggestedMax: maxvalue,
