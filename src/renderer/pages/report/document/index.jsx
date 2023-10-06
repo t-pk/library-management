@@ -83,7 +83,7 @@ const DocumentReportPage = (props) => {
 
     const idocumentOpts = cloneDeep(options);
     idocumentOpts.plugins.title.text = 'Thống Kê Tài Liệu';
-    const maxvalue = Math.max(...document.data.borrowValues) + Math.max(...document.data.returnValues);
+    const maxvalue = Math.max(...document.data.borrowValues) * 1.1 + Math.max(...document.data.returnValues) * 1.1;
     idocumentOpts.scale = {
       y: {
         suggestedMax: maxvalue,

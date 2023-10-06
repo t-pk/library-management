@@ -69,8 +69,9 @@ export const getRemindDetails = async (request: any) => {
 };
 
 export const getRemindReports = async (request: any) => {
+  const limit = 20;
   const endDate = new Date();
-  const startDate = minusDays(endDate, 9);
+  const startDate = minusDays(endDate, limit - 1);
   let reminds = await RemindSchema.findAll({
     where: { createdAt: { [Op.between]: [startDate, endDate] } },
     attributes: [
@@ -81,7 +82,7 @@ export const getRemindReports = async (request: any) => {
   });
   reminds = reminds.map((borrow: any) => borrow.toJSON());
   let labels: any[] = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < limit; i++) {
     const date = addDays(startDate, i);
     labels.push(date);
   }
