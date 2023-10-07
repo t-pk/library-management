@@ -101,10 +101,10 @@ const PrivateLayout = ({ element: Component }) => {
       getItem('Thêm - Sửa', '/publisher/create', <UserAddOutlined />),
     ]),
     getUser().position === 'ADMIN' &&
-    getItem('Quản Trị', '/administrator', <DesktopOutlined />, [
-      getItem('Tìm Kiếm', '/administrator/search', <UserSwitchOutlined />),
-      getItem('Thêm - Sửa', '/administrator/create', <UserAddOutlined />),
-    ]),
+      getItem('Quản Trị', '/administrator', <DesktopOutlined />, [
+        getItem('Tìm Kiếm', '/administrator/search', <UserSwitchOutlined />),
+        getItem('Thêm - Sửa', '/administrator/create', <UserAddOutlined />),
+      ]),
     getItem('Thống Kê', '/report', <AreaChartOutlined />, [
       getItem('Phiếu', '/report/note', <CalendarOutlined />),
 
@@ -248,7 +248,7 @@ const PrivateLayout = ({ element: Component }) => {
       <Layout>
         <Sider breakpoint="lg" collapsedWidth="0">
           <div className="logo-icon">
-            <img src={logo} style={{ textAlign: 'center', height: '50px' }} ></img>
+            <img src={logo} style={{ textAlign: 'center', height: '50px' }}></img>
           </div>
           <Menu
             theme="dark"
@@ -272,23 +272,22 @@ const PrivateLayout = ({ element: Component }) => {
               alignItems: 'center',
             }}
           >
-            <div className='global-header'>
-            <h3 style={{ color: 'white', margin: '0px' }}>Library Management</h3>
-            <Dropdown
-              menu={{
-                items: dropdownItems,
-                onClick: handleMenuClick,
-              }}
-            >
-              <a style={{ color: 'white' }} onClick={(e) => e.preventDefault()}>
-                <Space>
-                  {getUser().fullName} - {getUser().position}
-                  <CaretDownFilled />
-                </Space>
-              </a>
-            </Dropdown>
+            <div className="global-header">
+              <h3 style={{ color: 'white', margin: '0px' }}>Library Management</h3>
+              <Dropdown
+                menu={{
+                  items: dropdownItems,
+                  onClick: handleMenuClick,
+                }}
+              >
+                <a style={{ color: 'white' }} onClick={(e) => e.preventDefault()}>
+                  <Space>
+                    {getUser().fullName} - {getUser().position}
+                    <CaretDownFilled />
+                  </Space>
+                </a>
+              </Dropdown>
             </div>
-           
           </Header>
           <Spin spinning={spinning} wrapperClassName={`${animate == location.pathname ? 'my-animation' : ''}`}>
             {contextHolder} {contextModal}

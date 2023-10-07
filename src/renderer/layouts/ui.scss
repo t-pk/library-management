@@ -76,22 +76,27 @@
   // background: #fff;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
   display: flex;
-  justify-content: space-between; }
-  .global-header .header-item {
-    display: inline-block;
-    height: 100%;
-    padding: 0 12px;
-    cursor: pointer;
-    transition: all 0.2s; }
-    .global-header .header-item .badge-box .ant-badge {
-      font-size: 16px; }
-  .global-header h1 {
-    flex: 1;
-    margin: 0 0 0 15px;
-    font-size: 20px;
-    color: #174e94;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; }
-  .global-header .header-right .ant-badge {
-    font-size: 18px; }
+  justify-content: space-between;
+}
+.global-header .header-item {
+  display: inline-block;
+  height: 100%;
+  padding: 0 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.global-header .header-item .badge-box .ant-badge {
+  font-size: 16px;
+}
+.global-header h1 {
+  flex: 1;
+  margin: 0 0 0 15px;
+  font-size: 20px;
+  color: #174e94;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.global-header .header-right .ant-badge {
+  font-size: 18px;
+}
