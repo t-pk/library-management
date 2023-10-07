@@ -204,7 +204,7 @@ const PenaltySearchPage = (props) => {
           total: penalties.length,
           onChange: handlePageChange,
         }}
-        scroll={{ x: 1400, y: 450 }}
+        scroll={{ x: 1400, y: 550 }}
       />
     </>
   );

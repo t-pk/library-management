@@ -221,7 +221,7 @@ const RemindSearchPage = (props) => {
           total: reminds.length,
           onChange: handlePageChange,
         }}
-        scroll={{ x: 1400, y: 450 }}
+        scroll={{ x: 1400, y: 550 }}
         expandable={{
           expandedRowRender,
           defaultExpandedRowKeys: ['0'],

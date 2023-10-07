@@ -251,7 +251,7 @@ const DocumentSearchPage = (props) => {
         loading={loading}
         rowKey={'id'}
         tableLayout={'fixed'}
-        scroll={{ x: 1400, y: 450 }}
+        scroll={{ x: 1400, y: 550 }}
         pagination={{
           current: currentPage,
           pageSize: pageSize,

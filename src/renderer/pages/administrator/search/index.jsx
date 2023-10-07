@@ -273,7 +273,7 @@ const AdministratorSearchPage = (props) => {
           </Button>
         </Form.Item>
       </Form>
-      <Table columns={columns} dataSource={users} loading={loading} rowKey={'id'} tableLayout={'fixed'} scroll={{ x: 1400, y: 450 }} />
+      <Table columns={columns} dataSource={users} loading={loading} rowKey={'id'} tableLayout={'fixed'} scroll={{ x: 1400, y: 550 }} />
     </>
   );
 };

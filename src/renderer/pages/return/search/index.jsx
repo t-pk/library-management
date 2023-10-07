@@ -298,7 +298,7 @@ const ReturnSearchPage = (props) => {
           total: returns.length,
           onChange: handlePageChange,
         }}
-        scroll={{ x: 1400, y: 450 }}
+        scroll={{ x: 1400, y: 550 }}
       />
     </>
   );
