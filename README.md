@@ -1,7 +1,7 @@
 ### Steps để run và build source.
 1. chuẩn bị và cài đặt các software:
-    * [Nodejs](%https://nodejs.org/en), version >= 18.18.0 
-    * [Postgresql Database](%https://www.postgresql.org/download/). version >=16. Có thể thiết lập.  [docker](%https://hub.docker.com/_/postgres) thay vì cài trực tiếp trên thiết bị. ** Lưu ý hãy nhớ` username`,` password`, `databases name` được tạo (nên tạo database name là `library`), `port` sau khi cài đặt database này **.
+    * Nodejs https://nodejs.org/en, version >= 18.18.0 
+    * Postgresql Database https://www.postgresql.org/download. version >=16. Có thể thiết lập.  [docker](%https://hub.docker.com/_/postgres) thay vì cài trực tiếp trên thiết bị. ** Lưu ý hãy nhớ` username`,` password`, `databases name` được tạo (nên tạo database name là `library`), `port` sau khi cài đặt database này **.
     * [Git](%https://git-scm.com/downloads) để pull repos. Họăc các bạn có thể download trực tiếp repos (Code -> Download Zip).
 2. running source.
     * Sau khi các bạn chuẩn bị và cài đặt các software ở trên. bước tiếp theo hãy mở `terminal`(command line) ở thư mục `library-management` (là repos chúng ta đã pull về hoặc đã giải nén) gõ các lệnh sau:
