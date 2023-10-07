@@ -47,7 +47,6 @@ const DocumentReportPage = (props) => {
           borderColor: 'rgb(54, 227, 32)',
           backgroundColor: 'rgba(54, 227, 32, 0.5)',
           borderWidth: 1,
-          borderRadius: 3,
           borderSkipped: false,
         },
         {
@@ -57,7 +56,6 @@ const DocumentReportPage = (props) => {
           borderColor: 'rgb(32, 104, 227)',
           backgroundColor: 'rgba(32, 104, 227, 0.5)',
           borderWidth: 1,
-          borderRadius: 3,
           borderSkipped: false,
         },
         {

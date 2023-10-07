@@ -18,7 +18,7 @@ const options = {
   plugins: {
     title: {
       display: true,
-      text: 'Chart.js Bar Chart - Stacked',
+      text: 'Thống Kê Nhân Viện Lập Phiếu',
     },
   },
   responsive: true,
