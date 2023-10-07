@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Form, Input, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import icon from '../../assets/icon.jpeg';
+import icon from '../../assets/logo.png';
 import backgroundUrl from '../../assets/background.svg';
 import { TOKEN_KEY, User } from '../../constants';
 import { delay } from 'renderer/utils/helper';
