@@ -1,45 +1,59 @@
-### Steps để run và build source.
-1. chuẩn bị và cài đặt các software:
-    * Nodejs https://nodejs.org/en, version >= 18.18.0 
-    * Postgresql Database https://www.postgresql.org/download. version >=16. Có thể thiết lập.  [docker](%https://hub.docker.com/_/postgres) thay vì cài trực tiếp trên thiết bị. ** Lưu ý hãy nhớ` username`,` password`, `databases name` được tạo (nên tạo database name là `library`), `port` sau khi cài đặt database này **.
-    * [Git](%https://git-scm.com/downloads) để pull repos. Họăc các bạn có thể download trực tiếp repos (Code -> Download Zip).
-2. running source.
-    * Sau khi các bạn chuẩn bị và cài đặt các software ở trên. bước tiếp theo hãy mở `terminal`(command line) ở thư mục `library-management` (là repos chúng ta đã pull về hoặc đã giải nén) gõ các lệnh sau:
+### Steps to run and build the source code.
+1. Prepare and install the necessary software:
+    * Node.js: Download and install Node.js from https://nodejs.org/en, version >= 18.18.0.
+
+    * PostgreSQL Database: Download and install PostgreSQL Database from https://www.postgresql.org/download, version >= 16. You can also set it up using Docker instead of installing it directly on your devices. Please remember to note the `username`, `password`, `database name` (create a database named is `library`), and `port` after setting up the database.
+    * Git: Install Git from https://git-scm.com/downloads to clone the repository. Alternatively, you can download the repository directly (Code -> Download Zip).
+2. Running the Source Code.
+    * After you have prepared and installed the required software as mentioned above, the next step is to open a terminal (command line) in the `library-management` folder (the repository you've pulled or extracted). Enter the following commands:
     ```
     node -v 
     npm -v
     ```
-    * Để kiểm tra xem `nodejs` và `npm` đã cài đặt chưa và phiên bản là bao nhiêu. Sau khi đã kiểm tra và đã có 2 lệnh đó. tiếp theo chúng ta sẽ gõ lệnh:
+    * Use these commands to check if Node.js and npm are installed and to verify their versions. Once you've confirmed that both commands work, proceed with:
     ```
     npm ci
     ```
-   *  sau khi lệnh `npm ci` cài đặt xong. chúng ta sẽ thay đổi urlconnectionDB ở đường dẫn này `~./library-management/src/main/databases/db.ts`. 
-    hiện tại nó đang là: `const urlConnection = 'postgres://postgres:123456@localhost:5433/library';
-` 
-chúng ta sẽ thay đổi nó(`username`, `password`, `port`, `database-name`) ở thiết lập bên trên.
-Lưu ý định dạng chung sẽ là: `postgres://user:pass@example.com:5432/databasename`.
-* Kiểm tra xem `ts-node` đã có chưa bằng lệnh:
+   *  After the npm ci command finishes installing, you need to change the urlConnectionDB in this path: ~./library-management/src/main/databases/db.ts.
+Currently, it is set to:
+```
+const urlConnection = 'postgres://postgres:123456@localhost:5433/library';
+```
+You should change it (`username`, `password`, `port`, `databaseName`) based on your database setup. The common format will be:
+```
+postgres://user:pass@example.com:5432/databasename
+```
+
+* Check if ts-node is installed using the following command:
 ```
 ts-node -v
 ```
-* Nếu chưa có chúng ta sẽ cài nó bằng lệnh:
+* If it's not installed, you can install it using:
 ```
 npm i ts-node -g
 ```
-* Tiêp theo chúng ta sẽ chạy chúng ở môi trường development với command lệnh như sau:
+* Next, run the application in development mode with the following command:
 ```
 npm start
 ```
-* chúng ta sẽ duplicate thêm 1 cửa số command line và chạy thêm các lệnh sau để import seeds và một số data cần thiết để chạy chúng.
+* Open another command line window and run the following commands to import seeds and some necessary data for the application to work:
+
 ```
 npm run seed && npm run mock
 ```
-Tới bước này là chúng ta có thể vọc chúng được rồi.
+At this point, you should be able to interact with the application.
 
-Nếu chúng ta muốn build thành file exe hoặc các file khác để chạy trên các môi trường `Linux`,` macOS`, `windows`. chúng ta sẽ gõ lệnh sau:
+If you want to build the application into an executable file for various environments such as `Linux`, `macOS`, or `Windows`, you can use the following command (for `Linux` as an example):
 ```
- electron-builder --linux # nếu là linux. các bạn có thể hay linux bằng các môi trường khác để build chúng.
+ electron-builder --linux
 ```
-các bạn có thể tham khảo ở đây: https://www.electron.build/cli.html
+You can refer to the documentation here for more information: https://www.electron.build/cli.html
 
-### Mọi vấn đề hoặc thắc mắc các bạn có thể tạo MR, busg ở đây: https://github.com/t-pk/library-management/issues.
+### Additional Information
+1. Database Diagram:
+![diagram](./assets/diagram.png)
+2.Currently, there are basic user permissions for ADMIN and STAFF regarding 2 tabs: "Document Requests" and "Employee Statistics."
+
+If you have any issues or questions, you can create Merge Requests (MR) or report bugs here: https://github.com/t-pk/library-management/issues.
+
+Thank you!.
