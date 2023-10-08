@@ -14,7 +14,7 @@
     ```
     npm ci
     ```
-   *  After the npm ci command finishes installing, you need to change the urlConnectionDB in this path: ~./library-management/src/main/databases/db.ts.
+   *  After the npm ci command finishes installing, you need to change the urlConnection in this path: ~./library-management/src/main/databases/db.ts.
 Currently, it is set to:
 ```
 const urlConnection = 'postgres://postgres:123456@localhost:5433/library';
