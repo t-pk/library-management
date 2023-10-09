@@ -16,7 +16,32 @@
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/badge/node-18.18.0-orange" alt="NPM Version" /></a>
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/badge/npm-9.8.1-brightgreen" alt="Npm Version" /></a>
 <a href="" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="MIT" /></a>
+<a href="https://www.npmjs.com/~pg" target="_blank"><img src="https://img.shields.io/badge/postgresql-16-orange" alt="Postgresql Version" /></a>
+<a href="https://www.npmjs.com/~pg" target="_blank"><img src="https://img.shields.io/badge/React-18.2.0-brightgreen" alt="Npm Version" /></a>
+<a href="https://www.npmjs.com/~pg" target="_blank"><img src="https://img.shields.io/badge/Antd-5.9.4-orange" alt="Npm Version" /></a>
 </p>
+
+The software runs on multiple platforms (windows, macos, linux). with technologies and frameworks such as: electron, react, postgresql, antdesign.
+
+![homepage](./assets/homepage.png)
+
+provides features such as:
+* Documents:  Get, Create,  Update, Report.
+* Reader: Get, Create,  Update.
+* Borrow: Get, Create,  Update, Report.
+* Return: Get, Create,  Update, Report.
+* Reminder: Get, Create,  Update, Report.
+* Penalty: Get, Create,  Update, Report.
+* Publisher: Get, Create.
+* Author: Get, Create.
+* staff: add. delete.
+
+Basically sending and receiving data is handled through elecronjs's `Inter-Process Communication` providing two threads. 1 thread is for application interaction with the database, 1 thread is for rendering and displaying on the UI. diagram as follows:
+```
+IPC                 --->            IPC
+main process        <---            renderer process
+```
+We put react into electron to better implement components.
 
 ### Steps to run and build the source code.
 1. Prepare and install the necessary software:
