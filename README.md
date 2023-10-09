@@ -21,20 +21,20 @@
 <a href="https://www.npmjs.com/~pg" target="_blank"><img src="https://img.shields.io/badge/Antd-5.9.4-orange" alt="Npm Version" /></a>
 </p>
 
-The software runs on multiple platforms (windows, macos, linux). with technologies and frameworks such as: electron, react, postgresql, antdesign.
+The software runs on multiple platforms (windows, macos, linux). with technologies and frameworks such as: `electron`, `react`, `postgresql`, `antdesign`.
 
 ![homepage](./assets/homepage.png)
 
 provides features such as:
-* Documents:  Get, Create,  Update, Report.
-* Reader: Get, Create,  Update.
-* Borrow: Get, Create,  Update, Report.
-* Return: Get, Create,  Update, Report.
-* Reminder: Get, Create,  Update, Report.
-* Penalty: Get, Create,  Update, Report.
-* Publisher: Get, Create.
-* Author: Get, Create.
-* staff: add. delete.
+* `Documents`:  Get, Create,  Update, Report.
+* `Reader`: Get, Create,  Update.
+* `Borrower`: Get, Create,  Update, Report.
+* `Returner`: Get, Create,  Update, Report.
+* `Reminder`: Get, Create,  Update, Report.
+* `Penalty`: Get, Create,  Update, Report.
+* `Publisher`: Get, Create.
+* `Author`: Get, Create.
+* `staff`: Add, Update.
 
 Basically sending and receiving data is handled through elecronjs's `Inter-Process Communication` providing two threads. 1 thread is for application interaction with the database, 1 thread is for rendering and displaying on the UI. diagram as follows:
 ```
