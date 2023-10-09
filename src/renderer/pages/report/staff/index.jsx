@@ -18,7 +18,7 @@ const options = {
   plugins: {
     title: {
       display: true,
-      text: 'Thống Kê Nhân Viện Lập Phiếu',
+      text: 'Thống Kê Nhân Viên Lập Phiếu',
     },
   },
   responsive: true,
