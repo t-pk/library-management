@@ -65,11 +65,13 @@ const BorrowSearchPage = (props) => {
     {
       title: 'Tên Tài Liệu',
       align: 'center',
+      width: '25%',
       dataIndex: ['document', 'name'],
     },
     {
       title: 'Ngày Mượn',
       dataIndex: 'createdAt',
+      width: '8%',
       align: 'center',
       render: (dateTime) => {
         return formatDateTime(dateTime);
@@ -316,7 +318,7 @@ const BorrowSearchPage = (props) => {
         loading={loading}
         rowKey={'id'}
         tableLayout={'fixed'}
-        size="small"
+        // size="small"
         pagination={{
           current: currentPage,
           pageSize: pageSize,

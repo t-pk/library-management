@@ -1,3 +1,23 @@
+
+<p align="center">
+<a href="https://www.electronjs.org/"  target="blank"><img  src="https://www.electronjs.org/assets/img/logo.svg"  width="100"  alt="Sequelize Logo" /></a>
+<a href="https://ant.design/"  target="blank"><img  src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"  width="100"  alt="Antd Logo" /></a>
+<a href="https://reactjs.org/"  target="blank"><img  src="https://gw.alipayobjects.com/zos/antfincdn/aPkFc8Sj7n/method-draw-image.svg"  width="100"  alt="React Logo" /></a>
+<a href="https://www.postgresql.org"  target="blank"><img  src="https://www.postgresql.org/media/img/about/press/elephant.png"  width="100"  alt="PostgreSql Logo" /></a>
+
+  
+[travis-image]: https://api.travis-ci.org/nestjs/nest.svg?branch=master
+[travis-url]: https://travis-ci.org/nestjs/nest
+[linux-image]: https://img.shields.io/travis/nestjs/nest/master.svg?label=linux
+[linux-url]: https://travis-ci.org/nestjs/nest
+</p>
+
+<p align="center">
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/badge/node-18.18.0-orange" alt="NPM Version" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/badge/npm-9.8.1-brightgreen" alt="Npm Version" /></a>
+<a href="" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="MIT" /></a>
+</p>
+
 ### Steps to run and build the source code.
 1. Prepare and install the necessary software:
     * Node.js: Download and install Node.js from https://nodejs.org/en, version >= 18.18.0.

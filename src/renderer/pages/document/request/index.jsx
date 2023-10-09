@@ -175,7 +175,7 @@ const DocumentRequestPage = (props) => {
         <Form.Item label=" " {...props.tailFormItemLayout} style={{ ...props.widthStyle }}>
           <Button style={{ minWidth: '47%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
             {' '}
-            Tạo{' '}
+            Submit{' '}
           </Button>
         </Form.Item>
         <Form.Item label=" " {...props.tailFormItemLayout} style={{ ...props.widthStyle }} hidden={!(selectedRowKeys.length && getPosition() === 'ADMIN')}>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button, Checkbox, Form, Input } from 'antd';
-import { SaveOutlined } from '@ant-design/icons';
+import { SaveOutlined, EyeOutlined } from '@ant-design/icons';
 import { delay } from '../../../utils/helper';
 import { Author } from '../../../constants';
 
@@ -44,10 +44,6 @@ const AuthorCreatePage = (props) => {
           <Button loading={loading} style={{ minWidth: '30%' }} type="primary" htmlType="submit" icon={<SaveOutlined />}>
             {' '}
             Submit{' '}
-          </Button>
-          <Button style={{ minWidth: '30%', marginLeft: 10 }} type="primary" icon={<SaveOutlined />}>
-            {' '}
-            Tìm Kiếm Tác Giả{' '}
           </Button>
         </Form.Item>
 

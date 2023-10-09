@@ -46,10 +46,6 @@ const PublisherCreatePage = (props) => {
             {' '}
             Submit{' '}
           </Button>
-          <Button style={{ minWidth: '30%', marginLeft: 10 }} type="primary" icon={<SaveOutlined />}>
-            {' '}
-            Tìm Kiếm Tác Giả{' '}
-          </Button>
         </Form.Item>
 
         <Form.Item name="description" label="Mô Tả" style={props.widthStyle}>
