@@ -97,7 +97,7 @@ You can refer to the documentation here for more information: https://www.electr
 ### Additional Information
 1. Database Diagram:
 ![diagram](./assets/diagram.png)
-2. Currently, there are basic user permissions for ADMIN and STAFF regarding 2 tabs: "Document Requests" and "Employee Statistics."
+2. Currently, there are basic user permissions for ADMIN and STAFF regarding 2 tabs: "Document Requests" and "Staff Report."
 
 If you have any issues or questions, you can create Merge Requests (MR) or report bugs here: https://github.com/t-pk/library-management/issues.
 
