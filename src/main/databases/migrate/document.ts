@@ -455,7 +455,7 @@ export const createDocuments = (data: any) => {
 
     data = data.map((item: any, index: number) => ({
       ...item,
-      id: index + 1,
+      // id: index + 1,
       publishYear: item.publishYear || Math.floor(Math.random() * (maxYear - minYear + 1)) + minYear,
     }));
     return DocumentSchema.bulkCreate(data, { transaction });

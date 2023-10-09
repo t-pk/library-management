@@ -30,7 +30,7 @@ export const publisherSeeds = [
 
 export const createPublisher = (data: any) => {
   return unitOfWork((transaction: Transaction) => {
-    data = data.map((item: any, index: number) => ({ ...item, id: index + 1 }));
+    data = data.map((item: any, index: number) => ({ ...item }));
     return PublisherSchema.bulkCreate(data, { transaction });
   });
 };

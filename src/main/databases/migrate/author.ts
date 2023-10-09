@@ -108,7 +108,7 @@ export const authorSeeds = [
 
 export const createAuthors = (data: any) => {
   return unitOfWork((transaction: Transaction) => {
-    data = data.map((item: any, index: number) => ({ ...item, id: index + 1 }));
+    data = data.map((item: any, index: number) => ({ ...item }));
     return AuthorSchema.bulkCreate(data, { transaction });
   });
 };
