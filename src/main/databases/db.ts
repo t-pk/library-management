@@ -18,7 +18,6 @@ import { createDocument, getDocumentReports, getDocuments } from './logic/docume
 import { createAuthor, getAuthors } from './logic/author';
 import { createPublisher, getPublishers } from './logic/publisher';
 import { getDocumentTypes } from './logic/document-type';
-import { getReaderTypes } from './logic/reader-type';
 import { createReader, getReaders } from './logic/reader';
 import { createBorrow, getBorrowReports, getBorrows } from './logic/borrow';
 import { getBorrowDetail } from './logic/borrow-detail';
@@ -44,7 +43,7 @@ import {
 import { IDocumentRequest } from './schema/document-request';
 import { createDocumentRequest, getDocumentRequests } from './logic/document-request';
 
-const urlConnection = 'postgres://postgres:123456@localhost:5433/library';
+const urlConnection = 'postgres://postgres:123456@localhost:5432/library';
 
 export const sequelize = new Sequelize.Sequelize(urlConnection, {
   dialectModule: pg,
@@ -81,8 +80,6 @@ export const PublisherSchema = sequelize.define('publishers', IPublisher, { ...a
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const DocumentTypeSchema = sequelize.define('documentTypes', IDocumentType, { ...attributeCommon, tableName: 'document_types' });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
-export const ReaderTypeSchema = sequelize.define('readerTypes', IReaderType, { ...attributeCommon, tableName: 'reader_types' });
-/** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const RemindSchema = sequelize.define('reminds', IRemind, { ...attributeCommon, tableName: 'reminds' });
 /** @type import("sequelize").ModelStatic<import("sequelize").Model> */
 export const PenaltySchema = sequelize.define('penalties', IPenalty, { ...attributeCommon, tableName: 'penalties' });
@@ -112,10 +109,8 @@ DocumentSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'cre
 DocumentSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' }, as: 'updatedInfo' });
 
 ReaderSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' }, as: 'createdInfo' });
-ReaderSchema.belongsTo(ReaderTypeSchema, { foreignKey: { allowNull: false, name: 'readerTypeId' } });
 ReaderSchema.hasMany(BorrowSchema);
 ReaderSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'updatedBy' }, as: 'updatedInfo' });
-ReaderTypeSchema.hasOne(ReaderSchema);
 
 ReturnSchema.belongsTo(ReaderSchema, { foreignKey: { allowNull: false, name: 'readerId' } });
 ReturnSchema.belongsTo(UserSchema, { foreignKey: { allowNull: true, name: 'createdBy' } });
@@ -168,9 +163,6 @@ export const handleData = async (arg: any, data: any) => {
         break;
       case DocumentType.search:
         result = await getDocumentTypes(data);
-        break;
-      case ReaderType.search:
-        result = await getReaderTypes(data);
         break;
       case Reader.create:
         result = await createReader(data);

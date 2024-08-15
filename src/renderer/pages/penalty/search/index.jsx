@@ -9,11 +9,9 @@ import { useLocation } from 'react-router-dom';
 const PenaltySearchPage = (props) => {
   const location = useLocation();
   const [form] = Form.useForm();
-  const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
+  const [inputState, setinputState] = useState({ fullName: '', id: 0 });
   const [penalties, setPenalties] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [readerTypes, setReaderTypes] = useState([]);
-  const readerTypeId = Form.useWatch('readerTypeId', form);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 20; // Number of items per page
 
@@ -66,18 +64,6 @@ const PenaltySearchPage = (props) => {
         return formatDateTime(dateTime);
       },
     },
-    {
-      title: 'Mã Sinh Viên',
-      dataIndex: 'studentId',
-      dataIndex: ['return', 'borrow', 'reader', 'studentId'],
-      align: 'center',
-    },
-    {
-      title: 'Mã N.Viên - C.Bộ',
-      dataIndex: 'civilServantId',
-      dataIndex: ['return', 'borrow', 'reader', 'civilServantId'],
-      align: 'center',
-    },
   ];
 
   useEffect(() => {
@@ -91,17 +77,7 @@ const PenaltySearchPage = (props) => {
 
     debounceFc(penaltyQuery);
     getInitData();
-    if (readerTypeId === 1) {
-      form.setFieldsValue({ civilServantId: undefined });
-    }
-    if (readerTypeId === 2) {
-      form.setFieldsValue({ studentId: undefined });
-    }
-    if (readerTypeId === undefined) {
-      form.setFieldsValue({ studentId: undefined });
-      form.setFieldsValue({ civilServantId: undefined });
-    }
-  }, [readerTypeId]);
+  }, []);
 
   const handleDebounceFn = (reState) => {
     props.callDatabase({ key: Penalty.search, data: reState });
@@ -122,7 +98,6 @@ const PenaltySearchPage = (props) => {
         label: item.name,
       }));
       resReaders.push({ id: undefined, label: 'Skip' });
-      setReaderTypes(resReaders);
     });
   };
 
@@ -130,11 +105,7 @@ const PenaltySearchPage = (props) => {
     setLoading(true);
     setCurrentPage(1);
     let reState = {};
-    if (e.target.name === 'readerTypeId') {
-      reState = { ...inputState, [e.target.name]: e.target.value };
-    } else {
-      reState = { ...inputState, [e.target.id]: e.target.value };
-    }
+    reState = { ...inputState, [e.target.id]: e.target.value };
 
     setinputState(reState);
     debounceFc(reState);
@@ -158,7 +129,6 @@ const PenaltySearchPage = (props) => {
         name="dynamic_rule"
         style={{ display: 'flex', flexWrap: 'wrap' }}
         scrollToFirstError
-        initialValues={{ readerTypeId: undefined }}
       >
         <Form.Item name="id" label="Mã Phiếu Phạt" style={props.widthStyle}>
           <Input type="number" id="id" onChange={onChange} />
@@ -170,18 +140,6 @@ const PenaltySearchPage = (props) => {
 
         <Form.Item label="Tên Độc Giả" style={props.widthStyle}>
           <Input id="fullName" onChange={onChange} />
-        </Form.Item>
-
-        <Form.Item name="studentId" label="Mã Sinh Viên" style={props.widthStyle}>
-          <Input disabled={readerTypeId && readerTypeId !== 1} id="studentId" onChange={onChange} />
-        </Form.Item>
-
-        <Form.Item name="civilServantId" label="Mã Cán Bộ - Nhân Viên" style={props.widthStyle}>
-          <Input disabled={readerTypeId && readerTypeId !== 2} id="civilServantId" onChange={onChange} />
-        </Form.Item>
-
-        <Form.Item name="readerTypeId" label="Loại Độc Giả" style={props.widthStyle}>
-          <Radio.Group name="readerTypeId" onChange={onChange} options={readerTypes} optionType="button" buttonStyle="solid" />
         </Form.Item>
 
         <Form.Item style={props.widthStyle} label=" ">

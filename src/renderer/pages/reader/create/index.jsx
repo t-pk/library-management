@@ -10,36 +10,23 @@ const ReaderCreatePage = (props) => {
   const [form] = Form.useForm();
   const location = useLocation();
   const [loading, setLoading] = useState(false);
-  const [readerTypes, setReaderTypes] = useState([]);
-  const readerTypeId = Form.useWatch('readerTypeId', form);
   const [reader, setReader] = useState({});
-  const [disableUpdate, setDisableUpdate] = useState(false);
 
   useEffect(() => {
     let borrowInfo = queryStringToObject(location.search);
     if (borrowInfo && Object.keys(borrowInfo).length) {
       setDisableUpdate(true);
       borrowInfo.id = +borrowInfo.id;
-      borrowInfo.readerTypeId = +borrowInfo.readerTypeId;
       form.setFieldsValue(borrowInfo);
       location.search = {};
     }
 
     getInitData();
-    if (readerTypeId === 1) {
-      form.setFieldsValue({ civilServantId: undefined });
-    }
-    if (readerTypeId === 2) {
-      form.setFieldsValue({ studentId: undefined });
-    }
-  }, [readerTypeId]);
+  }, []);
 
   const getInitData = () => {
     props.callDatabase({ key: ReaderType.search });
 
-    props.listenOnce(ReaderType.search, (arg) => {
-      setReaderTypes((arg.data || []).map((item) => ({ value: item.id, label: item.name })));
-    });
   };
 
   const onFinish = async (values) => {
@@ -76,7 +63,7 @@ const ReaderCreatePage = (props) => {
         layout="vertical"
         name="dynamic_rule"
         onFinish={onFinish}
-        initialValues={{ quantity: 1, special: false, readerTypeId: 1 }}
+        initialValues={{ quantity: 1, special: false }}
         style={{ display: 'flex', flexWrap: 'wrap' }}
         scrollToFirstError
       >
@@ -85,76 +72,6 @@ const ReaderCreatePage = (props) => {
         </Form.Item>
 
         <Form.Item name="fullName" label="Tên Độc Giả" style={props.widthStyle} rules={[{ required: true, message: 'Please input name' }]} hasFeedback>
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          name="readerTypeId"
-          label="Loại Độc Giả"
-          style={props.widthStyle}
-          rules={[{ required: true, message: 'Please input civil servant!' }]}
-          hasFeedback
-        >
-          <Radio.Group disabled={disableUpdate} options={readerTypes} optionType="button" buttonStyle="solid" />
-        </Form.Item>
-
-        <Form.Item
-          name="studentId"
-          label="Mã Sinh Viên"
-          style={props.widthStyle}
-          rules={[
-            {
-              required: readerTypeId === 1,
-              message: 'Please input student id!',
-            },
-            {
-              type: 'string',
-              min: 5,
-              max: 12,
-              message: ' 5 <= student id <= 12',
-            },
-          ]}
-          hasFeedback
-        >
-          <Input disabled={readerTypeId !== 1} />
-        </Form.Item>
-
-        <Form.Item
-          name="civilServantId"
-          label="Mã Cán Bộ - Nhân Viên"
-          style={props.widthStyle}
-          rules={[
-            {
-              required: readerTypeId !== 1,
-              message: 'Please input civil servant!',
-            },
-            {
-              type: 'string',
-              min: 5,
-              max: 12,
-              message: ' 5 <= civil servant <= 12',
-            },
-          ]}
-          hasFeedback
-        >
-          <Input disabled={readerTypeId === 1} />
-        </Form.Item>
-
-        <Form.Item
-          name="citizenIdentify"
-          label="Căn Cước Công Dân"
-          style={props.widthStyle}
-          rules={[
-            { required: true, message: 'Please input citizen identify!' },
-            {
-              type: 'string',
-              min: 9,
-              max: 15,
-              message: ' 9 <= citizen identify <= 15',
-            },
-          ]}
-          hasFeedback
-        >
           <Input />
         </Form.Item>
 

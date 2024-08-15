@@ -66,9 +66,6 @@ export const getReturns = async (request: any) => {
   }
   if (request.id) returnQuery.id = request.id;
   if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
-  if (request.studentId) readerQuery.studentId = request.studentId;
-  if (request.readerTypeId) readerQuery.readerTypeId = request.readerTypeId;
-  if (request.civilServantId) readerQuery.civilServantId = request.civilServantId;
 
   if (request.readerId) readerQuery.id = request.readerId;
 

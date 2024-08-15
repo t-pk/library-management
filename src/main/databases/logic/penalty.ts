@@ -24,12 +24,6 @@ export const getPenalties = async (request: any) => {
 
   if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
 
-  if (request.studentId) readerQuery.studentId = request.studentId;
-
-  if (request.readerTypeId) readerQuery.readerTypeId = request.readerTypeId;
-
-  if (request.civilServantId) readerQuery.civilServantId = request.civilServantId;
-
   const penalties = await PenaltySchema.findAll({
     where: penaltyQuery,
     include: [

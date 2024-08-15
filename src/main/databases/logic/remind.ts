@@ -22,12 +22,6 @@ export const getReminds = async (request: any) => {
 
   if (request.fullName) readerQuery.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
 
-  if (request.studentId) readerQuery.studentId = request.studentId;
-
-  if (request.readerTypeId) readerQuery.readerTypeId = request.readerTypeId;
-
-  if (request.civilServantId) readerQuery.civilServantId = request.civilServantId;
-
   const reminds = await ReaderSchema.findAll({
     where: readerQuery,
     include: [
@@ -38,7 +32,7 @@ export const getReminds = async (request: any) => {
         include: [{ model: ReturnSchema, attributes: [], required: true, include: [{ model: RemindSchema, attributes: [], required: true }] }],
       },
     ],
-    attributes: ['id', 'fullName', 'studentId', 'civilServantId', [sequelize.fn('COUNT', sequelize.col('*')), 'total']],
+    attributes: ['id', 'fullName', [sequelize.fn('COUNT', sequelize.col('*')), 'total']],
     order: [['id', 'DESC']],
     group: ['readers.id', 'readers.full_name', 'readers.student_id', 'readers.civil_servant_id'],
   });
@@ -49,8 +43,6 @@ export const getReminds = async (request: any) => {
 export const getRemindDetails = async (request: any) => {
   let query: any = {};
   if (request.fullName) query.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
-  if (request.studentId) query.studentId = request.studentId;
-  if (request.civilServantId) query.civilServantId = request.civilServantId;
 
   const reminds = await RemindSchema.findAll({
     include: [

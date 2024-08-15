@@ -1109,8 +1109,6 @@ export const createReaders = (data: any) => {
     data = data.map((item: any, index: number) => {
       let obj = { ...item };
       if (index % 2 == 0) {
-        obj.readerTypeId = 2;
-        obj.civilServantId = obj.studentId;
         obj.studentId = null;
       }
       return obj;

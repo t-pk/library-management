@@ -11,11 +11,9 @@ import './ui.scss';
 const RemindSearchPage = (props) => {
   const location = useLocation();
   const [form] = Form.useForm();
-  const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
+  const [inputState, setinputState] = useState({ fullName: '', id: 0 });
   const [reminds, setReminds] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [readerTypes, setReaderTypes] = useState([]);
-  const readerTypeId = Form.useWatch('readerTypeId', form);
   const [currentPage, setCurrentPage] = useState(1);
   const [remindDetail, setRemindDetail] = useState([]);
   const pageSize = 20; // Number of items per page
@@ -38,41 +36,18 @@ const RemindSearchPage = (props) => {
       dataIndex: 'total',
       align: 'center',
     },
-    {
-      title: 'Mã Sinh Viên',
-      dataIndex: 'studentId',
-      render: (studentId) => studentId,
-      align: 'center',
-    },
-    {
-      title: 'Mã N.Viên - C.Bộ',
-      dataIndex: 'civilServantId',
-      render: (civilServantId) => civilServantId,
-      align: 'center',
-    },
   ];
 
   useEffect(() => {
     let remindQuery = { ...inputState };
     let remindInfo = queryStringToObject(location.search);
     if (remindInfo && Object.keys(remindInfo).length) {
-      remindInfo.readerTypeId = +remindInfo.readerTypeId;
       remindQuery = { ...remindQuery, ...remindInfo };
       form.setFieldsValue(remindInfo);
     }
 
     debounceFc(remindQuery);
     getInitData();
-    if (readerTypeId === 1) {
-      form.setFieldsValue({ civilServantId: undefined });
-    }
-    if (readerTypeId === 2) {
-      form.setFieldsValue({ studentId: undefined });
-    }
-    if (readerTypeId === undefined) {
-      form.setFieldsValue({ studentId: undefined });
-      form.setFieldsValue({ civilServantId: undefined });
-    }
   }, []);
 
   const handleDebounceFn = (reState) => {
@@ -87,28 +62,13 @@ const RemindSearchPage = (props) => {
 
   const getInitData = () => {
     props.callDatabase({ key: ReaderType.search });
-
-    props.listenOnce(ReaderType.search, async (arg) => {
-      if (arg && arg.data) {
-        const resReaders = arg.data.map((item) => ({
-          value: item.id,
-          label: item.name,
-        }));
-        resReaders.push({ id: undefined, label: 'Skip' });
-        setReaderTypes(resReaders);
-      }
-    });
   };
 
   const onChange = (e) => {
     setLoading(true);
     setCurrentPage(1);
     let reState = {};
-    if (e.target.name === 'readerTypeId') {
-      reState = { ...inputState, [e.target.name]: e.target.value };
-    } else {
-      reState = { ...inputState, [e.target.id]: e.target.value };
-    }
+    reState = { ...inputState, [e.target.id]: e.target.value };
 
     setinputState(reState);
     debounceFc(reState);
@@ -179,7 +139,6 @@ const RemindSearchPage = (props) => {
         name="dynamic_rule"
         style={{ display: 'flex', flexWrap: 'wrap' }}
         scrollToFirstError
-        initialValues={{ readerTypeId: undefined }}
       >
         <Form.Item name="readerId" label="Mã Độc Giả" style={props.widthStyle}>
           <Input type="number" id="readerId" onChange={onChange} />
@@ -187,18 +146,6 @@ const RemindSearchPage = (props) => {
 
         <Form.Item name="fullName" label="Tên Độc Giả" style={props.widthStyle}>
           <Input id="fullName" onChange={onChange} />
-        </Form.Item>
-
-        <Form.Item name="studentId" label="Mã Sinh Viên" style={props.widthStyle}>
-          <Input id="studentId" disabled={readerTypeId && readerTypeId !== 1} onChange={onChange} />
-        </Form.Item>
-
-        <Form.Item name="civilServantId" label="Mã Cán Bộ - Nhân Viên" style={props.widthStyle}>
-          <Input id="civilServantId" disabled={readerTypeId && readerTypeId !== 2} onChange={onChange} />
-        </Form.Item>
-
-        <Form.Item name="readerTypeId" label="Loại Độc Giả" style={props.widthStyle}>
-          <Radio.Group name="readerTypeId" onChange={onChange} options={readerTypes} optionType="button" buttonStyle="solid" />
         </Form.Item>
 
         <Form.Item style={props.widthStyle} label=" ">

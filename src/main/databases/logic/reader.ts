@@ -1,4 +1,4 @@
-import { ReaderSchema, ReaderTypeSchema, UserSchema, unitOfWork } from '../db';
+import { ReaderSchema, UserSchema, unitOfWork } from '../db';
 import { Op } from 'sequelize';
 
 export const createReader = async (request: any) => {
@@ -20,14 +20,6 @@ export const getReaders = async (request: any) => {
 
   if (request.fullName) query.fullName = { [Op.iLike]: '%' + request.fullName + '%' };
 
-  if (request.readerTypeId) query.readerTypeId = request.readerTypeId;
-
-  if (request.studentId) query.studentId = { [Op.substring]: request.studentId };
-
-  if (request.civilServantId) query.civilServantId = { [Op.substring]: request.civilServantId };
-
-  if (request.citizenIdentify) query.citizenIdentify = { [Op.substring]: request.citizenIdentify };
-
   if (request.phoneNumber) query.phoneNumber = { [Op.substring]: request.phoneNumber };
 
   if (request.email) query.email = { [Op.substring]: request.email };
@@ -35,7 +27,6 @@ export const getReaders = async (request: any) => {
   const readers = await ReaderSchema.findAll({
     where: query,
     include: [
-      { model: ReaderTypeSchema },
       { model: UserSchema, as: 'createdInfo', attributes: ['fullName'] },
       { model: UserSchema, as: 'updatedInfo', attributes: ['fullName'] },
     ],

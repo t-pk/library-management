@@ -10,10 +10,6 @@ export const IReader = {
     type: DataTypes.STRING(128),
     allowNull: false,
   },
-  readerTypeId: {
-    type: DataTypes.SMALLINT,
-    allowNull: false,
-  },
   phoneNumber: {
     type: DataTypes.STRING(16),
     allowNull: true,
@@ -21,21 +17,6 @@ export const IReader = {
   email: {
     type: DataTypes.STRING(32),
     allowNull: true,
-  },
-  studentId: {
-    type: DataTypes.STRING(16),
-    allowNull: true,
-    unique: true,
-  },
-  civilServantId: {
-    type: DataTypes.STRING(16),
-    allowNull: true,
-    unique: true,
-  },
-  citizenIdentify: {
-    type: DataTypes.STRING(16),
-    allowNull: true,
-    unique: true,
   },
   status: {
     type: DataTypes.BOOLEAN,

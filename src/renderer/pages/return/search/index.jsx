@@ -10,12 +10,10 @@ const ReturnSearchPage = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [form] = Form.useForm();
-  const [inputState, setinputState] = useState({ fullName: '', id: 0, studentId: '' });
+  const [inputState, setinputState] = useState({ fullName: '', id: 0 });
   const [returns, setReturns] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [readerTypes, setReaderTypes] = useState([]);
-  const readerTypeId = Form.useWatch('readerTypeId', form);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 20; // Number of items per page
 
@@ -81,20 +79,6 @@ const ReturnSearchPage = (props) => {
       dataIndex: ['user', 'fullName'],
     },
     {
-      title: 'Mã Sinh Viên',
-      dataIndex: ['return', 'reader', 'studentId'],
-      render: (studentId) => studentId,
-      align: 'center',
-      onCell: groupByReturns,
-    },
-    {
-      title: 'Mã N.Viên - C.Bộ',
-      dataIndex: ['return', 'reader', 'civilServantId'],
-      render: (civilServantId) => civilServantId,
-      align: 'center',
-      onCell: groupByReturns,
-    },
-    {
       title: 'Action',
       key: 'operation',
       fixed: 'right',
@@ -138,17 +122,7 @@ const ReturnSearchPage = (props) => {
     }
     debounceFc(returnQuery);
     getInitData();
-    if (readerTypeId === 1) {
-      form.setFieldsValue({ civilServantId: undefined });
-    }
-    if (readerTypeId === 2) {
-      form.setFieldsValue({ studentId: undefined });
-    }
-    if (readerTypeId === undefined) {
-      form.setFieldsValue({ studentId: undefined });
-      form.setFieldsValue({ civilServantId: undefined });
-    }
-  }, [readerTypeId]);
+  }, []);
 
   const handleDebounceFn = (reState) => {
     props.callDatabase({ key: Return.search, data: reState });
@@ -162,10 +136,6 @@ const ReturnSearchPage = (props) => {
       returnId: record.returnId,
       readerId: record.return.reader.id,
       readerName: record.return.reader.fullName,
-      citizenIdentify: record.return.reader.citizenIdentify,
-      civilServantId: record.return.reader.civilServantId,
-      studentId: record.return.reader.studentId,
-      readerTypeId: record.return.reader.readerTypeId,
     };
     const queryString = objectToQueryString(data);
     if (key === 1) return navigate(`/remind/create?${queryString}`);
@@ -182,7 +152,6 @@ const ReturnSearchPage = (props) => {
     readerType = (readerType.data || []).map((item) => ({ value: item.id, label: item.name }));
     readerType.push({ id: undefined, label: 'Skip' });
 
-    setReaderTypes(readerType);
     setDocuments(parseDataSelect(documentSearch.data || []));
   };
 
@@ -192,15 +161,11 @@ const ReturnSearchPage = (props) => {
     let reState = {};
     if (e.target.id === 'documents') {
       const documentIds = e.target.value.map((item) => item.split('-')[0].trim());
-      reState = { ...inputState, documentIds: documentIds };
-    } else if (e.target.name === 'readerTypeId') {
-      reState = { ...inputState, [e.target.name]: e.target.value };
-    } else {
-      reState = { ...inputState, [e.target.id]: e.target.value };
-    }
+      reState = { ...inputState, documentIds: documentIds, [e.target.id]: e.target.value };
 
-    setinputState(reState);
-    debounceFc(reState);
+      setinputState(reState);
+      debounceFc(reState);
+    }
   };
 
   const onClick = () => {
@@ -241,7 +206,6 @@ const ReturnSearchPage = (props) => {
         name="dynamic_rule"
         style={{ display: 'flex', flexWrap: 'wrap' }}
         scrollToFirstError
-        initialValues={{ readerTypeId: undefined }}
       >
         <Form.Item name="id" label="Mã Phiếu Trả" style={props.widthStyle}>
           <Input type="number" id="id" onChange={onChange} />
@@ -264,18 +228,6 @@ const ReturnSearchPage = (props) => {
 
         <Form.Item label="Tên Độc Giả" style={props.widthStyle}>
           <Input id="fullName" onChange={onChange} />
-        </Form.Item>
-
-        <Form.Item name="studentId" label="Mã Sinh Viên" style={props.widthStyle}>
-          <Input disabled={readerTypeId && readerTypeId !== 1} id="studentId" onChange={onChange} />
-        </Form.Item>
-
-        <Form.Item name="civilServantId" label="Mã Cán Bộ - Nhân Viên" style={props.widthStyle}>
-          <Input disabled={readerTypeId && readerTypeId !== 2} id="civilServantId" onChange={onChange} />
-        </Form.Item>
-
-        <Form.Item name="readerTypeId" label="Loại Độc Giả" style={props.widthStyle}>
-          <Radio.Group name="readerTypeId" onChange={onChange} options={readerTypes} optionType="button" buttonStyle="solid" />
         </Form.Item>
 
         <Form.Item style={props.widthStyle} label=" ">

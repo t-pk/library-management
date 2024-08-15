@@ -10,37 +10,23 @@ const PenaltyCreatePage = (props) => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [readerTypes, setReaderTypes] = useState([]);
   const [hiddenForm, setHiddenForm] = useState(false);
   const [penalty, setPenalty] = useState({});
-
-  const readerTypeId = Form.useWatch('readerTypeId', form);
   const location = useLocation();
 
   useEffect(() => {
     let returnInfo = queryStringToObject(location.search);
     setHiddenForm(!Object.keys(returnInfo).length);
     if (Object.keys(returnInfo).length) {
-      returnInfo.readerTypeId = +returnInfo.readerTypeId;
       form.setFieldsValue(returnInfo);
 
       getInitData();
     }
 
-    if (readerTypeId === 1) {
-      form.setFieldsValue({ civilServantId: undefined });
-    }
-    if (readerTypeId === 2) {
-      form.setFieldsValue({ studentId: undefined });
-    }
-  }, [readerTypeId, location]);
+  }, [location]);
 
   const getInitData = () => {
     props.callDatabase({ key: ReaderType.search });
-
-    props.listenOnce(ReaderType.search, (arg) => {
-      setReaderTypes((arg.data || []).map((item) => ({ value: item.id, label: item.name })));
-    });
   };
 
   const onFinish = async (values) => {
@@ -85,7 +71,7 @@ const PenaltyCreatePage = (props) => {
           layout="vertical"
           name="dynamic_rule"
           onFinish={onFinish}
-          initialValues={{ quantity: 1, special: false, readerTypeId: 1 }}
+          initialValues={{ quantity: 1, special: false }}
           style={{ display: 'flex', flexWrap: 'wrap' }}
           scrollToFirstError
         >
@@ -99,67 +85,6 @@ const PenaltyCreatePage = (props) => {
 
           <Form.Item name="readerName" label="Tên Độc Giả" style={props.widthStyle} rules={[{ required: true, message: 'Please input name' }]}>
             <Input disabled={true} />
-          </Form.Item>
-
-          <Form.Item
-            name="studentId"
-            label="Mã Sinh Viên"
-            style={props.widthStyle}
-            rules={[
-              {
-                required: readerTypeId === 1,
-                message: 'Please input student id!',
-              },
-              {
-                type: 'string',
-                min: 5,
-                max: 12,
-                message: ' 5 <= student id <= 12',
-              },
-            ]}
-          >
-            <Input disabled={true} />
-          </Form.Item>
-
-          <Form.Item
-            name="civilServantId"
-            label="Mã Cán Bộ - Nhân Viên"
-            style={props.widthStyle}
-            rules={[
-              {
-                required: readerTypeId !== 1,
-                message: 'Please input civil servant!',
-              },
-              {
-                type: 'string',
-                min: 5,
-                max: 12,
-                message: ' 5 <= civil servant <= 12',
-              },
-            ]}
-          >
-            <Input disabled={true} />
-          </Form.Item>
-
-          <Form.Item
-            name="citizenIdentify"
-            label="Căn Cước Công Dân"
-            style={props.widthStyle}
-            rules={[
-              { required: true, message: 'Please input citizen identify!' },
-              {
-                type: 'string',
-                min: 9,
-                max: 15,
-                message: ' 9 <= citizen identify <= 15',
-              },
-            ]}
-          >
-            <Input disabled={true} />
-          </Form.Item>
-
-          <Form.Item name="readerTypeId" label="Loại Độc Giả" style={props.widthStyle}>
-            <Radio.Group options={readerTypes} optionType="button" buttonStyle="solid" disabled={true} />
           </Form.Item>
 
           <Form.Item
