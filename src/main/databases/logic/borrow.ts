@@ -112,7 +112,7 @@ export const createBorrow = async (request: any) => {
 
     const borrowDetails = documents.map((document: any) => {
       let durationTime: any = new Date();
-      durationTime = addDays(durationTime, document.special ? specialDocumentPeriod : normalDocumentPeriod);
+      durationTime = addDays(durationTime, request.timeBorrow);
       const brrowerDetail = {
         borrowId: borrowRes.dataValues.id,
         documentId: +document.id,

@@ -43,7 +43,7 @@ import {
 import { IDocumentRequest } from './schema/document-request';
 import { createDocumentRequest, getDocumentRequests } from './logic/document-request';
 
-const urlConnection = 'postgres://postgres:123456@localhost:5432/library';
+const urlConnection = 'postgres://postgres:123456@localhost:5433/library';
 
 export const sequelize = new Sequelize.Sequelize(urlConnection, {
   dialectModule: pg,

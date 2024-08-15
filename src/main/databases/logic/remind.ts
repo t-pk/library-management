@@ -34,7 +34,7 @@ export const getReminds = async (request: any) => {
     ],
     attributes: ['id', 'fullName', [sequelize.fn('COUNT', sequelize.col('*')), 'total']],
     order: [['id', 'DESC']],
-    group: ['readers.id', 'readers.full_name', 'readers.student_id', 'readers.civil_servant_id'],
+    group: ['readers.id', 'readers.full_name'],
   });
   let remindJSON = reminds.map((remind) => remind.toJSON());
   return remindJSON;

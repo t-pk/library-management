@@ -15,7 +15,6 @@ const ReaderCreatePage = (props) => {
   useEffect(() => {
     let borrowInfo = queryStringToObject(location.search);
     if (borrowInfo && Object.keys(borrowInfo).length) {
-      setDisableUpdate(true);
       borrowInfo.id = +borrowInfo.id;
       form.setFieldsValue(borrowInfo);
       location.search = {};

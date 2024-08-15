@@ -15,7 +15,6 @@ const BorrowCreatePage = (props) => {
   const [documents, setDocuments] = useState([]);
   const [hiddenForm, setHiddenForm] = useState(false);
   const [borrow, setBorrow] = useState({});
-
   const location = useLocation();
 
   useEffect(() => {
@@ -93,7 +92,7 @@ const BorrowCreatePage = (props) => {
           layout="vertical"
           name="dynamic_rule"
           onFinish={onFinish}
-          initialValues={{ quantity: 1, special: false }}
+          initialValues={{ quantity: 1, special: false, timeBorrow: 14 }}
           style={{ display: 'flex', flexWrap: 'wrap' }}
           scrollToFirstError
         >
@@ -123,6 +122,20 @@ const BorrowCreatePage = (props) => {
               mode="multiple"
               options={documents}
               onSearch={findDocuments}
+              placeholder=""
+              className="custom-autocomplete"
+              filterOption={(inputValue, option) => option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="timeBorrow"
+            label="Thời Gian Mượn (Đơn Vị: Ngày)"
+            style={props.widthStyle}
+            hasFeedback
+          >
+            <Select
+              options={[{ id: 7, value: 7 }, { id: 14, value: 14 }, { id: 30, value: 30 }]}
               placeholder=""
               className="custom-autocomplete"
               filterOption={(inputValue, option) => option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}

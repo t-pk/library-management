@@ -10,7 +10,6 @@ const AdministratorCreatePage = (props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
   const [disableUpdate, setDisableUpdate] = useState(false);
   const [user, setUser] = useState({});
 
@@ -25,7 +24,6 @@ const AdministratorCreatePage = (props) => {
   }, []);
 
   const onFinish = (values) => {
-    setLoading(true);
     props.callDatabase({ key: User.create, data: values });
 
     props.listenOnce(User.create, async (arg) => {
@@ -36,7 +34,6 @@ const AdministratorCreatePage = (props) => {
         else props.openNotification('success', 'Đã Tạo Tài Khoản');
         form.resetFields();
       }
-      setLoading(false);
     });
   };
 
