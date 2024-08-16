@@ -79,7 +79,7 @@ export const getUser = () => {
 };
 
 export const generateRandomPassword = (length) => {
-  const charset = '12211211144431144411666511611888711181199991111';
+  const charset = 'ABCDEFGHIJKLMNOPQRSTWXYZ!@$&=abcdefghijklmnopqrstwxyz!@$&=0123456789!@$&=';
   let result = '';
   for (let i = 0; i < length; i++) {
     const randomIndex = Math.floor(Math.random() * charset.length);

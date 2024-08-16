@@ -18,6 +18,8 @@ const PenaltyCreatePage = (props) => {
     let returnInfo = queryStringToObject(location.search);
     setHiddenForm(!Object.keys(returnInfo).length);
     if (Object.keys(returnInfo).length) {
+      returnInfo.compensation = returnInfo.compensation === 'false' ? false: true;
+      returnInfo.totalAmount = Number(returnInfo.totalAmount);
       form.setFieldsValue(returnInfo);
 
       getInitData();
@@ -38,8 +40,7 @@ const PenaltyCreatePage = (props) => {
     props.listenOnce(Penalty.create, async (arg) => {
       await delay(300);
       if (arg.data) {
-        form.resetFields();
-        props.openNotification('success', 'Đã Tạo Phiếu Phạt.');
+        props.openNotification('success', 'Đã Tạo - Cập Nhật Phiếu Phạt.');
         setPenalty(arg.data);
       }
       setLoading(false);
@@ -71,10 +72,13 @@ const PenaltyCreatePage = (props) => {
           layout="vertical"
           name="dynamic_rule"
           onFinish={onFinish}
-          initialValues={{ quantity: 1, special: false }}
           style={{ display: 'flex', flexWrap: 'wrap' }}
           scrollToFirstError
         >
+          <Form.Item name="id" label="Mã Phiếu Phạt" style={props.widthStyle}>
+            <Input disabled={true} />
+          </Form.Item>
+
           <Form.Item name="returnId" label="Mã Phiếu Trả" style={props.widthStyle}>
             <Input disabled={true} />
           </Form.Item>

@@ -28,7 +28,6 @@ const BorrowCreatePage = (props) => {
   }, [location]);
 
   const getInitData = async () => {
-    const readerType = await props.invoke({ key: ReaderType.search });
     const documentSearch = await props.invoke({ key: Document.search, data: { availableQuantity: 1 } });
 
     setDocuments(parseDataSelect(documentSearch.data || []));

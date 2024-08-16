@@ -1,19 +1,34 @@
 import { useState, useCallback, useEffect } from 'react';
-import { SearchOutlined, CheckCircleOutlined } from '@ant-design/icons';
-import { Button, Input, Table, Form, Radio } from 'antd';
+import { SearchOutlined, CheckCircleOutlined, DownOutlined } from '@ant-design/icons';
+import { Button, Input, Table, Form, Space, Dropdown} from 'antd';
 import debounce from 'lodash.debounce';
-import { formatDateTime, queryStringToObject } from '../../../utils/helper';
+import { formatDateTime, queryStringToObject, objectToQueryString } from '../../../utils/helper';
 import { Penalty, ReaderType } from '../../../constants';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const PenaltySearchPage = (props) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [inputState, setinputState] = useState({ fullName: '', id: 0 });
   const [penalties, setPenalties] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 20; // Number of items per page
+
+  const redirectCreate = (record) => () => {
+    const data = {
+      id: record.id,
+      returnId: record.returnId,
+      description: record.description || '',
+      compensation: record.compensation,
+      readerId: record.return.readerId,
+      totalAmount: record.totalAmount,
+      readerName: record.return.borrow.reader.fullName
+    };
+    const queryString = objectToQueryString(data);
+    return navigate(`/penalty/create?${queryString}`);
+  };
 
   const columns = [
     {
@@ -63,6 +78,30 @@ const PenaltySearchPage = (props) => {
       render: (dateTime) => {
         return formatDateTime(dateTime);
       },
+    },
+    {
+      title: 'Action',
+      key: 'operation',
+      fixed: 'right',
+      width: 150,
+      render: (_, record) => (
+        <Space size="middle">
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  label: <a onClick={redirectCreate(record)}>Chỉnh sửa</a>,
+                  key: '1',
+                },
+              ],
+            }}
+          >
+            <a>
+              More Action <DownOutlined />
+            </a>
+          </Dropdown>
+        </Space>
+      ),
     },
   ];
 
